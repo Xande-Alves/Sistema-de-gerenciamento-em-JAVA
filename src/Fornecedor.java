@@ -1,25 +1,37 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Fornecedor extends Pessoa {
-    List<Fornecedor> listaFornecedores = new ArrayList<>();
+    private final List<Fornecedor> listaFornecedores = new ArrayList<>();
 
-    int idFornecedor;
-    String representaEmpresaNome;
-    String representaEmpresaCnpj;
+    private final int idFornecedor;
+    private String representaEmpresaNome;
+    private String representaEmpresaCnpj;
+    private final Scanner scanner = new Scanner(System.in);
+    private static Fornecedor fornecedorInstancia;
 
-    public Fornecedor (int idFornecedor, String nomeEmpresa, String cnpjEmpresa) {
+    private Fornecedor (int idFornecedor, String nomeEmpresa, String cnpjEmpresa) {
         this.representaEmpresaNome = nomeEmpresa;
         this.representaEmpresaCnpj = cnpjEmpresa;
         this.idFornecedor = idFornecedor;
     }
 
-//    public void inicializarFornecedor() {
-//        Fornecedor f1 = new Fornecedor(1,"bela","111");
-//        listaFornecedores.add(f1);
-//    }
+    public static Fornecedor getInstanciaFornecedor() {
+        if (fornecedorInstancia==null) {
+            fornecedorInstancia = new Fornecedor(0,"","");
+        }
+        return fornecedorInstancia;
+    }
+
+    // METODO APENAS PARA TESTES EM VENDAS
+    public void inicializarFornecedor() {
+        Fornecedor f1 = new Fornecedor(1,"bela","111");
+        listaFornecedores.add(f1);
+    }
 
     public void cadastrarFornecedor() {
+        System.out.println("======================CADASTRO DE FORNECEDORES====================");
         int idFornecedor = listaFornecedores.size() + 1;
         Fornecedor fornec = new Fornecedor(idFornecedor,"", "");
 
@@ -37,8 +49,10 @@ public class Fornecedor extends Pessoa {
     }
 
     public void atualizarFornecedor() {
+        System.out.println("==============ATUALIZAÇÃO DE CADASTRO DE FORNECEDORES=============");
         System.out.print("Informe o ID do fornecedor: ");
         int idFornecedor = Integer.parseInt(scanner.nextLine());
+        boolean existeFornecedor = false;
 
         for (Fornecedor fornec : listaFornecedores) {
             if (fornec.getIdFornecedor() == idFornecedor) {
@@ -59,15 +73,18 @@ public class Fornecedor extends Pessoa {
                 if (!novoCnpjEmpresa.isEmpty()) {
                     fornec.setRepresentaEmpresaCnpj(novoCnpjEmpresa);
                 }
-                System.out.print("Cadastro atualizado com sucesso!");
-            } else {
-                System.out.println("ID de fornecedor não existe.");
+                existeFornecedor = true;
+                System.out.println("Cadastro atualizado com sucesso!");
             }
+        }
+        if (!existeFornecedor) {
+            System.out.println("ID de fornecedor não existe.");
         }
         System.out.println("==================================================================");
     }
 
     public void listarFornecedores() {
+        System.out.println("=======================LISTA DE FORNECEDORES======================");
         for(Fornecedor fornec : listaFornecedores) {
             System.out.println("ID fornecedor: "+fornec.getIdFornecedor());
             fornec.mostrarDadosPessoa();
@@ -126,6 +143,11 @@ public class Fornecedor extends Pessoa {
 
     public int getIdFornecedor() {
         return idFornecedor;
+    }
+
+    @Override
+    public String getIdentificacao() {
+        return "ID Fornecedor: " + getIdFornecedor();
     }
 
     public String getRepresentaEmpresaNome() {

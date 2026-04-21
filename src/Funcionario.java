@@ -5,9 +5,9 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class Funcionario extends Pessoa {
-    List<Funcionario> listaFuncionarios = new ArrayList<>();
-    Scanner scanner = new Scanner(System.in);
-    DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private final List<Funcionario> listaFuncionarios = new ArrayList<>();
+    private final Scanner scanner = new Scanner(System.in);
+    private final DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     private final int idFuncionario;
     private Double salario;
@@ -19,15 +19,17 @@ public class Funcionario extends Pessoa {
     private String senha;
     private String nivelAcesso;
     private Login sistemaLogin;
+    private static Funcionario funcionarioInstancia;
 
-//    public void inicializarFuncionario() {
-//        Funcionario f1 = new Funcionario(1,5.0,true,null,null,"vendedor","vendedor","123","4");
-//        Funcionario f2 = new Funcionario(2,5.0,true,null,null,"gerente","gerente","123","1234");
-//        listaFuncionarios.add(f1);
-//        listaFuncionarios.add(f2);
-//    }
+    // METODO APENAS PARA TESTES EM VENDAS
+    public void inicializarFuncionario() {
+        Funcionario f1 = new Funcionario(1,5.0,true,null,null,"vendedor","vendedor","123","4");
+        Funcionario f2 = new Funcionario(2,5.0,true,null,null,"gerente de vendas","gerente","123","1234");
+        listaFuncionarios.add(f1);
+        listaFuncionarios.add(f2);
+    }
 
-    public Funcionario(int idFuncionario, Double salario, boolean ativo, LocalDate dataAdmissao, LocalDate dataDemissao, String cargo, String login, String senha, String nivelAcesso) {
+    private Funcionario(int idFuncionario, Double salario, boolean ativo, LocalDate dataAdmissao, LocalDate dataDemissao, String cargo, String login, String senha, String nivelAcesso) {
         this.idFuncionario = idFuncionario;
         this.salario = salario;
         this.ativo = ativo;
@@ -39,7 +41,15 @@ public class Funcionario extends Pessoa {
         this.nivelAcesso = nivelAcesso;
     }
 
+    public static Funcionario getInstanciaFuncionario() {
+        if (funcionarioInstancia == null) {
+            funcionarioInstancia = new Funcionario(0,null,true,null,null,null,"adm","123","12345");
+        }
+        return funcionarioInstancia;
+    }
+
     public void cadastrarFuncionario () {
+        System.out.println("=====================CADASTRO DE FUNCIONÁRIOS======================");
         Double salario = null;
         boolean ativo = false;
         LocalDate dataAd = null;
@@ -56,11 +66,15 @@ public class Funcionario extends Pessoa {
         func.cadastrarPessoa();
 
         listaFuncionarios.add(func);
+        System.out.println("Funcionário cadastrado com sucesso.");
+        System.out.println("==================================================================");
     }
 
     public void atualizarFuncionario() {
+        System.out.println("================ATUALIZAR CADASTRO DE FUNCIONÁRIOS=================");
         System.out.print("Informe o ID do funcionário: ");
         int idFuncionario = Integer.parseInt(scanner.nextLine());
+        boolean existeFuncionario = false;
 
         for (Funcionario func : listaFuncionarios) {
             if (func.getIdFuncionario() == idFuncionario) {
@@ -69,15 +83,18 @@ public class Funcionario extends Pessoa {
                 System.out.println("==================================================================");
 
                 func.alteraDadosPessoa();
+                existeFuncionario = true;
                 System.out.println("Cadastro atualizado com sucesso!");
-            } else {
-                System.out.println("ID de funcionário não existe.");
             }
+        }
+        if (!existeFuncionario) {
+            System.out.println("ID de funcionário não existe.");
         }
         System.out.println("==================================================================");
     }
 
     public void listarFuncionarios () {
+        System.out.println("=======================LISTA DE FUNCIONÁRIOS=======================");
         for (Funcionario func : listaFuncionarios) {
             System.out.println("ID Funcionário: " + func.getIdFuncionario());
             func.mostrarDadosPessoa();
@@ -110,19 +127,26 @@ public class Funcionario extends Pessoa {
     public void consultarFuncionarioCargo() {
         System.out.print("Informe o cargo do funcionário: ");
         String cargo = scanner.nextLine();
+        boolean existeRegistro = false;
+        System.out.println("RESULTADOS DA PESQUISA:");
         for (Funcionario func : listaFuncionarios) {
-            if (func.getCargo() != null) {
-                if (func.getCargo().toLowerCase().contains(cargo.toLowerCase())) {
-                    System.out.println("ID Funcionário: " + func.getIdFuncionario());
-                    func.mostrarDadosPessoa();
-                    System.out.println("Cargo: " + func.getCargo());
-                    System.out.println("==================================================================");
-                }
+            if (func.getCargo() != null && func.getCargo().toLowerCase().contains(cargo.toLowerCase())) {
+                System.out.println("ID Funcionário: " + func.getIdFuncionario());
+                func.mostrarDadosPessoa();
+                System.out.println("Cargo: " + func.getCargo());
+                existeRegistro = true;
+                System.out.println("==================================================================");
             }
+        }
+        if (!existeRegistro) {
+            System.out.println("==================================================================");
+            System.out.println("Não existe registro para os dados informados.");
+            System.out.println("==================================================================");
         }
     }
 
     public void contrataFuncionario() {
+        System.out.println("====================CONTRATAÇÃO DE FUNCIONÁRIO====================");
         System.out.print("Informe o ID de funcionário cadastrado para efetuar contratação: ");
         int idFunc = Integer.parseInt(scanner.nextLine());
         boolean existeFuncionario = false;
@@ -149,7 +173,7 @@ public class Funcionario extends Pessoa {
                     func.setSalario(salario);
 
                     sistemaLogin.cadastrarAcesso(func, listaFuncionarios);
-
+                    System.out.println("Funcionário contratado com sucesso.");
                 } else {
                     System.out.println("O funcionário já está contratado com data de admissão em " + func.getDataAdmissao() + ".");
                 }
@@ -161,8 +185,10 @@ public class Funcionario extends Pessoa {
     }
 
     public void alteraCargo() {
+        System.out.println("======================PROMOÇÃO DE FUNCIONÁRIO=====================");
         System.out.print("Informe o ID de funcionário para mudança de cargo: ");
         int idFunc = Integer.parseInt(scanner.nextLine());
+        boolean existeFuncionario = false;
 
         for (Funcionario func : listaFuncionarios) {
             if (func.getIdFuncionario() == idFunc) {
@@ -170,18 +196,23 @@ public class Funcionario extends Pessoa {
                     System.out.print("Qual será o novo cargo do funcionário? ");
                     String cargo = scanner.nextLine();
                     func.setCargo(cargo);
+                    System.out.println("Cargo de funcionário alterado com sucesso.");
                 } else {
                     System.out.println("O funcionário não está contratado.");
                 }
-            } else {
-                System.out.println("ID de funcionário não existe.");
+                existeFuncionario = true;
             }
+        }
+        if (!existeFuncionario) {
+            System.out.println("ID de funcionário não existe.");
         }
     }
 
     public void alteraSalario() {
+        System.out.println("========================MUDANÇA DE SALÁRIO========================");
         System.out.print("Informe o ID de funcionário para mudança de salário: ");
         int idFunc = Integer.parseInt(scanner.nextLine());
+        boolean existeFuncionario = false;
 
         for (Funcionario func : listaFuncionarios) {
             if (func.getIdFuncionario() == idFunc) {
@@ -190,18 +221,23 @@ public class Funcionario extends Pessoa {
                     String salarioStr = scanner.nextLine();
                     double salario = Double.parseDouble(salarioStr.replace(",", "."));
                     func.setSalario(salario);
+                    System.out.println("Mudança de salário efetuada com sucesso.");
                 } else {
                     System.out.println("O funcionário não está contratado.");
                 }
-            } else {
-                System.out.println("ID de funcionário não existe.");
+                existeFuncionario = true;
             }
+        }
+        if (!existeFuncionario) {
+            System.out.println("ID de funcionário não existe.");
         }
     }
 
     public void desligaFuncionario() {
+        System.out.println("====================DESLIGAMENTO DE FUNCIONÁRIO===================");
         System.out.print("Informe o ID de funcionário para desligamento: ");
         int idFunc = Integer.parseInt(scanner.nextLine());
+        boolean existeFuncionario = false;
 
         for (Funcionario func : listaFuncionarios) {
             if (func.getIdFuncionario() == idFunc) {
@@ -212,19 +248,24 @@ public class Funcionario extends Pessoa {
                     LocalDate data = LocalDate.parse(dataDemissao, formatador);
 
                     func.setDataDemissao(data);
+                    func.setAtivo(false);
+                    System.out.println("Funcionário desligado com sucesso.");
                 } else {
                     System.out.println("O funcionário não está contratado.");
                 }
-                break;
-            } else {
-                System.out.println("ID de funcionário não existe.");
+                existeFuncionario = true;
             }
+        }
+        if (!existeFuncionario) {
+            System.out.println("ID de funcionário não existe.");
         }
     }
 
     public void atualizarAcesso() {
+        System.out.println("===============ATUALIZAÇÃO DE ACESSO DE FUNCIONÁRIO===============");
         System.out.print("Informe o ID do funcionário: ");
         int idFuncionario = Integer.parseInt(scanner.nextLine());
+        boolean existeFuncionario = false;
 
         for (Funcionario func : listaFuncionarios) {
             if (func.getIdFuncionario() == idFuncionario) {
@@ -239,12 +280,13 @@ public class Funcionario extends Pessoa {
                     System.out.println("ID: "+func.getIdFuncionario());
                     sistemaLogin.mostrarAcesso(func);
                 } else {
-                    System.out.println("Funcionário não está contratado ou desligado.");
+                    System.out.println("Funcionário não está contratado.");
                 }
-
-            } else {
-                System.out.println("ID de funcionário não existe.");
+                existeFuncionario = true;
             }
+        }
+        if (!existeFuncionario) {
+            System.out.println("ID de funcionário não existe.");
         }
         System.out.println("==================================================================");
     }
@@ -270,8 +312,6 @@ public class Funcionario extends Pessoa {
         } else {
             System.out.println("Situação: Inativo");
         }
-
-
     }
 
     @Override

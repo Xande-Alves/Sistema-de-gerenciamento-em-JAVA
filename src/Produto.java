@@ -3,21 +3,22 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Produto {
-    Scanner scanner = new Scanner(System.in);
-    Fornecedor sistemaFornecedor;
-    Menu sistemaMenu;
+    private final Scanner scanner = new Scanner(System.in);
+    private Fornecedor sistemaFornecedor;
+    private Menu sistemaMenu;
 
-    List<Produto> listaProdutos = new ArrayList<>();
-    int idProduto;
-    int idFornecedor;
-    String nome;
-    String descricao;
-    Double precoVenda;
-    Double precoCompra;
-    Double quantidade;
-    Double quantidadeEstoque;
+    private final List<Produto> listaProdutos = new ArrayList<>();
+    private final int idProduto;
+    private int idFornecedor;
+    private String nome;
+    private String descricao;
+    private Double precoVenda;
+    private Double precoCompra;
+    private Double quantidade;
+    private Double quantidadeEstoque;
+    private static Produto produtoInstancia;
 
-    public Produto(int idProduto, int idFornecedor, String nome, String descricao, Double precoCompra, Double precoVenda, Double quantidadeEstoque) {
+    private Produto(int idProduto, int idFornecedor, String nome, String descricao, Double precoCompra, Double precoVenda, Double quantidadeEstoque) {
         this.idProduto = idProduto;
         this.idFornecedor = idFornecedor;
         this.nome = nome;
@@ -27,17 +28,26 @@ public class Produto {
         this.quantidadeEstoque = quantidadeEstoque;
     }
 
-//    public void inicializarProduto() {
-//        Produto p1 = new Produto(1,1,"cola","gruda",5.0,10.0,10.0);
-//        Produto p2 = new Produto(2,1,"prego","leva",5.0,20.0,20.0);
-//        Produto p3 = new Produto(3,1,"martelo","bate",5.0,30.0, 30.0);
-//        listaProdutos.add(p1);
-//        listaProdutos.add(p2);
-//        listaProdutos.add(p3);
-//
-//    }
+    public static Produto getInstanciaProduto() {
+        if (produtoInstancia == null) {
+            produtoInstancia = new Produto(0,0,null,null,null,null, null);
+        }
+        return produtoInstancia;
+    }
+
+    // METODO APENAS PARA TESTES EM VENDAS
+    public void inicializarProduto() {
+        Produto p1 = new Produto(1,1,"cola","gruda",5.0,10.0,10.0);
+        Produto p2 = new Produto(2,1,"prego","leva",5.0,20.0,20.0);
+        Produto p3 = new Produto(3,1,"martelo","bate",5.0,30.0, 30.0);
+        listaProdutos.add(p1);
+        listaProdutos.add(p2);
+        listaProdutos.add(p3);
+
+    }
 
     public void cadastrarProduto() {
+        System.out.println("=======================CADASTRO DE PRODUTOS=======================");
         int idProduto = listaProdutos.size() + 1;
         boolean existeFornecedor = false;
 
@@ -72,8 +82,10 @@ public class Produto {
     }
 
     public void atualizarProduto() {
+        System.out.println("===================ATUALIZAR CADASTRO DE PRODUTO==================");
         System.out.print("Informe o ID do produto: ");
         int idProduto = Integer.parseInt(scanner.nextLine());
+        boolean existeProduto = false;
 
         for (Produto p : listaProdutos) {
             if (p.getIdProduto() == idProduto) {
@@ -121,18 +133,20 @@ public class Produto {
                     p.setPrecoVenda(precoVenda);
                 }
 
+                existeProduto = true;
                 System.out.println("Cadastro atualizado com sucesso!");
-            } else {
-                System.out.println("ID de produto não existe.");
             }
+        }
+        if (!existeProduto) {
+            System.out.println("ID de produto não existe.");
         }
         System.out.println("==================================================================");
     }
 
     public void listarProdutos() {
+        System.out.println("=========================LISTA DE PRODUTOS========================");
         for(Produto p : listaProdutos) {
             mostrarProduto(p);
-
             System.out.println("==================================================================");
         }
     }
@@ -142,10 +156,7 @@ public class Produto {
         int idFornec = Integer.parseInt(scanner.nextLine());
         for (Produto p : listaProdutos) {
             if (p.getIdFornecedor() == idFornec) {
-                System.out.println("ID Produto: " + p.getIdProduto());
-                System.out.println("ID Fornecedor: " + p.getIdFornecedor());
-                System.out.println("Nome: " + p.getNome());
-                System.out.println("Descrição: " + p.getDescricao());
+                mostrarProduto(p);
                 System.out.println("==================================================================");
             }
         }
@@ -156,10 +167,7 @@ public class Produto {
         String nomeProduto = scanner.nextLine();
         for (Produto p : listaProdutos) {
             if (p.getNome().toLowerCase().contains(nomeProduto.toLowerCase())) {
-                System.out.println("ID Produto: " + p.getIdProduto());
-                System.out.println("ID Fornecedor: " + p.getIdFornecedor());
-                System.out.println("Nome: " + p.getNome());
-                System.out.println("Descrição: " + p.getDescricao());
+                mostrarProduto(p);
                 System.out.println("==================================================================");
             }
         }
@@ -170,23 +178,20 @@ public class Produto {
         String descricaoProduto = scanner.nextLine();
         for (Produto p : listaProdutos) {
             if (p.getDescricao().toLowerCase().contains(descricaoProduto.toLowerCase())) {
-                System.out.println("ID Produto: " + p.getIdProduto());
-                System.out.println("ID Fornecedor: " + p.getIdFornecedor());
-                System.out.println("Nome: " + p.getNome());
-                System.out.println("Descrição: " + p.getDescricao());
+                mostrarProduto(p);
                 System.out.println("==================================================================");
             }
         }
     }
 
     public void mostrarProduto(Produto p) {
-        System.out.println("ID do produto: "+p.idProduto);
-        System.out.println("ID do fornecedor: "+p.idFornecedor);
-        System.out.println("Nome: "+p.nome);
-        System.out.println("Descrição: "+p.descricao);
-        System.out.println("Preço de compra: "+p.precoCompra);
-        System.out.println("Preço de venda: "+p.precoVenda);
-        System.out.println("Quantidade em estoque: "+p.quantidadeEstoque);
+        System.out.println("ID Produto: " + p.getIdProduto());
+        System.out.println("ID Fornecedor: " + p.getIdFornecedor());
+        System.out.println("Nome: " + p.getNome());
+        System.out.println("Descrição: " + p.getDescricao());
+        System.out.println("Preço de compra: "+p.getPrecoCompra());
+        System.out.println("Preço de venda: "+p.getPrecoVenda());
+        System.out.println("Quantidade em estoque: "+p.getQuantidadeEstoque());
     }
 
     public Double calculaPrecoVenda (Double precoCompra) {
@@ -215,6 +220,10 @@ public class Produto {
 
     public void setPrecoCompra(Double preco) {
         this.precoCompra = preco;
+    }
+
+    public Double getPrecoCompra() {
+        return precoCompra;
     }
 
     public Double getPrecoVenda() {

@@ -1,28 +1,37 @@
 import java.util.*;
 
 public class Venda {
-    Scanner scanner = new Scanner(System.in);
-    Funcionario sistemaFuncionario;
-    Menu sistemaMenu;
-    Login sistemaLogin;
-    Cliente sistemaCliente;
-    Produto sistemaProduto;
-    Estoque sistemaEstoque;
+    private final Scanner scanner = new Scanner(System.in);
+    private Funcionario sistemaFuncionario;
+    private Menu sistemaMenu;
+    private Login sistemaLogin;
+    private Cliente sistemaCliente;
+    private Produto sistemaProduto;
+    private Estoque sistemaEstoque;
 
-    List<Venda> listaVendas = new ArrayList<>();
-    List<Produto> listaProdutosVenda = new ArrayList<>();
-    int idVenda;
-    int idVendedorVenda;
-    int idClienteVenda;
-    Double valorTotalVenda;
-    boolean vendaAtiva;
+    private final List<Venda> listaVendas = new ArrayList<>();
+    private final List<Produto> listaProdutosVenda = new ArrayList<>();
+    private int idVenda;
+    private int idVendedorVenda;
+    private int idClienteVenda;
+    private Double valorTotalVenda;
+    private boolean vendaAtiva;
+    private static Venda vendaInstancia;
 
-    public Venda(int idVenda, int idVendedor, int idCliente) {
+    private Venda(int idVenda, int idVendedor, int idCliente) {
         this.idVendedorVenda = idVendedor;
         this.idClienteVenda = idCliente;
     }
 
+    public static Venda getInstanciaVenda() {
+        if (vendaInstancia == null) {
+            vendaInstancia = new Venda(0,0,0);
+        }
+        return vendaInstancia;
+    }
+
     public void efetuarVenda() {
+        System.out.println("==========================CADASTRAR VENDA=========================");
         int idvendaAtual = listaVendas.size() + 1;
         Venda v = new Venda(0,0,0);
         v.setIdVenda(idvendaAtual);
@@ -143,31 +152,29 @@ public class Venda {
             v.setVendaAtiva(true);
         }
         listaVendas.add(v);
-        System.out.println("ID da venda: "+v.getIdVenda());
+        System.out.println("Venda cadastrada com sucesso com o ID: "+v.getIdVenda());
         System.out.println("==================================================================");
     }
 
     public void atualizarVenda() {
+        System.out.println("====================ATUALIZAR CADASTRO DA VENDA===================");
         System.out.print("Informe o ID da venda: ");
         int idVenda = Integer.parseInt(scanner.nextLine());
 
         Venda vendaEncontrada = null;
 
-        // 🔎 1. Procurar a venda
         for (Venda v : listaVendas) {
             if (v.getIdVenda() == idVenda) {
                 vendaEncontrada = v;
                 break;
             }
         }
-
-        // ❌ Venda não existe
         if (vendaEncontrada == null) {
-            System.out.println("ID da venda não existe.");
-            return;
+            System.out.println("ID da venda inexistente.");
+            sistemaMenu.escolhaMenuVendas();
         }
 
-        // 🔐 2. Verificar permissão
+        // Verificar permissão
         int idVendedorLogado = sistemaLogin.verificaVendedorParaVenda();
 
         boolean ehVendedorDaVenda =
@@ -181,14 +188,14 @@ public class Venda {
 
         if (!ehVendedorDaVenda && !ehGerente) {
             System.out.println("Usuário não efetuou a venda e não possui cargo de Gerente de Vendas.");
-            return;
+            sistemaMenu.escolhaMenuVendas();
         }
 
-        // ✅ Pode alterar
+        // Pode alterar
         mostrarVenda(vendaEncontrada);
         System.out.println("==================================================================");
 
-        // 🔄 Atualizar vendedor
+        // Atualizar vendedor
         boolean existeVendedor = false;
         while (!existeVendedor) {
             System.out.print("Informe o novo ID do vendedor (enter para não alterar): ");
@@ -197,7 +204,7 @@ public class Venda {
             if (!idVendedorNovo.isEmpty()) {
                 int idVendNovoFormat = Integer.parseInt(idVendedorNovo);
 
-                for (Funcionario f : sistemaFuncionario.listaFuncionarios) {
+                for (Funcionario f : sistemaFuncionario.exportaListaFuncionario()) {
                     if (f.getIdFuncionario() == idVendNovoFormat &&
                             Objects.equals(f.getCargo().toLowerCase(), "vendedor")) {
 
@@ -209,13 +216,14 @@ public class Venda {
 
                 if (!existeVendedor) {
                     System.out.println("ID de vendedor inexistente.");
+                    sistemaMenu.escolhaMenuVendas();
                 }
             } else {
                 existeVendedor = true;
             }
         }
 
-        // 🔄 Atualizar cliente
+        // Atualizar cliente
         boolean existeCliente = false;
         while (!existeCliente) {
             System.out.print("Informe o novo ID do cliente (enter para não alterar): ");
@@ -224,7 +232,7 @@ public class Venda {
             if (!idClienteNovo.isEmpty()) {
                 int idCliNovoFormat = Integer.parseInt(idClienteNovo);
 
-                for (Cliente c : sistemaCliente.listaClientes) {
+                for (Cliente c : sistemaCliente.exportaListaCliente()) {
                     if (c.getIdCliente() == idCliNovoFormat) {
                         existeCliente = true;
                         vendaEncontrada.setIdClienteVenda(idCliNovoFormat);
@@ -234,13 +242,14 @@ public class Venda {
 
                 if (!existeCliente) {
                     System.out.println("ID de cliente inexistente.");
+                    sistemaMenu.escolhaMenuVendas();
                 }
             } else {
                 existeCliente = true;
             }
         }
 
-        // 🔄 Alterar itens da venda
+        // Alterar itens da venda
         System.out.print("Deseja alterar itens de venda? 1 - Sim / 2 - Não: ");
         int alterarItensVenda = Integer.parseInt(scanner.nextLine());
 
@@ -261,18 +270,17 @@ public class Venda {
 
                     if (p.getQuantidade() < novaQuant) {
                         System.out.println(sistemaEstoque.alteraDiminuiQuantidadeEstoqueVenda(p, alteraEstoque));
-                        p.setQuantidade(novaQuant);
                     } else if (p.getQuantidade() > novaQuant) {
                         sistemaEstoque.alteraAumentaQuantidadeEstoqueVenda(p,alteraEstoque);
-                        p.setQuantidade(novaQuant);
                     }
 
-                    System.out.println("Quantidade alterada.");
+                    p.setQuantidade(novaQuant);
+                    System.out.println("Quantidade de produto da venda alterada com sucesso.");
                     System.out.println("==================================================================");
 
                 } else if (escolhaItemVenda == 3) {
                     it.remove();
-                    System.out.println("Item removido.");
+                    System.out.println("Item removido da venda com sucesso.");
                     System.out.println("==================================================================");
                 }
             }
@@ -281,7 +289,8 @@ public class Venda {
                 System.out.println("Venda desativada: não restam produtos na lista.");
             }
         }
-
+        System.out.println("Venda alterada com sucesso.");
+        System.out.println("==================================================================");
     }
 
     public void consultarVendaAtivaVendedor() {
@@ -297,6 +306,7 @@ public class Venda {
         if (!existeVenda) {
             System.out.println("Não existem vendas ativas do vendedor informado.");
         }
+        System.out.println("==================================================================");
     }
 
     public void consultarVendaInativaVendedor() {
@@ -312,6 +322,7 @@ public class Venda {
         if (!existeVenda) {
             System.out.println("Não existem vendas inativas do vendedor informado.");
         }
+        System.out.println("==================================================================");
     }
 
     public void consultarVendaAtivaCliente() {
@@ -327,6 +338,7 @@ public class Venda {
         if (!existeVenda) {
             System.out.println("Não existem vendas ativas do cliente informado.");
         }
+        System.out.println("==================================================================");
     }
 
     public void consultarVendaInativaCliente() {
@@ -342,9 +354,11 @@ public class Venda {
         if (!existeVenda) {
             System.out.println("Não existem vendas inativas do cliente informado.");
         }
+        System.out.println("==================================================================");
     }
 
     public void cancelarVenda() {
+        System.out.println("==========================CANCELAR VENDA==========================");
         System.out.print("Informe o ID da venda: ");
         int idVenda = Integer.parseInt(scanner.nextLine());
         boolean existeVenda = false;
@@ -352,10 +366,14 @@ public class Venda {
             if (v.getIdVenda() == idVenda && v.getVendaAtiva()) {
                 mostrarVenda(v);
                 existeVenda = true;
-                System.out.println("Deseja cancelar a venda? 1 - Sim / 2 - Não");
+                System.out.print("Deseja cancelar a venda? 1 - Sim / 2 - Não ");
                 int escolhaCancela = Integer.parseInt(scanner.nextLine());
                 if (escolhaCancela == 1) {
-                    setVendaAtiva(false);
+                    for (Produto p : v.listaProdutosVenda) {
+                        sistemaEstoque.alteraAumentaQuantidadeEstoqueVenda(p,p.getQuantidade());
+                    }
+                    v.setVendaAtiva(false);
+                    System.out.println("Venda cancelada com sucesso.");
                 }
             }
         }
@@ -365,6 +383,7 @@ public class Venda {
     }
 
     public void listarVendas () {
+        System.out.println("==========================LISTA DE VENDAS=========================");
         for (Venda v : listaVendas) {
             mostrarVenda(v);
             System.out.println("==================================================================");
@@ -372,10 +391,10 @@ public class Venda {
     }
 
     public void mostrarProdutoVenda(Produto p) {
-        System.out.println("ID do produto: "+p.idProduto);
-        System.out.println("Nome: "+p.nome);
-        System.out.println("Descrição: "+p.descricao);
-        System.out.println("Preço de venda: R$ "+p.precoVenda);
+        System.out.println("ID do produto: "+p.getIdProduto());
+        System.out.println("Nome: "+p.getNome());
+        System.out.println("Descrição: "+p.getDescricao());
+        System.out.println("Preço de venda: R$ "+p.getPrecoVenda());
     }
 
     public void mostrarVenda(Venda v) {

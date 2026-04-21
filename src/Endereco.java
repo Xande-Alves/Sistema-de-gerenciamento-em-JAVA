@@ -1,14 +1,14 @@
 import java.util.Scanner;
 
 public abstract class Endereco {
-    Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner = new Scanner(System.in);
 
-    protected String logradouro;
-    protected String numero;
-    protected String bairro;
-    protected String cidade;
-    protected String estado;
-    protected String cep;
+    private String logradouro;
+    private String numero;
+    private String bairro;
+    private String cidade;
+    private String estado;
+    private String cep;
 
     public void cadastrarEndereco() {
         System.out.print("Logradouro: ");

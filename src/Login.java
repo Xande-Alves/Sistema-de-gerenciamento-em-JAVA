@@ -3,12 +3,24 @@ import java.util.Objects;
 import java.util.Scanner;
 
 public class Login {
-    private Menu sistemaMenu = new Menu();
-    Funcionario sistemaFuncionario;
+    private Menu sistemaMenu;
+    private Funcionario sistemaFuncionario;
     private String loginAtual;
     private String nivelAcessoAtual;
+    private static Login loginInstancia;
 
-    Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner = new Scanner(System.in);
+
+    private Login() {
+
+    }
+
+    public static Login getInstanciaLogin() {
+        if (loginInstancia == null) {
+            loginInstancia = new Login();
+        }
+        return loginInstancia;
+    }
 
     public void cadastrarAcesso(Funcionario func, List<Funcionario> listaFunc) {
         while (true) {
@@ -65,6 +77,7 @@ public class Login {
     }
 
     public void efetuarLogin(List<Funcionario> listaFunc, Funcionario adm) {
+        System.out.println("==============================SisGer==============================");
         while (true) {
             System.out.print("Login: ");
             String entradaLogin = scanner.nextLine();
@@ -109,13 +122,9 @@ public class Login {
     }
 
     public int verificaVendedorParaVenda() {
-        int idVendedor;
-        for (Funcionario f : sistemaFuncionario.listaFuncionarios) {
-            if (Objects.equals(f.getLogin(),this.loginAtual)) {
-                if (Objects.equals(f.getCargo().toLowerCase(),"vendedor")) {
-                    idVendedor = f.getIdFuncionario();
-                    return idVendedor;
-                }
+        for (Funcionario f : sistemaFuncionario.exportaListaFuncionario()) {
+            if (Objects.equals(f.getLogin(),this.loginAtual) && Objects.equals(f.getCargo().toLowerCase(),"vendedor")) {
+                return f.getIdFuncionario();
             }
         }
         return -1;
@@ -123,7 +132,7 @@ public class Login {
 
     public String verificaGerenteDeVendasParaVenda() {
         String cargo;
-        for (Funcionario f : sistemaFuncionario.listaFuncionarios) {
+        for (Funcionario f : sistemaFuncionario.exportaListaFuncionario()) {
             if (Objects.equals(f.getLogin(),this.loginAtual)) {
                 if (Objects.equals(f.getCargo().toLowerCase(),"gerente de vendas")) {
                     cargo = f.getCargo();

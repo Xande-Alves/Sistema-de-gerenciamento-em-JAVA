@@ -1,18 +1,31 @@
 import java.util.Scanner;
 
 public class Menu {
-    int escolhaModulo;
-    Funcionario sistemaFuncionario;
-    Scanner scanner = new Scanner(System.in);
-    Cliente sistemaCliente;
-    Login sistemaLogin;
-    Produto sistemaProduto;
-    Fornecedor sistemaFornecedor;
-    Venda sistemaVenda;
-    Estoque sistemaEstoque;
+    private int escolhaModulo;
+    private Funcionario sistemaFuncionario;
+    private final Scanner scanner = new Scanner(System.in);
+    private Cliente sistemaCliente;
+    private Login sistemaLogin;
+    private Produto sistemaProduto;
+    private Fornecedor sistemaFornecedor;
+    private Venda sistemaVenda;
+    private Estoque sistemaEstoque;
+    private static Menu menuInstancia;
+
+    private Menu() {
+
+    }
+
+    public static Menu getInstanciaMenu() {
+        if (menuInstancia == null) {
+            menuInstancia = new Menu();
+        }
+        return menuInstancia;
+    }
 
     public void escolhaModulo() {
         while (true) {
+            System.out.println("==============================SISGER==============================");
             System.out.println("1 - Clientes\n2 - Funcionário\n3 - Produtos\n4 - Vendas\n5 - Estoque\n6 - Sair");
             System.out.print("Selecione o módulo que deseja acessar: ");
             escolhaModulo = Integer.parseInt(scanner.nextLine());
@@ -63,8 +76,9 @@ public class Menu {
 
     public void escolhaAtributoConsultaCliente() {
         while (true) {
+            System.out.println("=======================CONSULTA DE CLIENTES========================");
             System.out.println("1 - Nome\n2 - CPF\n3 - E-mail\n4 - Telefone\n5 - Sair");
-            System.out.print("Deseja consultar por que dado?");
+            System.out.print("Deseja consultar por que dado? ");
             int atributoConsultaCliente = Integer.parseInt(scanner.nextLine());
             if (atributoConsultaCliente == 1) {
                 sistemaCliente.consultarClientesNome();
@@ -85,8 +99,9 @@ public class Menu {
 
     public void escolhaAtributoConsultaFuncionario() {
         while (true) {
+            System.out.println("=====================CONSULTA DE FUNCIONARIOS======================");
             System.out.println("1 - Nome\n2 - CPF\n3 - E-mail\n4 - Telefone\n5 - Cargo\n6 - Sair");
-            System.out.print("Deseja consultar por que dado?");
+            System.out.print("Deseja consultar por que dado? ");
             int atributoConsultaFuncionario = Integer.parseInt(scanner.nextLine());
             if (atributoConsultaFuncionario == 1) {
                 sistemaFuncionario.consultarFuncionarioNome();
@@ -109,6 +124,7 @@ public class Menu {
 
     public void escolhaAtributoConsultaProduto() {
         while (true) {
+            System.out.println("=======================CONSULTA DE PRODUTOS========================");
             System.out.println("1 - ID do fornecedor\n2 - Nome\n3 - Descrição\n4 - Sair");
             System.out.print("Deseja consultar por que dado? ");
             int atributoConsultaProduto = Integer.parseInt(scanner.nextLine());
@@ -129,8 +145,9 @@ public class Menu {
 
     public void escolhaAtributoConsultaFornecedor() {
         while (true) {
+            System.out.println("=====================CONSULTA DE FORNECEDORES======================");
             System.out.println("1 - Nome\n2 - CPF\n3 - E-mail\n4 - Telefone\n5 - Nome da empresa\n6 - CNPJ da empresa\n7 - Sair");
-            System.out.print("Deseja consultar por que dado?");
+            System.out.print("Deseja consultar por que dado? ");
             int atributoConsultaFornecedor = Integer.parseInt(scanner.nextLine());
             if (atributoConsultaFornecedor == 1) {
                 sistemaFornecedor.consultarFornecedorNome();
@@ -155,6 +172,7 @@ public class Menu {
 
     public void escolhaAtributoConsultaVendas() {
         while (true) {
+            System.out.println("========================CONSULTA DE VENDAS=========================");
             System.out.println("1 - Vendas ativas por vendedor\n2 - Vendas ativas por cliente\n3 - Vendas inativas por vendedor\n4 - Vendas inativas por cliente\n5 - Sair");
             System.out.print("Deseja consultar por que dado? ");
             int atributoConsultaProduto = Integer.parseInt(scanner.nextLine());
@@ -177,7 +195,8 @@ public class Menu {
 
     public void escolhaMenuCliente() {
         while (escolhaModulo == 1) {
-            System.out.println("1 - Cadastrar cliente\n2 - Atualizar cliente\n3 - Consultar cliente\n4 - Listar clientes\n5 - Sair");
+            System.out.println("===========================MENU CLIENTES==========================");
+            System.out.print("1 - Cadastrar cliente\n2 - Atualizar cliente\n3 - Consultar cliente\n4 - Listar clientes\n5 - Sair\nDigite o que deseja realizar: ");
             int escolhaModuloCliente = Integer.parseInt(scanner.nextLine());
 
             if (escolhaModuloCliente == 1) {
@@ -198,7 +217,8 @@ public class Menu {
 
     public void escolhaMenuFuncionario() {
         while (escolhaModulo == 2) {
-            System.out.println("1 - Cadastrar funcionário\n2 - Atualizar funcionário\n3 - Consultar funcionário\n4 - Listar funcionários\n5 - Contratar funcionário\n6 - Cargo do funcionário\n7 - Salário do funcionário\n8 - Desligamento do funcionário\n9 - Alterar acesso do funcionário\n10 - Sair");
+            System.out.println("=========================MENU FUNCIONÁRIOS=========================");
+            System.out.print("1 - Cadastrar funcionário\n2 - Atualizar funcionário\n3 - Consultar funcionário\n4 - Listar funcionários\n5 - Contratar funcionário\n6 - Cargo do funcionário\n7 - Salário do funcionário\n8 - Desligamento do funcionário\n9 - Alterar acesso do funcionário\n10 - Sair\nDigite o que deseja realizar: ");
             int escolhaModuloFuncionario = Integer.parseInt(scanner.nextLine());
 
             if (escolhaModuloFuncionario == 1) {
@@ -230,7 +250,8 @@ public class Menu {
 
     public void escolhaMenuProduto() {
         while (escolhaModulo == 3) {
-            System.out.println("1 - Cadastrar produto\n2 - Atualizar produto\n3 - Consultar produto\n4 - Listar produtos\n5 - Cadastrar fornecedor\n6 - Atualizar fornecedor\n7 - Consultar fornecedor\n8 - Listar fornecedores\n9 - Sair");
+            System.out.println("===========================MENU PRODUTOS===========================");
+            System.out.print("1 - Cadastrar produto\n2 - Atualizar produto\n3 - Consultar produto\n4 - Listar produtos\n5 - Cadastrar fornecedor\n6 - Atualizar fornecedor\n7 - Consultar fornecedor\n8 - Listar fornecedores\n9 - Sair\nDigite o que deseja realizar: ");
             int escolhaModuloProduto = Integer.parseInt(scanner.nextLine());
 
             if (escolhaModuloProduto == 1) {
@@ -259,7 +280,8 @@ public class Menu {
 
     public void escolhaMenuVendas() {
         while (escolhaModulo == 4) {
-            System.out.println("1 - Efetuar venda\n2 - Atualizar venda\n3 - Consultar vendas\n4 - Listar vendas\n5 - Cancelar venda\n6 - Sair");
+            System.out.println("============================MENU VENDAS============================");
+            System.out.print("1 - Efetuar venda\n2 - Atualizar venda\n3 - Consultar vendas\n4 - Listar vendas\n5 - Cancelar venda\n6 - Sair\nDigite o que deseja realizar: ");
             int escolhaModuloVenda = Integer.parseInt(scanner.nextLine());
 
             if (escolhaModuloVenda == 1) {
@@ -282,11 +304,12 @@ public class Menu {
 
     public void escolhaMenuEstoque() {
         while (escolhaModulo == 5) {
-            System.out.println("1 - Aumentar estoque\n2 - Diminuir estoque\n3 - Avisos de estoque\n4 - Consultar estoque\n5 - Listar estoque\n6 - Sair");
+            System.out.println("===========================MENU ESTOQUE============================");
+            System.out.print("1 - Repor estoque\n2 - Diminuir estoque\n3 - Avisos de estoque\n4 - Consultar estoque\n5 - Listar estoque\n6 - Sair\nDigite o que deseja realizar: ");
             int escolhaModuloEstoque = Integer.parseInt(scanner.nextLine());
 
             if (escolhaModuloEstoque == 1) {
-                sistemaEstoque.compraProduto();
+                sistemaEstoque.reporEstoqueProduto();
             } else if (escolhaModuloEstoque == 2){
                 sistemaEstoque.diminuiProduto();
             } else if (escolhaModuloEstoque == 3) {

@@ -2,12 +2,12 @@ import java.util.List;
 import java.util.Scanner;
 
 public abstract class Pessoa extends Endereco {
-    Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner = new Scanner(System.in);
 
-    protected String nome;
-    protected String cpf;
-    protected String email;
-    protected String telefone;
+    private String nome;
+    private String cpf;
+    private String email;
+    private String telefone;
 
     public void cadastrarPessoa () {
         System.out.print("Nome: ");
@@ -56,12 +56,19 @@ public abstract class Pessoa extends Endereco {
     public void consultarPessoaPorNome(List<? extends Pessoa> lista) {
         System.out.print("Digite o nome que deseja consultar: ");
         String nomeConsulta = scanner.next();
-
+        boolean existeRegistro = false;
+        System.out.println("RESULTADOS DA PESQUISA:");
         for (Pessoa p : lista) {
             if (p.getNome().toLowerCase().contains(nomeConsulta.toLowerCase())) {
                 System.out.println(p.getIdentificacao());
                 p.mostrarDadosPessoa();
+                existeRegistro = true;
+                System.out.println("==================================================================");
             }
+        }
+        if (!existeRegistro) {
+            System.out.println("==================================================================");
+            System.out.println("Não existe registro para os dados informados.");
             System.out.println("==================================================================");
         }
     }
@@ -69,12 +76,19 @@ public abstract class Pessoa extends Endereco {
     public void consultarPessoaPorCpf(List<? extends Pessoa> lista) {
         System.out.print("Digite o CPF que deseja consultar: ");
         String cpfConsulta = scanner.next();
-
+        boolean existeRegistro = false;
+        System.out.println("RESULTADOS DA PESQUISA:");
         for (Pessoa p : lista) {
             if (p.getCpf().contains(cpfConsulta)) {
                 System.out.println(p.getIdentificacao());
                 p.mostrarDadosPessoa();
+                existeRegistro = true;
+                System.out.println("==================================================================");
             }
+        }
+        if (!existeRegistro) {
+            System.out.println("==================================================================");
+            System.out.println("Não existe registro para os dados informados.");
             System.out.println("==================================================================");
         }
     }
@@ -82,12 +96,19 @@ public abstract class Pessoa extends Endereco {
     public void consultarPessoaPorEmail(List<? extends Pessoa> lista) {
         System.out.print("Digite o E-mail que deseja consultar: ");
         String emailConsulta = scanner.next();
-
+        boolean existeRegistro = false;
+        System.out.println("RESULTADOS DA PESQUISA:");
         for (Pessoa p : lista) {
             if (p.getEmail().toLowerCase().contains(emailConsulta.toLowerCase())) {
                 System.out.println(p.getIdentificacao());
                 p.mostrarDadosPessoa();
+                existeRegistro = true;
+                System.out.println("==================================================================");
             }
+        }
+        if (!existeRegistro) {
+            System.out.println("==================================================================");
+            System.out.println("Não existe registro para os dados informados.");
             System.out.println("==================================================================");
         }
     }
@@ -95,12 +116,19 @@ public abstract class Pessoa extends Endereco {
     public void consultarPessoaPorTelefone(List<? extends Pessoa> lista) {
         System.out.print("Digite o telefone que deseja consultar: ");
         String telefoneConsulta = scanner.next();
-
+        boolean existeRegistro = false;
+        System.out.println("RESULTADOS DA PESQUISA:");
         for (Pessoa p : lista) {
             if (p.getTelefone().contains(telefoneConsulta)) {
                 System.out.println(p.getIdentificacao());
                 p.mostrarDadosPessoa();
+                existeRegistro = true;
+                System.out.println("==================================================================");
             }
+        }
+        if (!existeRegistro) {
+            System.out.println("==================================================================");
+            System.out.println("Não existe registro para os dados informados.");
             System.out.println("==================================================================");
         }
     }
