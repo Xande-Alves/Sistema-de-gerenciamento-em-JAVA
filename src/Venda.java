@@ -11,7 +11,7 @@ public class Venda {
 
     private final List<Venda> listaVendas = new ArrayList<>();
     private final List<Produto> listaProdutosVenda = new ArrayList<>();
-    private int idVenda;
+    private final int idVenda;
     private int idVendedorVenda;
     private int idClienteVenda;
     private Double valorTotalVenda;
@@ -19,6 +19,7 @@ public class Venda {
     private static Venda vendaInstancia;
 
     private Venda(int idVenda, int idVendedor, int idCliente) {
+        this.idVenda = idVenda;
         this.idVendedorVenda = idVendedor;
         this.idClienteVenda = idCliente;
     }
@@ -33,8 +34,7 @@ public class Venda {
     public void efetuarVenda() {
         System.out.println("==========================CADASTRAR VENDA=========================");
         int idvendaAtual = listaVendas.size() + 1;
-        Venda v = new Venda(0,0,0);
-        v.setIdVenda(idvendaAtual);
+        Venda v = new Venda(idvendaAtual,0,0);
 
         boolean existeVendedor = false;
         while (!existeVendedor) {
@@ -97,7 +97,8 @@ public class Venda {
                         int adicionaProduto = Integer.parseInt(scanner.nextLine());
                         if (adicionaProduto == 1) {
                             System.out.print("Qual a quantidade do produto? (unidade, metros ou quilos) ");
-                            Double quantidadeProduto = Double.parseDouble(scanner.nextLine());
+                            String quantidadeProdutoStr = scanner.nextLine();
+                            double quantidadeProduto = Double.parseDouble(quantidadeProdutoStr.replace(",", "."));
                             p.setQuantidade(quantidadeProduto);
                             System.out.println(sistemaEstoque.diminuiQuantidadeEstoqueVenda(p));
                             primeiroProduto = false;
@@ -116,9 +117,6 @@ public class Venda {
                     existeProduto =false;
                     System.out.print("Informe o ID do produto vendido: (digite 0 para voltar) ");
                     int idProduto = Integer.parseInt(scanner.nextLine());
-                    if (idProduto == 0) {
-                        continue;
-                    }
                     for (Produto p : sistemaProduto.exportaListaProduto()) {
                         if (p.getIdProduto() == idProduto) {
                             existeProduto = true;
@@ -127,7 +125,8 @@ public class Venda {
                             int adicionaProduto = Integer.parseInt(scanner.nextLine());
                             if (adicionaProduto == 1) {
                                 System.out.print("Qual a quantidade do produto? (unidade, metros ou quilos) ");
-                                Double quantidadeProduto = Double.parseDouble(scanner.nextLine());
+                                String quantidadeProdutoStr = scanner.nextLine();
+                                double quantidadeProduto = Double.parseDouble(quantidadeProdutoStr.replace(",", "."));
                                 p.setQuantidade(quantidadeProduto);
                                 System.out.println(sistemaEstoque.diminuiQuantidadeEstoqueVenda(p));
                                 v.listaProdutosVenda.add(p);
@@ -136,7 +135,9 @@ public class Venda {
                         }
                     }
                     if (!existeProduto) {
-                        System.out.println("ID de produto inexistente.");
+                        if (idProduto != 0) {
+                            System.out.println("ID de produto inexistente.");
+                        }
                     }
                 } else {
                     fimProduto = true;
@@ -265,7 +266,8 @@ public class Venda {
 
                 if (escolhaItemVenda == 2) {
                     System.out.print("Informe a nova quantidade do produto: ");
-                    Double novaQuant = Double.parseDouble(scanner.nextLine());
+                    String novaQuantStr = scanner.nextLine();
+                    double novaQuant = Double.parseDouble(novaQuantStr.replace(",", "."));
                     Double alteraEstoque = p.getQuantidade() - novaQuant;
 
                     if (p.getQuantidade() < novaQuant) {
@@ -279,6 +281,7 @@ public class Venda {
                     System.out.println("==================================================================");
 
                 } else if (escolhaItemVenda == 3) {
+                    sistemaEstoque.alteraAumentaQuantidadeEstoqueVenda(p,p.getQuantidade());
                     it.remove();
                     System.out.println("Item removido da venda com sucesso.");
                     System.out.println("==================================================================");
@@ -399,6 +402,12 @@ public class Venda {
 
     public void mostrarVenda(Venda v) {
         System.out.println("ID venda: " + v.getIdVenda());
+        System.out.print("Situação: ");
+        if (getVendaAtiva()) {
+            System.out.println("Ativa");
+        } else {
+            System.out.println("Inativa");
+        }
         System.out.println("ID vendedor: " + v.getIdVendedorVenda());
         System.out.println("ID Cliente: " + v.getIdClienteVenda());
         System.out.println("Valor total da venda: R$ "+ calcularValorTotalVenda(v));
@@ -446,10 +455,6 @@ public class Venda {
 
     public int getIdVenda() {
         return idVenda;
-    }
-
-    public void setIdVenda(int idVenda) {
-        this.idVenda = idVenda;
     }
 
     public int getIdVendedorVenda() {

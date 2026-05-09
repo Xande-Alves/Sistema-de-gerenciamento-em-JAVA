@@ -98,14 +98,6 @@ public class Funcionario extends Pessoa {
         for (Funcionario func : listaFuncionarios) {
             System.out.println("ID Funcionário: " + func.getIdFuncionario());
             func.mostrarDadosPessoa();
-            if (func.getDataAdmissao() != null) {
-                System.out.println("Cargo: "+func.getCargo());
-                System.out.println("Salário: "+func.getSalario());
-                System.out.println("Data de Admissão: "+func.getDataAdmissao());
-                if (func.dataDemissao != null) {
-                    System.out.println("Data de demissão: "+func.getDataDemissao());
-                }
-            }
             System.out.println("==================================================================");
         }
     }
@@ -130,10 +122,9 @@ public class Funcionario extends Pessoa {
         boolean existeRegistro = false;
         System.out.println("RESULTADOS DA PESQUISA:");
         for (Funcionario func : listaFuncionarios) {
-            if (func.getCargo() != null && func.getCargo().toLowerCase().contains(cargo.toLowerCase())) {
+            if (func.getCargo().toLowerCase().contains(cargo.toLowerCase())) {
                 System.out.println("ID Funcionário: " + func.getIdFuncionario());
                 func.mostrarDadosPessoa();
-                System.out.println("Cargo: " + func.getCargo());
                 existeRegistro = true;
                 System.out.println("==================================================================");
             }

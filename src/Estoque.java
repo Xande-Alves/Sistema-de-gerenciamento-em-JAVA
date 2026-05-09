@@ -19,7 +19,7 @@ public class Estoque  {
     public String diminuiQuantidadeEstoqueVenda(Produto p) {
         if (p.getQuantidadeEstoque() < p.getQuantidade()) {
             p.setQuantidadeEstoque(p.getQuantidadeEstoque() - p.getQuantidade());
-            return "Quantidade vendida é superior a quantidade estocada. Faltam: " + p.getQuantidadeEstoque()+".";
+            return "Quantidade vendida é superior a quantidade estocada. Faltam: " + Math.abs(p.getQuantidadeEstoque())+".";
         } else {
             p.setQuantidadeEstoque(p.getQuantidadeEstoque() - p.getQuantidade());
             return "";
@@ -29,7 +29,7 @@ public class Estoque  {
     public String alteraDiminuiQuantidadeEstoqueVenda(Produto p, Double alteraEstoque) {
         if (p.getQuantidadeEstoque() < Math.abs(alteraEstoque)) {
             p.setQuantidadeEstoque(p.getQuantidadeEstoque() - Math.abs(alteraEstoque));
-            return "Quantidade vendida é superior a quantidade estocada. Faltam: " + p.getQuantidadeEstoque();
+            return "Quantidade vendida é superior a quantidade estocada. Faltam: " + Math.abs(p.getQuantidadeEstoque());
         } else {
             p.setQuantidadeEstoque(p.getQuantidadeEstoque() - Math.abs(alteraEstoque));
             return "";
@@ -48,7 +48,8 @@ public class Estoque  {
             if (p.getIdProduto() == idProduto) {
                 sistemaProduto.mostrarProduto(p);
                 System.out.print("Aumentar a quantidade do estoque do produto em quanto? ");
-                Double aumentaEstoque = Double.parseDouble(scanner.nextLine());
+                String aumentaEstoqueStr = scanner.nextLine();
+                double aumentaEstoque = Double.parseDouble(aumentaEstoqueStr.replace(",", "."));
                 p.setQuantidadeEstoque(p.getQuantidadeEstoque()+aumentaEstoque);
                 System.out.println("Estoque do produto aumentado em "+aumentaEstoque+".");
             }
@@ -63,7 +64,8 @@ public class Estoque  {
             if (p.getIdProduto() == idProduto) {
                 sistemaProduto.mostrarProduto(p);
                 System.out.print("Diminuir a quantidade do estoque do produto em quanto? ");
-                Double diminuiEstoque = Double.parseDouble(scanner.nextLine());
+                String diminuiEstoqueStr = scanner.nextLine();
+                double diminuiEstoque = Double.parseDouble(diminuiEstoqueStr.replace(",", "."));
                 p.setQuantidadeEstoque(p.getQuantidadeEstoque()-diminuiEstoque);
                 System.out.println("Estoque do produto diminuído em "+diminuiEstoque+".");
             }
@@ -73,7 +75,8 @@ public class Estoque  {
     public void avisosEstoque() {
         System.out.println("=========================AVISOS DE ESTOQUE========================");
         System.out.print("Qual a quantidade de produto a ser pesquisada? ");
-        Double quantidadeProduto = Double.parseDouble(scanner.nextLine());
+        String quantidadeProdutoStr = scanner.nextLine();
+        double quantidadeProduto = Double.parseDouble(quantidadeProdutoStr.replace(",", "."));
         for (Produto p : sistemaProduto.exportaListaProduto()) {
             if (p.getQuantidadeEstoque() <= quantidadeProduto) {
                 sistemaProduto.mostrarProduto(p);

@@ -96,14 +96,9 @@ public class Produto {
                 String idFornecedor = scanner.nextLine();
                 boolean existeFornecedor = false;
                 for (Fornecedor fornec : sistemaFornecedor.exportaListaFornecedor()) {
-                    if (idFornecedor.isEmpty()) {
+                    if (idFornecedor.isEmpty() || (fornec.getIdFornecedor() == Integer.parseInt(idFornecedor))) {
                         existeFornecedor = true;
                         break;
-                    } else {
-                        if (fornec.getIdFornecedor() == Integer.parseInt(idFornecedor)) {
-                            existeFornecedor = true;
-                            break;
-                        }
                     }
                 }
                 if (!existeFornecedor) {
@@ -154,33 +149,54 @@ public class Produto {
     public void consultarProdutoIdFornecedor() {
         System.out.print("Informe o ID do fornecedor: ");
         int idFornec = Integer.parseInt(scanner.nextLine());
+        boolean existeProduto = false;
         for (Produto p : listaProdutos) {
             if (p.getIdFornecedor() == idFornec) {
                 mostrarProduto(p);
+                existeProduto = true;
                 System.out.println("==================================================================");
             }
+        }
+        if (!existeProduto) {
+            System.out.println("==================================================================");
+            System.out.println("Não existe produto para os dados informados.");
+            System.out.println("==================================================================");
         }
     }
 
     public void consultarProdutoNome() {
         System.out.print("Informe o nome do produto: ");
         String nomeProduto = scanner.nextLine();
+        boolean existeProduto = false;
         for (Produto p : listaProdutos) {
             if (p.getNome().toLowerCase().contains(nomeProduto.toLowerCase())) {
                 mostrarProduto(p);
+                existeProduto = true;
                 System.out.println("==================================================================");
             }
+        }
+        if (!existeProduto) {
+            System.out.println("==================================================================");
+            System.out.println("Não existe produto para os dados informados.");
+            System.out.println("==================================================================");
         }
     }
 
     public void consultarProdutoDescricao() {
         System.out.print("Informe parte da descrição do produto: ");
         String descricaoProduto = scanner.nextLine();
+        boolean existeProduto = false;
         for (Produto p : listaProdutos) {
             if (p.getDescricao().toLowerCase().contains(descricaoProduto.toLowerCase())) {
                 mostrarProduto(p);
+                existeProduto = true;
                 System.out.println("==================================================================");
             }
+        }
+        if (!existeProduto) {
+            System.out.println("==================================================================");
+            System.out.println("Não existe produto para os dados informados.");
+            System.out.println("==================================================================");
         }
     }
 

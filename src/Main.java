@@ -37,6 +37,5 @@ public class Main {
 
 
         login.efetuarLogin(funcionario.exportaListaFuncionario(),funcionario);
-        //System.out.println("===============================AQUI===============================");
     }
 }

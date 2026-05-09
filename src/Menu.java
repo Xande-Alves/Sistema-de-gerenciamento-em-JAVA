@@ -209,6 +209,7 @@ public class Menu {
                 sistemaCliente.listarClientes();
             } else if (escolhaModuloCliente == 5) {
                 escolhaModulo();
+                break;
             } else {
                 System.out.println("Opção inválida!");
             }
@@ -272,6 +273,7 @@ public class Menu {
                 sistemaFornecedor.listarFornecedores();
             } else if (escolhaModuloProduto == 9) {
                 escolhaModulo();
+                break;
             } else {
                 System.out.println("Opção inválida!");
             }
@@ -296,6 +298,7 @@ public class Menu {
                 sistemaVenda.cancelarVenda();
             } else if (escolhaModuloVenda == 6) {
                 escolhaModulo();
+                break;
             } else {
                 System.out.println("Opção inválida!");
             }
@@ -320,6 +323,7 @@ public class Menu {
                 sistemaProduto.listarProdutos();
             } else if (escolhaModuloEstoque == 6) {
                 escolhaModulo();
+                break;
             } else {
                 System.out.println("Opção inválida!");
             }
