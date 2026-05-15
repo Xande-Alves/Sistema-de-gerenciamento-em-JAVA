@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class Fornecedor extends Pessoa {
@@ -39,8 +40,19 @@ public class Fornecedor extends Pessoa {
         System.out.print("Insira o nome da empresa que o fornecedor representa: ");
         String nomeEmpresa = scanner.nextLine();
         fornec.setRepresentaEmpresaNome(nomeEmpresa);
-        System.out.print("Insira o CNPJ da empresa que o fornecedor representa: ");
-        String cnpjEmpresa = scanner.nextLine();
+        String cnpjEmpresa;
+        while (true) {
+            System.out.print("Insira o CNPJ da empresa que o fornecedor representa: ");
+            String cnpjDigitado = scanner.nextLine();
+            cnpjDigitado = cnpjDigitado.replaceAll("[^0-9]", "");
+
+            if (cnpjDigitado.matches("\\d{14}")) {
+                cnpjEmpresa = cnpjDigitado.substring(0,2) + "." + cnpjDigitado.substring(2,5) + "." + cnpjDigitado.substring(5,8) + "/" + cnpjDigitado.substring(8,12) + "-" + cnpjDigitado.substring(12);
+                break;
+            } else {
+                System.out.print("O CEP deve conter 14 números. ");
+            }
+        }
         fornec.setRepresentaEmpresaCnpj(cnpjEmpresa);
 
         listaFornecedores.add(fornec);
@@ -50,8 +62,16 @@ public class Fornecedor extends Pessoa {
 
     public void atualizarFornecedor() {
         System.out.println("==============ATUALIZAÇÃO DE CADASTRO DE FORNECEDORES=============");
-        System.out.print("Informe o ID do fornecedor: ");
-        int idFornecedor = Integer.parseInt(scanner.nextLine());
+        int idFornecedor;
+        while (true) {
+            try {
+                System.out.print("Informe o ID do fornecedor: ");
+                idFornecedor = Integer.parseInt(scanner.nextLine());
+                break;
+            } catch (NumberFormatException e) {
+                System.out.print("Digite apenas números inteiros. ");
+            }
+        }
         boolean existeFornecedor = false;
 
         for (Fornecedor fornec : listaFornecedores) {
@@ -68,10 +88,23 @@ public class Fornecedor extends Pessoa {
                 if (!novoNomeEmpresa.isEmpty()) {
                     fornec.setRepresentaEmpresaNome(novoNomeEmpresa);
                 }
-                System.out.print("Informe o novo CNPJ da empresa (enter para não alterar): ");
-                String novoCnpjEmpresa = scanner.nextLine();
-                if (!novoCnpjEmpresa.isEmpty()) {
-                    fornec.setRepresentaEmpresaCnpj(novoCnpjEmpresa);
+
+                while (true) {
+                    System.out.print("Informe o novo CNPJ da empresa (enter para não alterar): ");
+                    String cnpjDigitado = scanner.nextLine();
+                    if (!cnpjDigitado.isEmpty()) {
+                        cnpjDigitado = cnpjDigitado.replaceAll("[^0-9]", "");
+
+                        if (cnpjDigitado.matches("\\d{14}")) {
+                            String novoCnpjEmpresa = cnpjDigitado.substring(0,2) + "." + cnpjDigitado.substring(2,5) + "." + cnpjDigitado.substring(5,8) + "/" + cnpjDigitado.substring(8,12) + "-" + cnpjDigitado.substring(12);
+                            fornec.setRepresentaEmpresaCnpj(novoCnpjEmpresa);
+                            break;
+                        } else {
+                            System.out.print("O CEP deve conter 14 números. ");
+                        }
+                    } else {
+                        break;
+                    }
                 }
                 existeFornecedor = true;
                 System.out.println("Cadastro atualizado com sucesso!");
@@ -95,6 +128,13 @@ public class Fornecedor extends Pessoa {
         }
     }
 
+    @Override
+    public void mostrarDadosPessoa() {
+        super.mostrarDadosPessoa();
+        System.out.println("Nome da empresa: " + this.getRepresentaEmpresaNome());
+        System.out.println("CNPJ da empresa: " + this.getRepresentaEmpresaCnpj());
+    }
+
     public void consultarFornecedorNome() { consultarPessoaPorNome(listaFornecedores); }
 
     public void consultarFornecedorCpf() {
@@ -112,28 +152,38 @@ public class Fornecedor extends Pessoa {
     public void consultarFornecedorNomeEmpresa() {
         System.out.print("Informe o nome da empresa do fornecedor: ");
         String nomeEmpresa = scanner.nextLine();
+        boolean existeFornecedor = false;
         for (Fornecedor fornec : listaFornecedores) {
             if (fornec.getRepresentaEmpresaNome().toLowerCase().contains(nomeEmpresa.toLowerCase())) {
                 System.out.println("ID Fornecedor: " + fornec.getIdFornecedor());
                 fornec.mostrarDadosPessoa();
-                System.out.println("Nome da empresa: "+fornec.getRepresentaEmpresaNome());
-                System.out.println("CNPJ da empresa: "+fornec.getRepresentaEmpresaCnpj());
                 System.out.println("==================================================================");
+                existeFornecedor = true;
             }
+        }
+        if (!existeFornecedor) {
+            System.out.println("==================================================================");
+            System.out.println("Não existe registro de fornecedor para os dados informados.");
+            System.out.println("==================================================================");
         }
     }
 
     public void consultarFornecedorCnpjEmpresa() {
-        System.out.print("Informe o CNPJ da empresa do fornecedor: ");
+        System.out.print("Informe o CNPJ da empresa do fornecedor (apenas números): ");
         String cnpjEmpresa = scanner.nextLine();
+        boolean existeFornecedor = false;
         for (Fornecedor fornec : listaFornecedores) {
-            if (fornec.getRepresentaEmpresaCnpj().toLowerCase().contains(cnpjEmpresa.toLowerCase())) {
+            if (fornec.getRepresentaEmpresaCnpj().replaceAll("[^0-9]", "").contains(cnpjEmpresa)) {
                 System.out.println("ID Fornecedor: " + fornec.getIdFornecedor());
                 fornec.mostrarDadosPessoa();
-                System.out.println("Nome da empresa: "+fornec.getRepresentaEmpresaNome());
-                System.out.println("CNPJ da empresa: "+fornec.getRepresentaEmpresaCnpj());
                 System.out.println("==================================================================");
+                existeFornecedor = true;
             }
+        }
+        if (!existeFornecedor) {
+            System.out.println("==================================================================");
+            System.out.println("Não existe registro de fornecedor para os dados informados.");
+            System.out.println("==================================================================");
         }
     }
 

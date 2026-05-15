@@ -21,8 +21,23 @@ public abstract class Endereco {
         this.cidade = scanner.nextLine();
         System.out.print("Estado: ");
         this.estado = scanner.nextLine();
-        System.out.print("CEP: ");
-        this.cep = scanner.nextLine();
+        while (true) {
+            System.out.print("CEP: ");
+            String cepDigitado = scanner.nextLine();
+
+            // remove traços e espaços, caso o usuário digite
+            cepDigitado = cepDigitado.replaceAll("[^0-9]", "");
+
+            // valida se possui exatamente 8 números
+            if (cepDigitado.matches("\\d{8}")) {
+                // formata para 00000-000
+                this.cep = cepDigitado.substring(0, 5) + "-" +
+                        cepDigitado.substring(5);
+                break;
+            } else {
+                System.out.print("O CEP deve conter 8 números. ");
+            }
+        }
     }
 
     public void mostrarEndereco() {
@@ -60,10 +75,26 @@ public abstract class Endereco {
         if (!estado.isEmpty()) {
             this.setEstado(estado);
         }
-        System.out.print("CEP (enter para não alterar): ");
-        String cep = scanner.nextLine();
-        if (!cep.isEmpty()) {
-            this.setCep(cep);
+        while (true) {
+            System.out.print("CEP (enter para não alterar): ");
+            String cepDigitado = scanner.nextLine();
+
+            if (!cepDigitado.isEmpty()) {
+                // remove traços e espaços, caso o usuário digite
+                cepDigitado = cepDigitado.replace("-", "").trim();
+
+                // valida se possui exatamente 8 números
+                if (cepDigitado.matches("\\d{8}")) {
+                    // formata para 00000-000
+                    this.setCep(cepDigitado.substring(0, 5) + "-" +
+                            cepDigitado.substring(5));
+                    break;
+                } else {
+                    System.out.print("O CEP deve conter 8 números. ");
+                }
+            } else {
+                break;
+            }
         }
     }
 

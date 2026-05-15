@@ -51,8 +51,16 @@ public class Produto {
         int idProduto = listaProdutos.size() + 1;
         boolean existeFornecedor = false;
 
-        System.out.print("Informe o ID do fornecedor: ");
-        int idFornecedor = Integer.parseInt(scanner.nextLine());
+        int idFornecedor;
+        while (true) {
+            try {
+                System.out.print("Informe o ID do fornecedor: ");
+                idFornecedor = Integer.parseInt(scanner.nextLine());
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Digite apenas números inteiros.");
+            }
+        }
         for (Fornecedor fornec : sistemaFornecedor.exportaListaFornecedor()) {
             if (fornec.getIdFornecedor() == idFornecedor) {
                 existeFornecedor = true;
@@ -67,10 +75,28 @@ public class Produto {
         String nome = scanner.nextLine();
         System.out.print("Informe a descrição do produto: ");
         String descricao = scanner.nextLine();
-        System.out.print("Informe o preço de compra do produto: ");
-        Double precoCompra = Double.parseDouble(scanner.nextLine());
-        System.out.print("Informe a quantidade de estoque: ");
-        Double quantidadeEstoque = Double.parseDouble(scanner.nextLine());
+        double precoCompra;
+        while (true) {
+            try {
+                System.out.print("Informe o preço de compra do produto: ");
+                String precoCompraStr = scanner.nextLine();
+                precoCompra = Double.parseDouble(precoCompraStr.replace(",", "."));
+                break;
+            } catch (Exception e) {
+                System.out.print("O preço de compra do produto deve ser informado em números. ");
+            }
+        }
+        double quantidadeEstoque;
+        while (true) {
+            try {
+                System.out.print("Informe a quantidade de estoque: ");
+                String quantidadeEstoqueStr = scanner.nextLine();
+                quantidadeEstoque = Double.parseDouble(quantidadeEstoqueStr.replace(",", "."));
+                break;
+            } catch (Exception e) {
+                System.out.print("A quantidade de estoque deve ser informada em números. ");
+            }
+        }
 
         Double precoVenda = calculaPrecoVenda(precoCompra);
         
@@ -83,20 +109,42 @@ public class Produto {
 
     public void atualizarProduto() {
         System.out.println("===================ATUALIZAR CADASTRO DE PRODUTO==================");
-        System.out.print("Informe o ID do produto: ");
-        int idProduto = Integer.parseInt(scanner.nextLine());
-        boolean existeProduto = false;
+        int idProduto;
+        while (true) {
+            try {
+                System.out.print("Informe o ID do produto: ");
+                idProduto = Integer.parseInt(scanner.nextLine());
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Digite apenas números inteiros.");
+            }
+        }
 
+        boolean existeProduto = false;
         for (Produto p : listaProdutos) {
             if (p.getIdProduto() == idProduto) {
                 mostrarProduto(p);
                 System.out.println("==================================================================");
 
-                System.out.print("Informe o novo ID do fornecedor (enter para não alterar): ");
-                String idFornecedor = scanner.nextLine();
+                String idFornecedorStr;
+                int idFornecedorInt;
+                while (true) {
+                    try {
+                        System.out.print("Informe o novo ID do fornecedor (enter para não alterar): ");
+                        idFornecedorStr = scanner.nextLine();
+                        if (!idFornecedorStr.isEmpty()) {
+                            idFornecedorInt = Integer.parseInt(idFornecedorStr);
+                        } else {
+                            idFornecedorInt = p.getIdFornecedor();
+                        }
+                        break;
+                    } catch (NumberFormatException e) {
+                        System.out.println("Digite apenas números inteiros.");
+                    }
+                }
                 boolean existeFornecedor = false;
                 for (Fornecedor fornec : sistemaFornecedor.exportaListaFornecedor()) {
-                    if (idFornecedor.isEmpty() || (fornec.getIdFornecedor() == Integer.parseInt(idFornecedor))) {
+                    if (idFornecedorStr.isEmpty() || (fornec.getIdFornecedor() == idFornecedorInt)) {
                         existeFornecedor = true;
                         break;
                     }
@@ -105,8 +153,7 @@ public class Produto {
                     System.out.println("ID de fornecedor inexistente.");
                     sistemaMenu.escolhaMenuProduto();
                 }
-                if (!idFornecedor.isEmpty()) {
-                    int idFornecedorInt = Integer.parseInt(idFornecedor);
+                if (!idFornecedorStr.isEmpty()) {
                     p.setIdFornecedor(idFornecedorInt);
                 }
                 System.out.print("Informe o novo nome do produto (enter para não alterar): ");
@@ -119,12 +166,25 @@ public class Produto {
                 if (!descricao.isEmpty()) {
                     p.setDescricao(descricao);
                 }
-                System.out.print("Informe o novo preço de compra do produto (enter para não alterar): ");
-                String precoCompra = scanner.nextLine();
-                if (!precoCompra.isEmpty()) {
-                    Double precoCompraDouble = Double.parseDouble(precoCompra);
-                    p.setPrecoCompra(precoCompraDouble);
-                    Double precoVenda = calculaPrecoVenda(precoCompraDouble);
+                String precoCompraStr;
+                double precoCompra;
+                while (true) {
+                    try {
+                        System.out.print("Informe o novo preço de compra do produto (enter para não alterar): ");
+                        precoCompraStr = scanner.nextLine();
+                        if (!precoCompraStr.isEmpty()) {
+                            precoCompra = Double.parseDouble(precoCompraStr.replace(",", "."));
+                        } else {
+                            precoCompra = p.getPrecoCompra();
+                        }
+                        break;
+                    } catch (Exception e) {
+                        System.out.print("O preço de compra do produto deve ser informado em números. ");
+                    }
+                }
+                if (!precoCompraStr.isEmpty()) {
+                    p.setPrecoCompra(precoCompra);
+                    Double precoVenda = calculaPrecoVenda(precoCompra);
                     p.setPrecoVenda(precoVenda);
                 }
 
@@ -147,8 +207,16 @@ public class Produto {
     }
 
     public void consultarProdutoIdFornecedor() {
-        System.out.print("Informe o ID do fornecedor: ");
-        int idFornec = Integer.parseInt(scanner.nextLine());
+        int idFornec;
+        while (true) {
+            try {
+                System.out.print("Informe o ID do fornecedor: ");
+                idFornec = Integer.parseInt(scanner.nextLine());
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Digite apenas números inteiros.");
+            }
+        }
         boolean existeProduto = false;
         for (Produto p : listaProdutos) {
             if (p.getIdFornecedor() == idFornec) {

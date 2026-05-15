@@ -40,8 +40,15 @@ public class Venda {
         while (!existeVendedor) {
             int idVendedor;
             if (sistemaLogin.verificaVendedorParaVenda() == -1) {
-                System.out.print("Informe o ID do vendedor (digite 0 para voltar): ");
-                idVendedor = Integer.parseInt(scanner.nextLine());
+                while (true) {
+                    try {
+                        System.out.print("Informe o ID do vendedor (digite 0 para voltar): ");
+                        idVendedor = Integer.parseInt(scanner.nextLine());
+                        break;
+                    } catch (NumberFormatException e) {
+                        System.out.println("Digite apenas números inteiros.");
+                    }
+                }
 
                 if (idVendedor == 0) {
                     sistemaMenu.escolhaMenuVendas();
@@ -63,8 +70,16 @@ public class Venda {
 
         boolean existeCliente = false;
         while (!existeCliente) {
-            System.out.print("Informe o ID do cliente (digite 0 para voltar): ");
-            int idCliente = Integer.parseInt(scanner.nextLine());
+            int idCliente;
+            while (true) {
+                try {
+                    System.out.print("Informe o ID do cliente (digite 0 para voltar): ");
+                    idCliente = Integer.parseInt(scanner.nextLine());
+                    break;
+                } catch (NumberFormatException e) {
+                    System.out.println("Digite apenas números inteiros.");
+                }
+            }
             if (idCliente == 0) {
                 sistemaMenu.escolhaMenuVendas();
             }
@@ -84,8 +99,16 @@ public class Venda {
         boolean existeProduto = false;
         while (!fimProduto) {
             if (primeiroProduto) {
-                System.out.print("Informe o ID do produto vendido (digite 0 para voltar): ");
-                int idProduto = Integer.parseInt(scanner.nextLine());
+                int idProduto;
+                while (true) {
+                    try {
+                        System.out.print("Informe o ID do produto vendido (digite 0 para voltar): ");
+                        idProduto = Integer.parseInt(scanner.nextLine());
+                        break;
+                    } catch (NumberFormatException e) {
+                        System.out.println("Digite apenas números inteiros.");
+                    }
+                }
                 if (idProduto == 0) {
                     sistemaMenu.escolhaMenuVendas();
                 }
@@ -93,12 +116,28 @@ public class Venda {
                     if (p.getIdProduto() == idProduto) {
                         existeProduto = true;
                         mostrarProdutoVenda(p);
-                        System.out.print("Adicionar produto a venda? (1 - Sim / 2 - Não) ");
-                        int adicionaProduto = Integer.parseInt(scanner.nextLine());
+                        int adicionaProduto;
+                        while (true) {
+                            try {
+                                System.out.print("Adicionar produto a venda? (Digite 1 para Sim) ");
+                                adicionaProduto = Integer.parseInt(scanner.nextLine());
+                                break;
+                            } catch (NumberFormatException e) {
+                                System.out.println("Digite apenas números inteiros.");
+                            }
+                        }
                         if (adicionaProduto == 1) {
-                            System.out.print("Qual a quantidade do produto? (unidade, metros ou quilos) ");
-                            String quantidadeProdutoStr = scanner.nextLine();
-                            double quantidadeProduto = Double.parseDouble(quantidadeProdutoStr.replace(",", "."));
+                            double quantidadeProduto;
+                            while (true) {
+                                try {
+                                    System.out.print("Qual a quantidade do produto? (unidade, metros ou quilos) ");
+                                    String quantidadeProdutoStr = scanner.nextLine();
+                                    quantidadeProduto = Double.parseDouble(quantidadeProdutoStr.replace(",", "."));
+                                    break;
+                                } catch (Exception e) {
+                                    System.out.print("A quantidade do produto deve ser informada em números. ");
+                                }
+                            }
                             p.setQuantidade(quantidadeProduto);
                             System.out.println(sistemaEstoque.diminuiQuantidadeEstoqueVenda(p));
                             primeiroProduto = false;
@@ -111,22 +150,54 @@ public class Venda {
                     System.out.println("ID de produto inexistente.");
                 }
             } else {
-                System.out.print("Adicionar novo produto? (1 - Sim / 2 - Não) ");
-                int novoProduto = Integer.parseInt(scanner.nextLine());
+                int novoProduto;
+                while (true) {
+                    try {
+                        System.out.print("Adicionar novo produto a venda? (Digite 1 para Sim) ");
+                        novoProduto = Integer.parseInt(scanner.nextLine());
+                        break;
+                    } catch (NumberFormatException e) {
+                        System.out.println("Digite apenas números inteiros.");
+                    }
+                }
                 if (novoProduto == 1) {
                     existeProduto =false;
-                    System.out.print("Informe o ID do produto vendido: (digite 0 para voltar) ");
-                    int idProduto = Integer.parseInt(scanner.nextLine());
+                    int idProduto;
+                    while (true) {
+                        try {
+                            System.out.print("Informe o ID do produto vendido: (digite 0 para voltar) ");
+                            idProduto = Integer.parseInt(scanner.nextLine());
+                            break;
+                        } catch (NumberFormatException e) {
+                            System.out.println("Digite apenas números inteiros.");
+                        }
+                    }
                     for (Produto p : sistemaProduto.exportaListaProduto()) {
                         if (p.getIdProduto() == idProduto) {
                             existeProduto = true;
                             mostrarProdutoVenda(p);
-                            System.out.print("Adicionar produto a venda? (1 - Sim / 2 - Não) ");
-                            int adicionaProduto = Integer.parseInt(scanner.nextLine());
+                            int adicionaProduto;
+                            while (true) {
+                                try {
+                                    System.out.print("Adicionar produto a venda? (Digite 1 para Sim) ");
+                                    adicionaProduto = Integer.parseInt(scanner.nextLine());
+                                    break;
+                                } catch (NumberFormatException e) {
+                                    System.out.println("Digite apenas números inteiros.");
+                                }
+                            }
                             if (adicionaProduto == 1) {
-                                System.out.print("Qual a quantidade do produto? (unidade, metros ou quilos) ");
-                                String quantidadeProdutoStr = scanner.nextLine();
-                                double quantidadeProduto = Double.parseDouble(quantidadeProdutoStr.replace(",", "."));
+                                double quantidadeProduto;
+                                while (true) {
+                                    try {
+                                        System.out.print("Qual a quantidade do produto? (unidade, metros ou quilos) ");
+                                        String quantidadeProdutoStr = scanner.nextLine();
+                                        quantidadeProduto = Double.parseDouble(quantidadeProdutoStr.replace(",", "."));
+                                        break;
+                                    } catch (Exception e) {
+                                        System.out.print("A quantidade do produto deve ser informada em números. ");
+                                    }
+                                }
                                 p.setQuantidade(quantidadeProduto);
                                 System.out.println(sistemaEstoque.diminuiQuantidadeEstoqueVenda(p));
                                 v.listaProdutosVenda.add(p);
@@ -159,8 +230,16 @@ public class Venda {
 
     public void atualizarVenda() {
         System.out.println("====================ATUALIZAR CADASTRO DA VENDA===================");
-        System.out.print("Informe o ID da venda: ");
-        int idVenda = Integer.parseInt(scanner.nextLine());
+        int idVenda;
+        while (true) {
+            try {
+                System.out.print("Informe o ID da venda: ");
+                idVenda = Integer.parseInt(scanner.nextLine());
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Digite apenas números inteiros.");
+            }
+        }
 
         Venda vendaEncontrada = null;
 
@@ -199,18 +278,30 @@ public class Venda {
         // Atualizar vendedor
         boolean existeVendedor = false;
         while (!existeVendedor) {
-            System.out.print("Informe o novo ID do vendedor (enter para não alterar): ");
-            String idVendedorNovo = scanner.nextLine();
+            int idVendedorNovoInt;
+            String idVendedorNovoStr;
+            while (true) {
+                try {
+                    System.out.print("Informe o novo ID do vendedor (enter para não alterar): ");
+                    idVendedorNovoStr = scanner.nextLine();
+                    if (!idVendedorNovoStr.isEmpty()) {
+                        idVendedorNovoInt = Integer.parseInt(idVendedorNovoStr);
+                    } else {
+                        idVendedorNovoInt = vendaEncontrada.getIdVendedorVenda();
+                    }
+                    break;
+                } catch (NumberFormatException e) {
+                    System.out.print("Digite apenas números inteiros.");
+                }
+            }
 
-            if (!idVendedorNovo.isEmpty()) {
-                int idVendNovoFormat = Integer.parseInt(idVendedorNovo);
-
+            if (!idVendedorNovoStr.isEmpty()) {
                 for (Funcionario f : sistemaFuncionario.exportaListaFuncionario()) {
-                    if (f.getIdFuncionario() == idVendNovoFormat &&
+                    if (f.getIdFuncionario() == idVendedorNovoInt &&
                             Objects.equals(f.getCargo().toLowerCase(), "vendedor")) {
 
                         existeVendedor = true;
-                        vendaEncontrada.setIdVendedorVenda(idVendNovoFormat);
+                        vendaEncontrada.setIdVendedorVenda(idVendedorNovoInt);
                         break;
                     }
                 }
@@ -227,12 +318,23 @@ public class Venda {
         // Atualizar cliente
         boolean existeCliente = false;
         while (!existeCliente) {
-            System.out.print("Informe o novo ID do cliente (enter para não alterar): ");
-            String idClienteNovo = scanner.nextLine();
-
+            String  idClienteNovo;
+            int idCliNovoFormat;
+            while (true) {
+                try {
+                    System.out.print("Informe o novo ID do cliente (enter para não alterar): ");
+                    idClienteNovo = scanner.nextLine();
+                    if (!idClienteNovo.isEmpty()) {
+                        idCliNovoFormat = Integer.parseInt(idClienteNovo);
+                    } else {
+                        idCliNovoFormat = vendaEncontrada.getIdClienteVenda();
+                    }
+                    break;
+                } catch (NumberFormatException e) {
+                    System.out.println("Digite apenas números inteiros.");
+                }
+            }
             if (!idClienteNovo.isEmpty()) {
-                int idCliNovoFormat = Integer.parseInt(idClienteNovo);
-
                 for (Cliente c : sistemaCliente.exportaListaCliente()) {
                     if (c.getIdCliente() == idCliNovoFormat) {
                         existeCliente = true;
@@ -251,8 +353,16 @@ public class Venda {
         }
 
         // Alterar itens da venda
-        System.out.print("Deseja alterar itens de venda? 1 - Sim / 2 - Não: ");
-        int alterarItensVenda = Integer.parseInt(scanner.nextLine());
+        int alterarItensVenda;
+        while (true) {
+            try {
+                System.out.print("O que deseja fazer?\n1 - Alterar itens de venda\n2 - Adicionar itens na venda\nQualquer outro número para concluir ");
+                alterarItensVenda = Integer.parseInt(scanner.nextLine());
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Digite apenas números inteiros.");
+            }
+        }
 
         if (alterarItensVenda == 1) {
             Iterator<Produto> it = vendaEncontrada.listaProdutosVenda.iterator();
@@ -261,13 +371,29 @@ public class Venda {
                 Produto p = it.next();
 
                 mostrarProdutoVenda(p);
-                System.out.print("1 - Próximo item, 2 - Alterar quantidade, 3 - Excluir item: ");
-                int escolhaItemVenda = Integer.parseInt(scanner.nextLine());
+                int escolhaItemVenda;
+                while (true) {
+                    try {
+                        System.out.print("1 - Próximo item, 2 - Alterar quantidade, 3 - Excluir item: ");
+                        escolhaItemVenda = Integer.parseInt(scanner.nextLine());
+                        break;
+                    } catch (NumberFormatException e) {
+                        System.out.println("Digite apenas números inteiros.");
+                    }
+                }
 
                 if (escolhaItemVenda == 2) {
-                    System.out.print("Informe a nova quantidade do produto: ");
-                    String novaQuantStr = scanner.nextLine();
-                    double novaQuant = Double.parseDouble(novaQuantStr.replace(",", "."));
+                    double novaQuant;
+                    while (true) {
+                        try {
+                            System.out.print("Informe a nova quantidade do produto: (unidade, metros ou quilos) ");
+                            String novaQuantStr = scanner.nextLine();
+                            novaQuant = Double.parseDouble(novaQuantStr.replace(",", "."));
+                            break;
+                        } catch (Exception e) {
+                            System.out.print("A quantidade do produto deve ser informada em números. ");
+                        }
+                    }
                     Double alteraEstoque = p.getQuantidade() - novaQuant;
 
                     if (p.getQuantidade() < novaQuant) {
@@ -290,15 +416,94 @@ public class Venda {
             if (vendaEncontrada.listaProdutosVenda.isEmpty()) {
                 vendaEncontrada.setVendaAtiva(false);
                 System.out.println("Venda desativada: não restam produtos na lista.");
+            } else {
+                if (!getVendaAtiva()) {
+                    System.out.println("Venda reativada.");
+                    vendaEncontrada.setVendaAtiva(true);
+                }
+            }
+        } else if (alterarItensVenda == 2) {
+            boolean maisProduto = true;
+            while (maisProduto) {
+                boolean existeProduto = false;
+                int idProduto;
+                while (true) {
+                    try {
+                        System.out.print("Informe o ID do produto vendido: ");
+                        idProduto = Integer.parseInt(scanner.nextLine());
+                        break;
+                    } catch (NumberFormatException e) {
+                        System.out.println("Digite apenas números inteiros.");
+                    }
+                }
+                for (Produto p : sistemaProduto.exportaListaProduto()) {
+                    if (p.getIdProduto() == idProduto) {
+                        existeProduto = true;
+                        mostrarProdutoVenda(p);
+                        int adicionaProduto;
+                        while (true) {
+                            try {
+                                System.out.print("Adicionar produto a venda? (Digite 1 para Sim) ");
+                                adicionaProduto = Integer.parseInt(scanner.nextLine());
+                                break;
+                            } catch (NumberFormatException e) {
+                                System.out.print("Digite apenas números inteiros. ");
+                            }
+                        }
+                        if (adicionaProduto == 1) {
+                            double quantidadeProduto;
+                            while (true) {
+                                try {
+                                    System.out.print("Qual a quantidade do produto? (unidade, metros ou quilos) ");
+                                    String quantidadeProdutoStr = scanner.nextLine();
+                                    quantidadeProduto = Double.parseDouble(quantidadeProdutoStr.replace(",", "."));
+                                    break;
+                                } catch (Exception e) {
+                                    System.out.print("A quantidade do produto deve ser informada em números. ");
+                                }
+                            }
+                            p.setQuantidade(quantidadeProduto);
+                            System.out.println(sistemaEstoque.diminuiQuantidadeEstoqueVenda(p));
+                            vendaEncontrada.listaProdutosVenda.add(p);
+
+                            int escolheMaisItensVenda;
+                            while (true) {
+                                try {
+                                    System.out.print("Deseja adicionar mais itens a venda? (Digite 1 para Sim) ");
+                                    escolheMaisItensVenda = Integer.parseInt(scanner.nextLine());
+                                    break;
+                                } catch (Exception e) {
+                                    System.out.print("Digite apenas números inteiros. ");
+                                }
+                            }
+                            if (escolheMaisItensVenda != 1) {
+                                maisProduto = false;
+                            }
+                        }
+                        break;
+                    }
+                }
+                if (!existeProduto) {
+                    System.out.println("ID de produto inexistente.");
+                }
             }
         }
+
         System.out.println("Venda alterada com sucesso.");
         System.out.println("==================================================================");
     }
 
     public void consultarVendaAtivaVendedor() {
-        System.out.print("Informe o ID do vendedor: ");
-        int idVendedor = Integer.parseInt(scanner.nextLine());
+        int idVendedor;
+        while (true) {
+            try {
+                System.out.print("Informe o ID do vendedor: ");
+                idVendedor = Integer.parseInt(scanner.nextLine());
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Digite apenas números inteiros.");
+            }
+        }
         boolean existeVenda = false;
         for (Venda v : listaVendas) {
             if (v.getIdVendedorVenda() == idVendedor && v.getVendaAtiva()) {
@@ -313,8 +518,16 @@ public class Venda {
     }
 
     public void consultarVendaInativaVendedor() {
-        System.out.print("Informe o ID do vendedor: ");
-        int idVendedor = Integer.parseInt(scanner.nextLine());
+        int idVendedor;
+        while (true) {
+            try {
+                System.out.print("Informe o ID do vendedor: ");
+                idVendedor = Integer.parseInt(scanner.nextLine());
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Digite apenas números inteiros.");
+            }
+        }
         boolean existeVenda = false;
         for (Venda v : listaVendas) {
             if (v.getIdVendedorVenda() == idVendedor && !v.getVendaAtiva()) {
@@ -329,8 +542,16 @@ public class Venda {
     }
 
     public void consultarVendaAtivaCliente() {
-        System.out.print("Informe o ID do cliente: ");
-        int idCliente = Integer.parseInt(scanner.nextLine());
+        int idCliente;
+        while (true) {
+            try {
+                System.out.print("Informe o ID do cliente: ");
+                idCliente = Integer.parseInt(scanner.nextLine());
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Digite apenas números inteiros.");
+            }
+        }
         boolean existeVenda = false;
         for (Venda v : listaVendas) {
             if (v.getIdClienteVenda() == idCliente && v.getVendaAtiva()) {
@@ -345,8 +566,16 @@ public class Venda {
     }
 
     public void consultarVendaInativaCliente() {
-        System.out.print("Informe o ID do cliente: ");
-        int idCliente = Integer.parseInt(scanner.nextLine());
+        int idCliente;
+        while (true) {
+            try {
+                System.out.print("Informe o ID do cliente: ");
+                idCliente = Integer.parseInt(scanner.nextLine());
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Digite apenas números inteiros.");
+            }
+        }
         boolean existeVenda = false;
         for (Venda v : listaVendas) {
             if (v.getIdClienteVenda() == idCliente && !v.getVendaAtiva()) {
@@ -362,15 +591,31 @@ public class Venda {
 
     public void cancelarVenda() {
         System.out.println("==========================CANCELAR VENDA==========================");
-        System.out.print("Informe o ID da venda: ");
-        int idVenda = Integer.parseInt(scanner.nextLine());
+        int idVenda;
+        while (true) {
+            try {
+                System.out.print("Informe o ID da venda: ");
+                idVenda = Integer.parseInt(scanner.nextLine());
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Digite apenas números inteiros.");
+            }
+        }
         boolean existeVenda = false;
         for (Venda v : listaVendas) {
             if (v.getIdVenda() == idVenda && v.getVendaAtiva()) {
                 mostrarVenda(v);
                 existeVenda = true;
-                System.out.print("Deseja cancelar a venda? 1 - Sim / 2 - Não ");
-                int escolhaCancela = Integer.parseInt(scanner.nextLine());
+                int escolhaCancela;
+                while (true) {
+                    try {
+                        System.out.print("Deseja cancelar a venda? (Digite 1 para Sim) ");
+                        escolhaCancela = Integer.parseInt(scanner.nextLine());
+                        break;
+                    } catch (NumberFormatException e) {
+                        System.out.println("Digite apenas números inteiros.");
+                    }
+                }
                 if (escolhaCancela == 1) {
                     for (Produto p : v.listaProdutosVenda) {
                         sistemaEstoque.alteraAumentaQuantidadeEstoqueVenda(p,p.getQuantidade());
@@ -403,7 +648,7 @@ public class Venda {
     public void mostrarVenda(Venda v) {
         System.out.println("ID venda: " + v.getIdVenda());
         System.out.print("Situação: ");
-        if (getVendaAtiva()) {
+        if (v.getVendaAtiva()) {
             System.out.println("Ativa");
         } else {
             System.out.println("Inativa");

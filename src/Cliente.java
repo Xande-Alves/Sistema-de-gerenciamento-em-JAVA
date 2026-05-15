@@ -40,8 +40,16 @@ public class Cliente extends Pessoa {
 
     public void atualizarCliente() {
         System.out.println("==================ATUALIZAR CADASTRO DE CLIENTES==================");
-        System.out.print("Informe o ID do cliente: ");
-        int idCliente = Integer.parseInt(scanner.nextLine());
+        int idCliente;
+        while (true) {
+            try {
+                System.out.print("Informe o ID do cliente: ");
+                idCliente = Integer.parseInt(scanner.nextLine());
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Digite apenas números inteiros.");
+            }
+        }
         boolean existeCliente = false;
 
         for (Cliente c : listaClientes) {

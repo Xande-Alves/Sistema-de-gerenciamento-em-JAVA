@@ -41,8 +41,18 @@ public class Login {
         System.out.print("Digite a senha do funcionário: ");
         String senha = scanner.nextLine();
         func.setSenha(senha);
-        System.out.print("Qual nível de acesso? (Digite o número dos modulos acessíveis: 1-Cliente, 2-Funcionário, 3-Fornecedor, 4-Vendas, 5-Estoque: ");
-        String acesso = scanner.nextLine();
+        String acesso;
+        if (Objects.equals(func.getCargo(),"vendedor")) {
+            acesso = "14";
+        } else if (Objects.equals(func.getCargo(),"gerente de vendas")) {
+            acesso = "1234";
+        } else if (Objects.equals(func.getCargo(),"estoquista")) {
+            acesso = "35";
+        } else if (Objects.equals(func.getCargo(),"gerente de estoque")) {
+            acesso = "235";
+        } else {
+            acesso = "";
+        }
         func.setNivelAcesso(acesso);
     }
 
@@ -65,8 +75,18 @@ public class Login {
         System.out.print("Qual a nova senha do funcionário? ");
         String novaSenha = scanner.nextLine();
         func.setSenha(novaSenha);
-        System.out.print("Qual o novo nível de acesso? (Digite o número dos modulos acessíveis: 1-Cliente, 2-Funcionário, 3-Fornecedor, 4-Vendas, 5-Estoque: ");
-        String novoAcesso = scanner.nextLine();
+        String novoAcesso;
+        if (Objects.equals(func.getCargo(),"vendedor")) {
+            novoAcesso = "14";
+        } else if (Objects.equals(func.getCargo(),"gerente de vendas")) {
+            novoAcesso = "1234";
+        } else if (Objects.equals(func.getCargo(),"estoquista")) {
+            novoAcesso = "35";
+        } else if (Objects.equals(func.getCargo(),"gerente de estoque")) {
+            novoAcesso = "235";
+        } else {
+            novoAcesso = "";
+        }
         func.setNivelAcesso(novoAcesso);
     }
 
