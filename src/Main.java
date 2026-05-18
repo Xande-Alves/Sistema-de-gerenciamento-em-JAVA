@@ -14,6 +14,9 @@ public class Main {
 //        fornecedor.inicializarFornecedor();
 //        produto.inicializarProduto();
 
+        cliente.setSistemaMenu(menu);
+        fornecedor.setSistemaMenu(menu);
+        funcionario.setSistemaMenu(menu);
         funcionario.setSistemaLogin(login);
         login.setSistemaMenu(menu);
         login.setSistemaFuncionario(funcionario);

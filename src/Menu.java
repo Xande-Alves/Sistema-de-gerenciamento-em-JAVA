@@ -212,26 +212,28 @@ public class Menu {
     public void escolhaAtributoConsultaVendas() {
         while (true) {
             System.out.println("========================CONSULTA DE VENDAS=========================");
-            int atributoConsultaProduto;
+            int atributoConsultaVenda;
             while (true) {
                 try {
-                    System.out.println("1 - Vendas ativas por vendedor\n2 - Vendas ativas por cliente\n3 - Vendas inativas por vendedor\n4 - Vendas inativas por cliente\n5 - Sair");
+                    System.out.println("1 - ID de venda\n2 - Vendas ativas por vendedor\n3 - Vendas ativas por cliente\n4 - Vendas inativas por vendedor\n5 - Vendas inativas por cliente\n6 - Sair");
                     System.out.print("Deseja consultar por que dado? ");
-                    atributoConsultaProduto = Integer.parseInt(scanner.nextLine());
+                    atributoConsultaVenda = Integer.parseInt(scanner.nextLine());
                     break;
                 } catch (NumberFormatException e) {
                     System.out.println("Digite apenas números inteiros.");
                 }
             }
-            if (atributoConsultaProduto == 1) {
+            if (atributoConsultaVenda==1) {
+                sistemaVenda.consultarVendaPorID();
+            } else if (atributoConsultaVenda == 2) {
                 sistemaVenda.consultarVendaAtivaVendedor();
-            } else if (atributoConsultaProduto == 2) {
+            } else if (atributoConsultaVenda == 3) {
                 sistemaVenda.consultarVendaAtivaCliente();
-            } else if (atributoConsultaProduto == 3) {
+            } else if (atributoConsultaVenda == 4) {
                 sistemaVenda.consultarVendaInativaVendedor();
-            } else if (atributoConsultaProduto == 4) {
+            } else if (atributoConsultaVenda == 5) {
                 sistemaVenda.consultarVendaInativaCliente();
-            } else if (atributoConsultaProduto == 5) {
+            } else if (atributoConsultaVenda == 6) {
                 escolhaMenuVendas();
                 break;
             } else {

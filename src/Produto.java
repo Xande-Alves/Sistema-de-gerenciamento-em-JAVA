@@ -36,15 +36,15 @@ public class Produto {
     }
 
     // METODO APENAS PARA TESTES EM VENDAS
-    public void inicializarProduto() {
-        Produto p1 = new Produto(1,1,"cola","gruda",5.0,10.0,10.0);
-        Produto p2 = new Produto(2,1,"prego","leva",5.0,20.0,20.0);
-        Produto p3 = new Produto(3,1,"martelo","bate",5.0,30.0, 30.0);
-        listaProdutos.add(p1);
-        listaProdutos.add(p2);
-        listaProdutos.add(p3);
-
-    }
+//    public void inicializarProduto() {
+//        Produto p1 = new Produto(1,1,"cola","gruda",5.0,10.0,10.0);
+//        Produto p2 = new Produto(2,1,"prego","leva",5.0,20.0,20.0);
+//        Produto p3 = new Produto(3,1,"martelo","bate",5.0,30.0, 30.0);
+//        listaProdutos.add(p1);
+//        listaProdutos.add(p2);
+//        listaProdutos.add(p3);
+//
+//    }
 
     public void cadastrarProduto() {
         System.out.println("=======================CADASTRO DE PRODUTOS=======================");
@@ -101,6 +101,20 @@ public class Produto {
         Double precoVenda = calculaPrecoVenda(precoCompra);
         
         Produto produto = new Produto(idProduto,idFornecedor,nome,descricao,precoCompra,precoVenda,quantidadeEstoque);
+
+        int concluir;
+        while (true) {
+            try {
+                System.out.print("Concluir o procedimento? (1 para SIM): ");
+                concluir = Integer.parseInt(scanner.nextLine());
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Digite apenas números inteiros.");
+            }
+        }
+        if (concluir != 1) {
+            sistemaMenu.escolhaMenuProduto();
+        }
 
         listaProdutos.add(produto);
         System.out.println("Produto cadastrado com sucesso!");
@@ -270,11 +284,17 @@ public class Produto {
 
     public void mostrarProduto(Produto p) {
         System.out.println("ID Produto: " + p.getIdProduto());
-        System.out.println("ID Fornecedor: " + p.getIdFornecedor());
+        System.out.print("ID Fornecedor: " + p.getIdFornecedor()+" - ");
+        for (Fornecedor fornec : sistemaFornecedor.exportaListaFornecedor()) {
+            if (p.getIdFornecedor() == fornec.getIdFornecedor()) {
+                System.out.println(fornec.getNome()+", da empresa "+fornec.getRepresentaEmpresaNome());
+                break;
+            }
+        }
         System.out.println("Nome: " + p.getNome());
         System.out.println("Descrição: " + p.getDescricao());
-        System.out.println("Preço de compra: "+p.getPrecoCompra());
-        System.out.println("Preço de venda: "+p.getPrecoVenda());
+        System.out.printf("Preço de compra: R$ %.2f%n", p.getPrecoCompra());
+        System.out.printf("Preço de venda: R$ %.2f%n", p.getPrecoVenda());
         System.out.println("Quantidade em estoque: "+p.getQuantidadeEstoque());
     }
 

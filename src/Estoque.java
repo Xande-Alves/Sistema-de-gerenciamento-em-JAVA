@@ -71,7 +71,7 @@ public class Estoque  {
                 }
 
                 p.setQuantidadeEstoque(p.getQuantidadeEstoque()+aumentaEstoque);
-                System.out.println("Estoque do produto aumentado em "+aumentaEstoque+".");
+                System.out.println("Estoque do produto aumentado em "+aumentaEstoque+", totalizando "+p.getQuantidadeEstoque()+".");
             }
         }
         if (!existeProduto) {
@@ -109,7 +109,7 @@ public class Estoque  {
                     }
                 }
                 p.setQuantidadeEstoque(p.getQuantidadeEstoque()-diminuiEstoque);
-                System.out.println("Estoque do produto diminuído em "+diminuiEstoque+".");
+                System.out.println("Estoque do produto diminuído em "+diminuiEstoque+", totalizando "+p.getQuantidadeEstoque()+".");
             }
         }
         if (!existeProduto) {

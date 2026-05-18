@@ -12,6 +12,7 @@ public class Funcionario extends Pessoa {
 
     private final int idFuncionario;
     private Double salario;
+    private Double comissaoVendedor;
     private boolean ativo;
     private LocalDate dataAdmissao;
     private LocalDate dataDemissao;
@@ -20,15 +21,18 @@ public class Funcionario extends Pessoa {
     private String senha;
     private String nivelAcesso;
     private Login sistemaLogin;
+    private Menu sistemaMenu;
     private static Funcionario funcionarioInstancia;
 
     // METODO APENAS PARA TESTES EM VENDAS
-    public void inicializarFuncionario() {
-        Funcionario f1 = new Funcionario(1,5.0,true,null,null,"vendedor","vendedor","123","4");
-        Funcionario f2 = new Funcionario(2,5.0,true,null,null,"gerente de vendas","gerente","123","1234");
-        listaFuncionarios.add(f1);
-        listaFuncionarios.add(f2);
-    }
+//    public void inicializarFuncionario() {
+//        Funcionario f1 = new Funcionario(1,5.0,true,null,null,"vendedor","vendedor","123","4");
+//        Funcionario f2 = new Funcionario(2,5.0,true,null,null,"gerente de vendas","gerente","123","1234");
+//        f1.setDataAdmissao(LocalDate.now());
+//        f2.setDataAdmissao(LocalDate.now());
+//        listaFuncionarios.add(f1);
+//        listaFuncionarios.add(f2);
+//    }
 
     private Funcionario(int idFuncionario, Double salario, boolean ativo, LocalDate dataAdmissao, LocalDate dataDemissao, String cargo, String login, String senha, String nivelAcesso) {
         this.idFuncionario = idFuncionario;
@@ -65,6 +69,20 @@ public class Funcionario extends Pessoa {
         Funcionario func = new Funcionario(idFuncionario,salario,ativo,dataAd,dataDem,cargo,login,senha,nivelAcesso);
 
         func.cadastrarPessoa();
+
+        int concluir;
+        while (true) {
+            try {
+                System.out.print("Concluir o procedimento? (1 para SIM): ");
+                concluir = Integer.parseInt(scanner.nextLine());
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Digite apenas números inteiros.");
+            }
+        }
+        if (concluir != 1) {
+            sistemaMenu.escolhaMenuFuncionario();
+        }
 
         listaFuncionarios.add(func);
         System.out.println("Funcionário cadastrado com sucesso.");
@@ -222,7 +240,7 @@ public class Funcionario extends Pessoa {
                     sistemaLogin.cadastrarAcesso(func, listaFuncionarios);
                     System.out.println("Funcionário contratado com sucesso.");
                 } else {
-                    System.out.println("O funcionário contratado com data de admissão em " + func.getDataAdmissao() + ".");
+                    System.out.println("O funcionário contratado com data de admissão em " + func.getDataAdmissao().format(formatador) + ".");
                 }
             }
         }
@@ -422,10 +440,14 @@ public class Funcionario extends Pessoa {
         if (isAtivo()) {
             System.out.println("Situação: Ativo");
             System.out.println("Cargo: " + this.getCargo());
-            System.out.println("Salário: " + this.getSalario());
-            System.out.println("Data de admissão: " + this.getDataAdmissao());
+            if (this.getCargo().equals("vendedor")) {
+                System.out.printf("Salário: R$ %.2f%n",(this.getSalario() + this.getcomissaoVendedor()));
+            } else {
+                System.out.printf("Salário: R$ %.2f%n", this.getSalario());
+            }
+            System.out.println("Data de admissão: " + this.getDataAdmissao().format(formatador));
             if (this.getDataDemissao() != null) {
-                System.out.println("Data de demissão: " + this.getDataDemissao());
+                System.out.println("Data de demissão: " + this.getDataDemissao().format(formatador));
             }
             System.out.println("Login: " + this.getLogin());
             System.out.println("Senha: " + this.getSenha());
@@ -510,5 +532,17 @@ public class Funcionario extends Pessoa {
 
     public void setSistemaLogin (Login sistemaLogin) {
         this.sistemaLogin = sistemaLogin;
+    }
+
+    public void setSistemaMenu(Menu sistemaMenu) {
+        this.sistemaMenu = sistemaMenu;
+    }
+
+    public void setComissaoVendedor(Double comissaoVendedor) {
+        this.comissaoVendedor = comissaoVendedor;
+    }
+
+    public Double getcomissaoVendedor() {
+        return comissaoVendedor;
     }
 }

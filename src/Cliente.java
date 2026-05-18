@@ -5,12 +5,13 @@ import java.util.Scanner;
 public class Cliente extends Pessoa {
     private final List<Cliente> listaClientes = new ArrayList<>();
     private final Scanner scanner = new Scanner(System.in);
+    private Menu sistemaMenu;
 
     // METODO APENAS PARA TESTES EM VENDAS
-    public void inicializarClientes() {
-        Cliente c1 = new Cliente(1);
-        listaClientes.add(c1);
-    }
+//    public void inicializarClientes() {
+//        Cliente c1 = new Cliente(1);
+//        listaClientes.add(c1);
+//    }
 
     private final int idCliente;
     private static Cliente clienteInstancia;
@@ -33,8 +34,22 @@ public class Cliente extends Pessoa {
         Cliente c = new Cliente(idCliente);
         c.cadastrarPessoa();
 
+        int concluir;
+        while (true) {
+            try {
+                System.out.print("Concluir o procedimento? (1 para SIM): ");
+                concluir = Integer.parseInt(scanner.nextLine());
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Digite apenas números inteiros.");
+            }
+        }
+        if (concluir != 1) {
+            sistemaMenu.escolhaMenuCliente();
+        }
+
         listaClientes.add(c);
-        System.out.println("Cliente cadastrado com sucesso.");
+        System.out.println("Cliente cadastrado com sucesso com o ID "+c.getIdCliente()+".");
         System.out.println("==================================================================");
     }
 
@@ -106,5 +121,9 @@ public class Cliente extends Pessoa {
 
     public int getIdCliente() {
         return idCliente;
+    }
+
+    public void setSistemaMenu(Menu sistemaMenu) {
+        this.sistemaMenu = sistemaMenu;
     }
 }

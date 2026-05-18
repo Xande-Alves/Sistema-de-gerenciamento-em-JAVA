@@ -9,6 +9,7 @@ public class Fornecedor extends Pessoa {
     private final int idFornecedor;
     private String representaEmpresaNome;
     private String representaEmpresaCnpj;
+    private Menu sistemaMenu;
     private final Scanner scanner = new Scanner(System.in);
     private static Fornecedor fornecedorInstancia;
 
@@ -26,10 +27,10 @@ public class Fornecedor extends Pessoa {
     }
 
     // METODO APENAS PARA TESTES EM VENDAS
-    public void inicializarFornecedor() {
-        Fornecedor f1 = new Fornecedor(1,"bela","111");
-        listaFornecedores.add(f1);
-    }
+//    public void inicializarFornecedor() {
+//        Fornecedor f1 = new Fornecedor(1,"bela","111");
+//        listaFornecedores.add(f1);
+//    }
 
     public void cadastrarFornecedor() {
         System.out.println("======================CADASTRO DE FORNECEDORES====================");
@@ -54,6 +55,19 @@ public class Fornecedor extends Pessoa {
             }
         }
         fornec.setRepresentaEmpresaCnpj(cnpjEmpresa);
+        int concluir;
+        while (true) {
+            try {
+                System.out.print("Concluir o procedimento? (1 para SIM): ");
+                concluir = Integer.parseInt(scanner.nextLine());
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Digite apenas números inteiros.");
+            }
+        }
+        if (concluir != 1) {
+            sistemaMenu.escolhaMenuProduto();
+        }
 
         listaFornecedores.add(fornec);
         System.out.println("Fornecedor cadastrado com sucesso!");
@@ -214,5 +228,9 @@ public class Fornecedor extends Pessoa {
 
     public void setRepresentaEmpresaCnpj(String representaEmpresaCnpj) {
         this.representaEmpresaCnpj = representaEmpresaCnpj;
+    }
+
+    public void setSistemaMenu(Menu sistemaMenu) {
+        this.sistemaMenu = sistemaMenu;
     }
 }
