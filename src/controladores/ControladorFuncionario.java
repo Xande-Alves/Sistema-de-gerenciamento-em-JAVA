@@ -1,74 +1,48 @@
-import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+package controladores;
+
+import entidades.Funcionario;
+import entidades.Login;
+import entidades.Pessoa;
+import menus.MenuControleAcesso;
+import menus.MenuEntidade;
+import repositorio.Repositorio;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Scanner;
 
-public class Funcionario extends Pessoa {
-    private final List<Funcionario> listaFuncionarios = new ArrayList<>();
+public class ControladorFuncionario extends ControladorPessoa {
     private final Scanner scanner = new Scanner(System.in);
     private final DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private static ControladorFuncionario controladorFuncionarioInstancia;
 
-    private final int idFuncionario;
-    private Double salario;
-    private Double comissaoVendedor;
-    private boolean ativo;
-    private LocalDate dataAdmissao;
-    private LocalDate dataDemissao;
-    private String cargo;
-    private String login;
-    private String senha;
-    private String nivelAcesso;
-    private Login sistemaLogin;
-    private Menu sistemaMenu;
-    private static Funcionario funcionarioInstancia;
 
-    // METODO APENAS PARA TESTES EM VENDAS
-//    public void inicializarFuncionario() {
-//        Funcionario f1 = new Funcionario(1,5.0,true,null,null,"vendedor","vendedor","123","4");
-//        Funcionario f2 = new Funcionario(2,5.0,true,null,null,"gerente de vendas","gerente","123","1234");
-//        f1.setDataAdmissao(LocalDate.now());
-//        f2.setDataAdmissao(LocalDate.now());
-//        listaFuncionarios.add(f1);
-//        listaFuncionarios.add(f2);
-//    }
-
-    private Funcionario(int idFuncionario, Double salario, boolean ativo, LocalDate dataAdmissao, LocalDate dataDemissao, String cargo, String login, String senha, String nivelAcesso) {
-        this.idFuncionario = idFuncionario;
-        this.salario = salario;
-        this.ativo = ativo;
-        this.dataAdmissao = dataAdmissao;
-        this.dataDemissao = dataDemissao;
-        this.cargo = cargo;
-        this.login = login;
-        this.senha = senha;
-        this.nivelAcesso = nivelAcesso;
-    }
-
-    public static Funcionario getInstanciaFuncionario() {
-        if (funcionarioInstancia == null) {
-            funcionarioInstancia = new Funcionario(0,null,true,null,null,null,"adm","123","12345");
+    public static ControladorFuncionario getInstanciaControladorFuncionario() {
+        if (controladorFuncionarioInstancia == null) {
+            controladorFuncionarioInstancia = new ControladorFuncionario();
         }
-        return funcionarioInstancia;
+        return controladorFuncionarioInstancia;
     }
+
+        // METODO APENAS PARA TESTES EM VENDAS
+    //    public void inicializarFuncionario() {
+    //        entidades.Funcionario f1 = new entidades.Funcionario(1,5.0,true,null,null,"vendedor","vendedor","123","4");
+    //        entidades.Funcionario f2 = new entidades.Funcionario(2,5.0,true,null,null,"gerente de vendas","gerente","123","1234");
+    //        f1.setDataAdmissao(LocalDate.now());
+    //        f2.setDataAdmissao(LocalDate.now());
+    //        listaFuncionarios.add(f1);
+    //        listaFuncionarios.add(f2);
+    //    }
 
     public void cadastrarFuncionario () {
         System.out.println("=====================CADASTRO DE FUNCIONÁRIOS======================");
-        Double salario = null;
-        boolean ativo = false;
-        LocalDate dataAd = null;
-        LocalDate dataDem = null;
-        String cargo = null;
-        String login = null;
-        String senha = null;
-        String nivelAcesso = null;
 
-        int idFuncionario = listaFuncionarios.size() + 1;
+        int idFuncionario = Repositorio.getInstanciaRepositorio().getListaFuncionarios().size() + 1;
 
-        Funcionario func = new Funcionario(idFuncionario,salario,ativo,dataAd,dataDem,cargo,login,senha,nivelAcesso);
+        Funcionario func = new Funcionario(idFuncionario,false);
 
-        func.cadastrarPessoa();
+        cadastrarPessoa(func);
 
         int concluir;
         while (true) {
@@ -81,10 +55,10 @@ public class Funcionario extends Pessoa {
             }
         }
         if (concluir != 1) {
-            sistemaMenu.escolhaMenuFuncionario();
+            MenuEntidade.getInstanciaMenuEntidade().escolhaMenuFuncionario();
         }
 
-        listaFuncionarios.add(func);
+        Repositorio.getInstanciaRepositorio().getListaFuncionarios().add(func);
         System.out.println("Funcionário cadastrado com sucesso.");
         System.out.println("==================================================================");
     }
@@ -103,13 +77,13 @@ public class Funcionario extends Pessoa {
         }
         boolean existeFuncionario = false;
 
-        for (Funcionario func : listaFuncionarios) {
+        for (Funcionario func : Repositorio.getInstanciaRepositorio().getListaFuncionarios()) {
             if (func.getIdFuncionario() == idFuncionario) {
                 System.out.println("ID: "+func.getIdFuncionario());
-                func.mostrarDadosPessoa();
+                mostrarDadosPessoa(func);
                 System.out.println("==================================================================");
 
-                func.alteraDadosPessoa();
+                alteraDadosPessoa(func);
                 existeFuncionario = true;
                 System.out.println("Cadastro atualizado com sucesso!");
             }
@@ -122,25 +96,25 @@ public class Funcionario extends Pessoa {
 
     public void listarFuncionarios () {
         System.out.println("=======================LISTA DE FUNCIONÁRIOS=======================");
-        for (Funcionario func : listaFuncionarios) {
+        for (Funcionario func : Repositorio.getInstanciaRepositorio().getListaFuncionarios()) {
             System.out.println("ID Funcionário: " + func.getIdFuncionario());
-            func.mostrarDadosPessoa();
+            mostrarDadosPessoa(func);
             System.out.println("==================================================================");
         }
     }
 
-    public void consultarFuncionarioNome() { consultarPessoaPorNome(listaFuncionarios); }
+    public void consultarFuncionarioNome() { consultarPessoaPorNome(Repositorio.getInstanciaRepositorio().getListaFuncionarios()); }
 
     public void consultarFuncionarioCpf() {
-        consultarPessoaPorCpf(listaFuncionarios);
+        consultarPessoaPorCpf(Repositorio.getInstanciaRepositorio().getListaFuncionarios());
     }
 
     public void consultarFuncionarioEmail() {
-        consultarPessoaPorEmail(listaFuncionarios);
+        consultarPessoaPorEmail(Repositorio.getInstanciaRepositorio().getListaFuncionarios());
     }
 
     public void consultarFuncionarioTelefone() {
-        consultarPessoaPorTelefone(listaFuncionarios);
+        consultarPessoaPorTelefone(Repositorio.getInstanciaRepositorio().getListaFuncionarios());
     }
 
     public void consultarFuncionarioCargo() {
@@ -148,11 +122,11 @@ public class Funcionario extends Pessoa {
         String cargo = scanner.nextLine();
         boolean existeRegistro = false;
         System.out.println("RESULTADOS DA PESQUISA:");
-        for (Funcionario func : listaFuncionarios) {
+        for (Funcionario func : Repositorio.getInstanciaRepositorio().getListaFuncionarios()) {
             if (func.isAtivo()) {
                 if (func.getCargo().toLowerCase().contains(cargo.toLowerCase())) {
                     System.out.println("ID Funcionário: " + func.getIdFuncionario());
-                    func.mostrarDadosPessoa();
+                    mostrarDadosPessoa(func);
                     existeRegistro = true;
                     System.out.println("==================================================================");
                 }
@@ -180,7 +154,7 @@ public class Funcionario extends Pessoa {
 
         boolean existeFuncionario = false;
 
-        for (Funcionario func : listaFuncionarios) {
+        for (Funcionario func : Repositorio.getInstanciaRepositorio().getListaFuncionarios()) {
             if (func.getIdFuncionario() == idFunc) {
                 if (!func.isAtivo()) {
                     existeFuncionario = true;
@@ -237,7 +211,7 @@ public class Funcionario extends Pessoa {
                     }
                     func.setSalario(salario);
 
-                    sistemaLogin.cadastrarAcesso(func, listaFuncionarios);
+                    ControladorLogin.getInstanciaControladorLogin().cadastrarAcesso(func, Repositorio.getInstanciaRepositorio().getListaFuncionarios());
                     System.out.println("Funcionário contratado com sucesso.");
                 } else {
                     System.out.println("O funcionário contratado com data de admissão em " + func.getDataAdmissao().format(formatador) + ".");
@@ -263,7 +237,7 @@ public class Funcionario extends Pessoa {
         }
 
         boolean existeFuncionario = false;
-        for (Funcionario func : listaFuncionarios) {
+        for (Funcionario func : Repositorio.getInstanciaRepositorio().getListaFuncionarios()) {
             if (func.getIdFuncionario() == idFunc) {
                 if (func.isAtivo()) {
                     String cargo;
@@ -323,7 +297,7 @@ public class Funcionario extends Pessoa {
         }
 
         boolean existeFuncionario = false;
-        for (Funcionario func : listaFuncionarios) {
+        for (Funcionario func : Repositorio.getInstanciaRepositorio().getListaFuncionarios()) {
             if (func.getIdFuncionario() == idFunc) {
                 if (func.isAtivo()) {
                     double salario;
@@ -364,7 +338,7 @@ public class Funcionario extends Pessoa {
         }
 
         boolean existeFuncionario = false;
-        for (Funcionario func : listaFuncionarios) {
+        for (Funcionario func : Repositorio.getInstanciaRepositorio().getListaFuncionarios()) {
             if (func.getIdFuncionario() == idFunc) {
                 if (func.isAtivo()) {
                     LocalDate data;
@@ -406,18 +380,18 @@ public class Funcionario extends Pessoa {
         }
 
         boolean existeFuncionario = false;
-        for (Funcionario func : listaFuncionarios) {
+        for (Funcionario func : Repositorio.getInstanciaRepositorio().getListaFuncionarios()) {
             if (func.getIdFuncionario() == idFuncionario) {
                 if (func.isAtivo()) {
                     System.out.println("ID do funcionário: "+func.getIdFuncionario());
-                    func.mostrarDadosPessoa();
+                    mostrarDadosPessoa(func);
 
                     System.out.println("==================================================================");
 
-                    sistemaLogin.alterarAcesso(func, listaFuncionarios);
+                    ControladorLogin.getInstanciaControladorLogin().alterarAcesso(func, Repositorio.getInstanciaRepositorio().getListaFuncionarios());
                     System.out.println("Acesso atualizado com sucesso!");
                     System.out.println("ID: "+func.getIdFuncionario());
-                    sistemaLogin.mostrarAcesso(func);
+                    ControladorLogin.getInstanciaControladorLogin().mostrarAcesso(func);
                 } else {
                     System.out.println("Funcionário não está contratado.");
                 }
@@ -430,119 +404,27 @@ public class Funcionario extends Pessoa {
         System.out.println("==================================================================");
     }
 
-    public List<Funcionario> exportaListaFuncionario() {
-        return listaFuncionarios;
-    }
-
     @Override
-    public void mostrarDadosPessoa() {
-        super.mostrarDadosPessoa();
-        if (isAtivo()) {
+    public void mostrarDadosPessoa(Pessoa p) {
+        super.mostrarDadosPessoa(p);
+        Funcionario func = (Funcionario) p;
+        if (func.isAtivo()) {
             System.out.println("Situação: Ativo");
-            System.out.println("Cargo: " + this.getCargo());
-            if (this.getCargo().equals("vendedor")) {
-                System.out.printf("Salário: R$ %.2f%n",(this.getSalario() + this.getcomissaoVendedor()));
+            System.out.println("Cargo: " + func.getCargo());
+            if (func.getCargo().equals("vendedor") && func.getcomissaoVendedor() != null) {
+                System.out.printf("Salário: R$ %.2f%n",(func.getSalario() + func.getcomissaoVendedor()));
             } else {
-                System.out.printf("Salário: R$ %.2f%n", this.getSalario());
+                System.out.printf("Salário: R$ %.2f%n", func.getSalario());
             }
-            System.out.println("Data de admissão: " + this.getDataAdmissao().format(formatador));
-            if (this.getDataDemissao() != null) {
-                System.out.println("Data de demissão: " + this.getDataDemissao().format(formatador));
+            System.out.println("Data de admissão: " + func.getDataAdmissao().format(formatador));
+            if (func.getDataDemissao() != null) {
+                System.out.println("Data de demissão: " + func.getDataDemissao().format(formatador));
             }
-            System.out.println("Login: " + this.getLogin());
-            System.out.println("Senha: " + this.getSenha());
-            System.out.println("Acesso: " + this.getNivelAcesso());
+            System.out.println("entidades.Login: " + func.getLogin());
+            System.out.println("Senha: " + func.getSenha());
+            System.out.println("Acesso: " + func.getNivelAcesso());
         } else {
             System.out.println("Situação: Inativo");
         }
-    }
-
-    @Override
-    public String getIdentificacao() {
-        return "ID Funcionário: " + getIdFuncionario();
-    }
-
-    public int getIdFuncionario() {
-        return idFuncionario;
-    }
-
-    public double getSalario() {
-        return salario;
-    }
-
-    public void setSalario(double salario) {
-        this.salario = salario;
-    }
-
-    public boolean isAtivo() {
-        return ativo;
-    }
-
-    public void setAtivo(boolean ativo) {
-        this.ativo = ativo;
-    }
-
-    public LocalDate getDataAdmissao() {
-        return dataAdmissao;
-    }
-
-    public void setDataAdmissao(LocalDate dataAdmissao) {
-        this.dataAdmissao = dataAdmissao;
-    }
-
-    public LocalDate getDataDemissao() {
-        return dataDemissao;
-    }
-
-    public void setDataDemissao(LocalDate dataDemissao) {
-        this.dataDemissao = dataDemissao;
-    }
-
-    public String getCargo() {
-        return cargo;
-    }
-
-    public void setCargo(String cargo) {
-        this.cargo = cargo;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public String getSenha() {
-        return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
-
-    public String getNivelAcesso() {
-        return nivelAcesso;
-    }
-
-    public void setNivelAcesso(String nivelAcesso) {
-        this.nivelAcesso = nivelAcesso;
-    }
-
-    public void setSistemaLogin (Login sistemaLogin) {
-        this.sistemaLogin = sistemaLogin;
-    }
-
-    public void setSistemaMenu(Menu sistemaMenu) {
-        this.sistemaMenu = sistemaMenu;
-    }
-
-    public void setComissaoVendedor(Double comissaoVendedor) {
-        this.comissaoVendedor = comissaoVendedor;
-    }
-
-    public Double getcomissaoVendedor() {
-        return comissaoVendedor;
     }
 }

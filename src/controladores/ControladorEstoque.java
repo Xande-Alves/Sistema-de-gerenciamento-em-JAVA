@@ -1,19 +1,23 @@
+package controladores;
+
+import entidades.Produto;
+import repositorio.Repositorio;
+
 import java.util.Scanner;
 
-public class Estoque  {
+public class ControladorEstoque {
     private final Scanner scanner = new Scanner(System.in);
-    private Produto sistemaProduto;
-    static Estoque estoqueInstancia;
+    static ControladorEstoque controladorEstoqueInstancia;
 
-    private Estoque() {
+    private ControladorEstoque() {
 
     }
 
-    public static Estoque getInstanciaEstoque() {
-        if (estoqueInstancia == null) {
-            estoqueInstancia = new Estoque();
+    public static ControladorEstoque getInstanciaControladorEstoque() {
+        if (controladorEstoqueInstancia == null) {
+            controladorEstoqueInstancia = new ControladorEstoque();
         }
-        return estoqueInstancia;
+        return controladorEstoqueInstancia;
     }
 
     public String diminuiQuantidadeEstoqueVenda(Produto p) {
@@ -54,9 +58,9 @@ public class Estoque  {
         }
 
         boolean existeProduto = false;
-        for (Produto p : sistemaProduto.exportaListaProduto()) {
+        for (Produto p : Repositorio.getInstanciaRepositorio().getListaProduto()) {
             if (p.getIdProduto() == idProduto) {
-                sistemaProduto.mostrarProduto(p);
+                ControladorProduto.getInstanciaControladorProduto().mostrarProduto(p);
                 double aumentaEstoque;
                 existeProduto = true;
                 while (true) {
@@ -93,9 +97,9 @@ public class Estoque  {
         }
 
         boolean existeProduto = false;
-        for (Produto p : sistemaProduto.exportaListaProduto()) {
+        for (Produto p : Repositorio.getInstanciaRepositorio().getListaProduto()) {
             if (p.getIdProduto() == idProduto) {
-                sistemaProduto.mostrarProduto(p);
+                ControladorProduto.getInstanciaControladorProduto().mostrarProduto(p);
                 double diminuiEstoque;
                 existeProduto = true;
                 while (true) {
@@ -131,9 +135,9 @@ public class Estoque  {
             }
         }
         boolean existeProduto = false;
-        for (Produto p : sistemaProduto.exportaListaProduto()) {
+        for (Produto p : Repositorio.getInstanciaRepositorio().getListaProduto()) {
             if (p.getQuantidadeEstoque() <= quantidadeProduto) {
-                sistemaProduto.mostrarProduto(p);
+                ControladorProduto.getInstanciaControladorProduto().mostrarProduto(p);
                 existeProduto = true;
                 System.out.println("==================================================================");
             }
@@ -141,9 +145,5 @@ public class Estoque  {
         if (!existeProduto) {
             System.out.println("Não existe produtos com estoque abaixo da quantidade informada.");
         }
-    }
-
-    public void setSistemaProduto(Produto sistemaProduto) {
-        this.sistemaProduto = sistemaProduto;
     }
 }

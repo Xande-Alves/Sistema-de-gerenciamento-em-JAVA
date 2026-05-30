@@ -1,43 +1,32 @@
+package controladores;
+
+import entidades.*;
+import menus.MenuControleAcesso;
+import menus.MenuEntidade;
+import repositorio.Repositorio;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Iterator;
+import java.util.Objects;
+import java.util.Scanner;
 
-public class Venda {
+public class ControladorVenda {
     private final Scanner scanner = new Scanner(System.in);
-    private Funcionario sistemaFuncionario;
-    private Menu sistemaMenu;
-    private Login sistemaLogin;
-    private Cliente sistemaCliente;
-    private Produto sistemaProduto;
-    private Estoque sistemaEstoque;
     private final DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    private final List<Venda> listaVendas = new ArrayList<>();
-    private final List<Produto> listaProdutosVenda = new ArrayList<>();
-    private final int idVenda;
-    private int idVendedorVenda;
-    private int idClienteVenda;
-    private LocalDate dataVenda;
-    private Double valorTotalVenda;
-    private boolean vendaAtiva;
-    private static Venda vendaInstancia;
+    private static ControladorVenda controladorVendaInstancia;
 
-    private Venda(int idVenda, int idVendedor, int idCliente) {
-        this.idVenda = idVenda;
-        this.idVendedorVenda = idVendedor;
-        this.idClienteVenda = idCliente;
-    }
-
-    public static Venda getInstanciaVenda() {
-        if (vendaInstancia == null) {
-            vendaInstancia = new Venda(0,0,0);
+    public static ControladorVenda getInstanciaControladorVenda() {
+        if (controladorVendaInstancia == null) {
+            controladorVendaInstancia = new ControladorVenda();
         }
-        return vendaInstancia;
+        return controladorVendaInstancia;
     }
 
     public void efetuarVenda() {
         System.out.println("==========================CADASTRAR VENDA=========================");
-        int idvendaAtual = listaVendas.size() + 1;
+        int idvendaAtual = Repositorio.getInstanciaRepositorio().getListaVenda().size() + 1;
         Venda v = new Venda(idvendaAtual,0,0);
         LocalDate dataAtual = LocalDate.now();
         v.setDataVenda(dataAtual);
@@ -45,7 +34,7 @@ public class Venda {
         boolean existeVendedor = false;
         while (!existeVendedor) {
             int idVendedor;
-            if (sistemaLogin.verificaVendedorParaVenda() == -1) {
+            if (ControladorLogin.getInstanciaControladorLogin().verificaVendedorParaVenda() == -1) {
                 while (true) {
                     try {
                         System.out.print("Informe o ID do vendedor (digite 0 para voltar): ");
@@ -57,13 +46,13 @@ public class Venda {
                 }
 
                 if (idVendedor == 0) {
-                    sistemaMenu.escolhaMenuVendas();
+                    MenuEntidade.getInstanciaMenuEntidade().escolhaMenuVendas();
                 }
             } else  {
-                idVendedor = sistemaLogin.verificaVendedorParaVenda();
+                idVendedor = ControladorLogin.getInstanciaControladorLogin().verificaVendedorParaVenda();
             }
 
-            for (Funcionario func : sistemaFuncionario.exportaListaFuncionario()) {
+            for (Funcionario func : Repositorio.getInstanciaRepositorio().getListaFuncionarios()) {
                 if (func.getIdFuncionario() == idVendedor && Objects.equals(func.getCargo().toLowerCase(),"vendedor")) {
                     existeVendedor = true;
                     v.setIdVendedorVenda(idVendedor);
@@ -87,9 +76,9 @@ public class Venda {
                 }
             }
             if (idCliente == 0) {
-                sistemaMenu.escolhaMenuVendas();
+                MenuEntidade.getInstanciaMenuEntidade().escolhaMenuVendas();
             }
-            for (Cliente c : sistemaCliente.exportaListaCliente()) {
+            for (Cliente c : Repositorio.getInstanciaRepositorio().getListaClientes()) {
                 if (c.getIdCliente() == idCliente) {
                     existeCliente = true;
                     v.setIdClienteVenda(idCliente);
@@ -116,9 +105,9 @@ public class Venda {
                     }
                 }
                 if (idProduto == 0) {
-                    sistemaMenu.escolhaMenuVendas();
+                    MenuEntidade.getInstanciaMenuEntidade().escolhaMenuVendas();
                 }
-                for (Produto p : sistemaProduto.exportaListaProduto()) {
+                for (Produto p : Repositorio.getInstanciaRepositorio().getListaProduto()) {
                     if (p.getIdProduto() == idProduto) {
                         existeProduto = true;
                         mostrarProdutoVenda(p);
@@ -145,9 +134,9 @@ public class Venda {
                                 }
                             }
                             p.setQuantidade(quantidadeProduto);
-                            System.out.println(sistemaEstoque.diminuiQuantidadeEstoqueVenda(p));
+                            System.out.println(ControladorEstoque.getInstanciaControladorEstoque().diminuiQuantidadeEstoqueVenda(p));
                             primeiroProduto = false;
-                            v.listaProdutosVenda.add(p);
+                            v.getListaProdutosVenda().add(p);
                         }
                         break;
                     }
@@ -178,7 +167,7 @@ public class Venda {
                             System.out.println("Digite apenas números inteiros.");
                         }
                     }
-                    for (Produto p : sistemaProduto.exportaListaProduto()) {
+                    for (Produto p : Repositorio.getInstanciaRepositorio().getListaProduto()) {
                         if (p.getIdProduto() == idProduto) {
                             existeProduto = true;
                             mostrarProdutoVenda(p);
@@ -205,8 +194,8 @@ public class Venda {
                                     }
                                 }
                                 p.setQuantidade(quantidadeProduto);
-                                System.out.println(sistemaEstoque.diminuiQuantidadeEstoqueVenda(p));
-                                v.listaProdutosVenda.add(p);
+                                System.out.println(ControladorEstoque.getInstanciaControladorEstoque().diminuiQuantidadeEstoqueVenda(p));
+                                v.getListaProdutosVenda().add(p);
                             }
                             break;
                         }
@@ -223,7 +212,7 @@ public class Venda {
         }
         Double valorTotalVenda = calcularValorTotalVenda(v);
         v.setValorTotalVenda(valorTotalVenda);
-        if (v.listaProdutosVenda.isEmpty()) {
+        if (v.getListaProdutosVenda().isEmpty()) {
             v.setVendaAtiva(false);
             System.out.println("Venda desativada: não existem produtos na lista.");
         } else {
@@ -241,10 +230,10 @@ public class Venda {
             }
         }
         if (concluir != 1) {
-            sistemaMenu.escolhaMenuVendas();
+            MenuEntidade.getInstanciaMenuEntidade().escolhaMenuVendas();
         }
 
-        listaVendas.add(v);
+        Repositorio.getInstanciaRepositorio().getListaVenda().add(v);
         comissaoVendedor();
         System.out.println("Venda cadastrada com sucesso com o ID: "+v.getIdVenda());
         System.out.println("==================================================================");
@@ -265,7 +254,7 @@ public class Venda {
 
         Venda vendaEncontrada = null;
 
-        for (Venda v : listaVendas) {
+        for (Venda v : Repositorio.getInstanciaRepositorio().getListaVenda()) {
             if (v.getIdVenda() == idVenda) {
                 vendaEncontrada = v;
                 break;
@@ -273,24 +262,24 @@ public class Venda {
         }
         if (vendaEncontrada == null) {
             System.out.println("ID da venda inexistente.");
-            sistemaMenu.escolhaMenuVendas();
+            MenuEntidade.getInstanciaMenuEntidade().escolhaMenuVendas();
         }
 
         // Verificar permissão
-        int idVendedorLogado = sistemaLogin.verificaVendedorParaVenda();
+        int idVendedorLogado = ControladorLogin.getInstanciaControladorLogin().verificaVendedorParaVenda();
 
         boolean ehVendedorDaVenda =
                 vendaEncontrada.getIdVendedorVenda() == idVendedorLogado;
 
         boolean ehGerente =
                 Objects.equals(
-                        sistemaLogin.verificaGerenteDeVendasParaVenda().toLowerCase(),
+                        ControladorLogin.getInstanciaControladorLogin().verificaGerenteDeVendasParaVenda().toLowerCase(),
                         "gerente de vendas"
                 );
 
         if (!ehVendedorDaVenda && !ehGerente) {
             System.out.println("Usuário não efetuou a venda e não possui cargo de Gerente de Vendas.");
-            sistemaMenu.escolhaMenuVendas();
+            MenuEntidade.getInstanciaMenuEntidade().escolhaMenuVendas();
         }
 
         // Pode alterar
@@ -318,7 +307,7 @@ public class Venda {
             }
 
             if (!idVendedorNovoStr.isEmpty()) {
-                for (Funcionario f : sistemaFuncionario.exportaListaFuncionario()) {
+                for (Funcionario f : Repositorio.getInstanciaRepositorio().getListaFuncionarios()) {
                     if (f.getIdFuncionario() == idVendedorNovoInt &&
                             Objects.equals(f.getCargo().toLowerCase(), "vendedor")) {
 
@@ -330,7 +319,7 @@ public class Venda {
 
                 if (!existeVendedor) {
                     System.out.println("ID de vendedor inexistente.");
-                    sistemaMenu.escolhaMenuVendas();
+                    MenuEntidade.getInstanciaMenuEntidade().escolhaMenuVendas();
                 }
             } else {
                 existeVendedor = true;
@@ -357,7 +346,7 @@ public class Venda {
                 }
             }
             if (!idClienteNovo.isEmpty()) {
-                for (Cliente c : sistemaCliente.exportaListaCliente()) {
+                for (Cliente c : Repositorio.getInstanciaRepositorio().getListaClientes()) {
                     if (c.getIdCliente() == idCliNovoFormat) {
                         existeCliente = true;
                         vendaEncontrada.setIdClienteVenda(idCliNovoFormat);
@@ -367,7 +356,7 @@ public class Venda {
 
                 if (!existeCliente) {
                     System.out.println("ID de cliente inexistente.");
-                    sistemaMenu.escolhaMenuVendas();
+                    MenuEntidade.getInstanciaMenuEntidade().escolhaMenuVendas();
                 }
             } else {
                 existeCliente = true;
@@ -389,7 +378,7 @@ public class Venda {
             }
 
             if (alterarItensVenda == 1) {
-                Iterator<Produto> it = vendaEncontrada.listaProdutosVenda.iterator();
+                Iterator<Produto> it = vendaEncontrada.getListaProdutosVenda().iterator();
 
                 while (it.hasNext()) {
                     Produto p = it.next();
@@ -423,9 +412,9 @@ public class Venda {
                         Double alteraEstoque = p.getQuantidade() - novaQuant;
 
                         if (p.getQuantidade() < novaQuant) {
-                            System.out.println(sistemaEstoque.alteraDiminuiQuantidadeEstoqueVenda(p, alteraEstoque));
+                            System.out.println(ControladorEstoque.getInstanciaControladorEstoque().alteraDiminuiQuantidadeEstoqueVenda(p, alteraEstoque));
                         } else if (p.getQuantidade() > novaQuant) {
-                            sistemaEstoque.alteraAumentaQuantidadeEstoqueVenda(p,alteraEstoque);
+                            ControladorEstoque.getInstanciaControladorEstoque().alteraAumentaQuantidadeEstoqueVenda(p,alteraEstoque);
                         }
 
                         p.setQuantidade(novaQuant);
@@ -433,13 +422,13 @@ public class Venda {
                         System.out.println("==================================================================");
 
                     } else if (escolhaItemVenda == 3) {
-                        sistemaEstoque.alteraAumentaQuantidadeEstoqueVenda(p,p.getQuantidade());
+                        ControladorEstoque.getInstanciaControladorEstoque().alteraAumentaQuantidadeEstoqueVenda(p,p.getQuantidade());
                         it.remove();
                         System.out.println("Item removido da venda com sucesso.");
                         System.out.println("==================================================================");
                     }
                 }
-                if (vendaEncontrada.listaProdutosVenda.isEmpty()) {
+                if (vendaEncontrada.getListaProdutosVenda().isEmpty()) {
                     vendaEncontrada.setVendaAtiva(false);
                     System.out.println("Venda desativada: não restam produtos na lista.");
                 } else {
@@ -462,7 +451,7 @@ public class Venda {
                             System.out.println("Digite apenas números inteiros.");
                         }
                     }
-                    for (Produto p : sistemaProduto.exportaListaProduto()) {
+                    for (Produto p : Repositorio.getInstanciaRepositorio().getListaProduto()) {
                         if (p.getIdProduto() == idProduto) {
                             existeProduto = true;
                             mostrarProdutoVenda(p);
@@ -489,8 +478,8 @@ public class Venda {
                                     }
                                 }
                                 p.setQuantidade(quantidadeProduto);
-                                System.out.println(sistemaEstoque.diminuiQuantidadeEstoqueVenda(p));
-                                vendaEncontrada.listaProdutosVenda.add(p);
+                                System.out.println(ControladorEstoque.getInstanciaControladorEstoque().diminuiQuantidadeEstoqueVenda(p));
+                                vendaEncontrada.getListaProdutosVenda().add(p);
 
                                 int escolheMaisItensVenda;
                                 while (true) {
@@ -535,7 +524,7 @@ public class Venda {
             }
         }
         boolean existeVenda = false;
-        for (Venda v : listaVendas) {
+        for (Venda v : Repositorio.getInstanciaRepositorio().getListaVenda()) {
             if (v.getIdVenda() == idVenda) {
                 mostrarVenda(v);
                 existeVenda = true;
@@ -559,7 +548,7 @@ public class Venda {
             }
         }
         boolean existeVenda = false;
-        for (Venda v : listaVendas) {
+        for (Venda v : Repositorio.getInstanciaRepositorio().getListaVenda()) {
             if (v.getIdVendedorVenda() == idVendedor && v.getVendaAtiva()) {
                 mostrarVenda(v);
                 existeVenda = true;
@@ -583,7 +572,7 @@ public class Venda {
             }
         }
         boolean existeVenda = false;
-        for (Venda v : listaVendas) {
+        for (Venda v : Repositorio.getInstanciaRepositorio().getListaVenda()) {
             if (v.getIdVendedorVenda() == idVendedor && !v.getVendaAtiva()) {
                 mostrarVenda(v);
                 existeVenda = true;
@@ -607,7 +596,7 @@ public class Venda {
             }
         }
         boolean existeVenda = false;
-        for (Venda v : listaVendas) {
+        for (Venda v : Repositorio.getInstanciaRepositorio().getListaVenda()) {
             if (v.getIdClienteVenda() == idCliente && v.getVendaAtiva()) {
                 mostrarVenda(v);
                 existeVenda = true;
@@ -631,7 +620,7 @@ public class Venda {
             }
         }
         boolean existeVenda = false;
-        for (Venda v : listaVendas) {
+        for (Venda v : Repositorio.getInstanciaRepositorio().getListaVenda()) {
             if (v.getIdClienteVenda() == idCliente && !v.getVendaAtiva()) {
                 mostrarVenda(v);
                 existeVenda = true;
@@ -656,7 +645,7 @@ public class Venda {
             }
         }
         boolean existeVenda = false;
-        for (Venda v : listaVendas) {
+        for (Venda v : Repositorio.getInstanciaRepositorio().getListaVenda()) {
             if (v.getIdVenda() == idVenda && v.getVendaAtiva()) {
                 mostrarVenda(v);
                 existeVenda = true;
@@ -671,8 +660,8 @@ public class Venda {
                     }
                 }
                 if (escolhaCancela == 1) {
-                    for (Produto p : v.listaProdutosVenda) {
-                        sistemaEstoque.alteraAumentaQuantidadeEstoqueVenda(p,p.getQuantidade());
+                    for (Produto p : v.getListaProdutosVenda()) {
+                        ControladorEstoque.getInstanciaControladorEstoque().alteraAumentaQuantidadeEstoqueVenda(p,p.getQuantidade());
                     }
                     v.setVendaAtiva(false);
                     comissaoVendedor();
@@ -687,7 +676,7 @@ public class Venda {
 
     public void listarVendas () {
         System.out.println("==========================LISTA DE VENDAS=========================");
-        for (Venda v : listaVendas) {
+        for (Venda v : Repositorio.getInstanciaRepositorio().getListaVenda()) {
             mostrarVenda(v);
             System.out.println("==================================================================");
         }
@@ -710,14 +699,14 @@ public class Venda {
             System.out.println("Inativa");
         }
         System.out.print("ID vendedor: " + v.getIdVendedorVenda()+" - ");
-        for (Funcionario func : sistemaFuncionario.exportaListaFuncionario()) {
+        for (Funcionario func : Repositorio.getInstanciaRepositorio().getListaFuncionarios()) {
             if (v.getIdVendedorVenda() == func.getIdFuncionario()) {
                 System.out.println(func.getNome());
                 break;
             }
         }
         System.out.print("ID Cliente: " + v.getIdClienteVenda()+" - ");
-        for (Cliente cli : sistemaCliente.exportaListaCliente()) {
+        for (Cliente cli : Repositorio.getInstanciaRepositorio().getListaClientes()) {
             if (v.getIdClienteVenda() == cli.getIdCliente()) {
                 System.out.println(cli.getNome());
                 break;
@@ -726,18 +715,17 @@ public class Venda {
         System.out.println("Data da venda: "+v.getDataVenda().format(formatador));
         System.out.printf("Valor total da venda: R$ %.2f%n", calcularValorTotalVenda(v));
         System.out.println("Itens vendidos:");
-        for (Produto p : v.listaProdutosVenda) {
+        for (Produto p : v.getListaProdutosVenda()) {
             mostrarProdutoVenda(p);
             System.out.println("Quantidade: "+p.getQuantidade());
             System.out.printf("Valor parcial do item: R$ %.2f%n", (p.getQuantidade()*p.getPrecoVenda()));
             System.out.println("==================================================================");
         }
-
     }
 
     public Double calcularValorTotalVenda(Venda v) {
         double valorTotal = 0.0;
-        for (Produto p : v.listaProdutosVenda) {
+        for (Produto p : v.getListaProdutosVenda()) {
             valorTotal += p.getPrecoVenda()*p.getQuantidade();
         }
         return valorTotal;
@@ -750,13 +738,13 @@ public class Venda {
         LocalDate primeiroDia = dataAtual.withDayOfMonth(1);
         LocalDate ultimoDia = dataAtual.withDayOfMonth(dataAtual.lengthOfMonth());
 
-        for (Funcionario func : sistemaFuncionario.exportaListaFuncionario()) {
+        for (Funcionario func : Repositorio.getInstanciaRepositorio().getListaFuncionarios()) {
 
             if (func.getCargo().equalsIgnoreCase("vendedor")) {
 
                 double acumulado = 0.0;
 
-                for (Venda v : listaVendas) {
+                for (Venda v : Repositorio.getInstanciaRepositorio().getListaVenda()) {
 
                     if (v.getVendaAtiva()
                             && !v.getDataVenda().isBefore(primeiroDia)
@@ -772,73 +760,5 @@ public class Venda {
                 func.setComissaoVendedor(comissao);
             }
         }
-    }
-
-    public void setSistemaLogin(Login sistemaLogin) {
-        this.sistemaLogin = sistemaLogin;
-    }
-
-    public void setSistemaProduto(Produto sistemaProduto) {
-        this.sistemaProduto = sistemaProduto;
-    }
-
-    public void setSistemaCliente(Cliente sistemaCliente) {
-        this.sistemaCliente = sistemaCliente;
-    }
-
-    public void setSistemaFuncionario(Funcionario sistemaFuncionario) {
-        this.sistemaFuncionario = sistemaFuncionario;
-    }
-
-    public void setSistemaMenu(Menu sistemaMenu) {
-        this.sistemaMenu = sistemaMenu;
-    }
-
-    public void setSistemaEstoque(Estoque sistemaEstoque) {
-        this.sistemaEstoque = sistemaEstoque;
-    }
-
-    public int getIdVenda() {
-        return idVenda;
-    }
-
-    public int getIdVendedorVenda() {
-        return idVendedorVenda;
-    }
-
-    public void setIdVendedorVenda(int idVendedorVenda) {
-        this.idVendedorVenda = idVendedorVenda;
-    }
-
-    public int getIdClienteVenda() {
-        return idClienteVenda;
-    }
-
-    public void setIdClienteVenda(int idClienteVenda) {
-        this.idClienteVenda = idClienteVenda;
-    }
-
-    public void setValorTotalVenda(Double valorTotalVenda) {
-        this.valorTotalVenda = valorTotalVenda;
-    }
-
-    public Double getValorTotalVenda() {
-        return valorTotalVenda;
-    }
-
-    public boolean getVendaAtiva() {
-        return vendaAtiva;
-    }
-
-    public void setVendaAtiva(boolean vendaAtiva) {
-        this.vendaAtiva = vendaAtiva;
-    }
-
-    public LocalDate getDataVenda() {
-        return dataVenda;
-    }
-
-    public void setDataVenda(LocalDate dataVenda) {
-        this.dataVenda = dataVenda;
     }
 }

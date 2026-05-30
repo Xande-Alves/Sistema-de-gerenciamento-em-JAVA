@@ -1,45 +1,30 @@
-import java.util.ArrayList;
-import java.util.List;
+package controladores;
+
+import entidades.Fornecedor;
+import entidades.Produto;
+import menus.MenuControleAcesso;
+import menus.MenuEntidade;
+import repositorio.Repositorio;
+
 import java.util.Scanner;
 
-public class Produto {
+public class ControladorProduto {
     private final Scanner scanner = new Scanner(System.in);
-    private Fornecedor sistemaFornecedor;
-    private Menu sistemaMenu;
 
-    private final List<Produto> listaProdutos = new ArrayList<>();
-    private final int idProduto;
-    private int idFornecedor;
-    private String nome;
-    private String descricao;
-    private Double precoVenda;
-    private Double precoCompra;
-    private Double quantidade;
-    private Double quantidadeEstoque;
-    private static Produto produtoInstancia;
+    private static ControladorProduto controladorProdutoInstancia;
 
-    private Produto(int idProduto, int idFornecedor, String nome, String descricao, Double precoCompra, Double precoVenda, Double quantidadeEstoque) {
-        this.idProduto = idProduto;
-        this.idFornecedor = idFornecedor;
-        this.nome = nome;
-        this.descricao = descricao;
-        this.precoCompra = precoCompra;
-        this.precoVenda = precoVenda;
-        this.quantidadeEstoque = quantidadeEstoque;
-    }
-
-    public static Produto getInstanciaProduto() {
-        if (produtoInstancia == null) {
-            produtoInstancia = new Produto(0,0,null,null,null,null, null);
+    public static ControladorProduto getInstanciaControladorProduto() {
+        if (controladorProdutoInstancia == null) {
+            controladorProdutoInstancia = new ControladorProduto();
         }
-        return produtoInstancia;
+        return controladorProdutoInstancia;
     }
 
     // METODO APENAS PARA TESTES EM VENDAS
 //    public void inicializarProduto() {
-//        Produto p1 = new Produto(1,1,"cola","gruda",5.0,10.0,10.0);
-//        Produto p2 = new Produto(2,1,"prego","leva",5.0,20.0,20.0);
-//        Produto p3 = new Produto(3,1,"martelo","bate",5.0,30.0, 30.0);
+//        entidades.Produto p1 = new entidades.Produto(1,1,"cola","gruda",5.0,10.0,10.0);
+//        entidades.Produto p2 = new entidades.Produto(2,1,"prego","leva",5.0,20.0,20.0);
+//        entidades.Produto p3 = new entidades.Produto(3,1,"martelo","bate",5.0,30.0, 30.0);
 //        listaProdutos.add(p1);
 //        listaProdutos.add(p2);
 //        listaProdutos.add(p3);
@@ -48,7 +33,7 @@ public class Produto {
 
     public void cadastrarProduto() {
         System.out.println("=======================CADASTRO DE PRODUTOS=======================");
-        int idProduto = listaProdutos.size() + 1;
+        int idProduto = Repositorio.getInstanciaRepositorio().getListaProduto().size() + 1;
         boolean existeFornecedor = false;
 
         int idFornecedor;
@@ -61,7 +46,7 @@ public class Produto {
                 System.out.println("Digite apenas números inteiros.");
             }
         }
-        for (Fornecedor fornec : sistemaFornecedor.exportaListaFornecedor()) {
+        for (Fornecedor fornec : Repositorio.getInstanciaRepositorio().getListaFornecedores()) {
             if (fornec.getIdFornecedor() == idFornecedor) {
                 existeFornecedor = true;
                 break;
@@ -69,7 +54,7 @@ public class Produto {
         }
         if (!existeFornecedor) {
             System.out.println("ID de fornecedor inexistente.");
-            sistemaMenu.escolhaMenuProduto();
+            MenuEntidade.getInstanciaMenuEntidade().escolhaMenuProduto();
         }
         System.out.print("Informe o nome do produto: ");
         String nome = scanner.nextLine();
@@ -99,7 +84,7 @@ public class Produto {
         }
 
         Double precoVenda = calculaPrecoVenda(precoCompra);
-        
+
         Produto produto = new Produto(idProduto,idFornecedor,nome,descricao,precoCompra,precoVenda,quantidadeEstoque);
 
         int concluir;
@@ -113,10 +98,10 @@ public class Produto {
             }
         }
         if (concluir != 1) {
-            sistemaMenu.escolhaMenuProduto();
+            MenuEntidade.getInstanciaMenuEntidade().escolhaMenuProduto();
         }
 
-        listaProdutos.add(produto);
+        Repositorio.getInstanciaRepositorio().getListaProduto().add(produto);
         System.out.println("Produto cadastrado com sucesso!");
         System.out.println("==================================================================");
     }
@@ -135,7 +120,7 @@ public class Produto {
         }
 
         boolean existeProduto = false;
-        for (Produto p : listaProdutos) {
+        for (Produto p : Repositorio.getInstanciaRepositorio().getListaProduto()) {
             if (p.getIdProduto() == idProduto) {
                 mostrarProduto(p);
                 System.out.println("==================================================================");
@@ -157,7 +142,7 @@ public class Produto {
                     }
                 }
                 boolean existeFornecedor = false;
-                for (Fornecedor fornec : sistemaFornecedor.exportaListaFornecedor()) {
+                for (Fornecedor fornec : Repositorio.getInstanciaRepositorio().getListaFornecedores()) {
                     if (idFornecedorStr.isEmpty() || (fornec.getIdFornecedor() == idFornecedorInt)) {
                         existeFornecedor = true;
                         break;
@@ -165,7 +150,7 @@ public class Produto {
                 }
                 if (!existeFornecedor) {
                     System.out.println("ID de fornecedor inexistente.");
-                    sistemaMenu.escolhaMenuProduto();
+                    MenuEntidade.getInstanciaMenuEntidade().escolhaMenuProduto();
                 }
                 if (!idFornecedorStr.isEmpty()) {
                     p.setIdFornecedor(idFornecedorInt);
@@ -214,7 +199,7 @@ public class Produto {
 
     public void listarProdutos() {
         System.out.println("=========================LISTA DE PRODUTOS========================");
-        for(Produto p : listaProdutos) {
+        for(Produto p : Repositorio.getInstanciaRepositorio().getListaProduto()) {
             mostrarProduto(p);
             System.out.println("==================================================================");
         }
@@ -232,7 +217,7 @@ public class Produto {
             }
         }
         boolean existeProduto = false;
-        for (Produto p : listaProdutos) {
+        for (Produto p : Repositorio.getInstanciaRepositorio().getListaProduto()) {
             if (p.getIdFornecedor() == idFornec) {
                 mostrarProduto(p);
                 existeProduto = true;
@@ -250,7 +235,7 @@ public class Produto {
         System.out.print("Informe o nome do produto: ");
         String nomeProduto = scanner.nextLine();
         boolean existeProduto = false;
-        for (Produto p : listaProdutos) {
+        for (Produto p : Repositorio.getInstanciaRepositorio().getListaProduto()) {
             if (p.getNome().toLowerCase().contains(nomeProduto.toLowerCase())) {
                 mostrarProduto(p);
                 existeProduto = true;
@@ -268,7 +253,7 @@ public class Produto {
         System.out.print("Informe parte da descrição do produto: ");
         String descricaoProduto = scanner.nextLine();
         boolean existeProduto = false;
-        for (Produto p : listaProdutos) {
+        for (Produto p : Repositorio.getInstanciaRepositorio().getListaProduto()) {
             if (p.getDescricao().toLowerCase().contains(descricaoProduto.toLowerCase())) {
                 mostrarProduto(p);
                 existeProduto = true;
@@ -285,7 +270,7 @@ public class Produto {
     public void mostrarProduto(Produto p) {
         System.out.println("ID Produto: " + p.getIdProduto());
         System.out.print("ID Fornecedor: " + p.getIdFornecedor()+" - ");
-        for (Fornecedor fornec : sistemaFornecedor.exportaListaFornecedor()) {
+        for (Fornecedor fornec : Repositorio.getInstanciaRepositorio().getListaFornecedores()) {
             if (p.getIdFornecedor() == fornec.getIdFornecedor()) {
                 System.out.println(fornec.getNome()+", da empresa "+fornec.getRepresentaEmpresaNome());
                 break;
@@ -302,75 +287,4 @@ public class Produto {
         return precoCompra*120/100;
     }
 
-    public List<Produto> exportaListaProduto() {
-        return listaProdutos;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
-    public void setPrecoCompra(Double preco) {
-        this.precoCompra = preco;
-    }
-
-    public Double getPrecoCompra() {
-        return precoCompra;
-    }
-
-    public Double getPrecoVenda() {
-        return precoVenda;
-    }
-
-    public void setPrecoVenda(Double preco) {
-        this.precoVenda = preco;
-    }
-
-    public Double getQuantidade() {
-        return quantidade;
-    }
-
-    public void setQuantidade(Double quantidade) {
-        this.quantidade = quantidade;
-    }
-
-    public Double getQuantidadeEstoque() {
-        return quantidadeEstoque;
-    }
-
-    public void setQuantidadeEstoque(Double quantidadeEstoque) {
-        this.quantidadeEstoque = quantidadeEstoque;
-    }
-
-    public int getIdFornecedor() {
-        return idFornecedor;
-    }
-
-    public void setIdFornecedor(int idFornecedor) {
-        this.idFornecedor = idFornecedor;
-    }
-
-    public int getIdProduto() {
-        return idProduto;
-    }
-
-    public void setSistemaFornecedor(Fornecedor sistemaFornecedor) {
-        this.sistemaFornecedor = sistemaFornecedor;
-    }
-
-    public void setSistemaMenu(Menu sistemaMenu) {
-        this.sistemaMenu = sistemaMenu;
-    }
 }

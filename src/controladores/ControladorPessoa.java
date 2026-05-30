@@ -1,17 +1,15 @@
+package controladores;
+
+import entidades.Pessoa;
 import java.util.List;
 import java.util.Scanner;
 
-public abstract class Pessoa extends Endereco {
+public abstract class  ControladorPessoa {
     private final Scanner scanner = new Scanner(System.in);
 
-    private String nome;
-    private String cpf;
-    private String email;
-    private String telefone;
-
-    public void cadastrarPessoa () {
+    public void cadastrarPessoa (Pessoa p) {
         System.out.print("Nome: ");
-        this.nome = scanner.nextLine();
+        p.setNome(scanner.nextLine());
 
         while (true) {
             System.out.print("CPF: ");
@@ -20,11 +18,10 @@ public abstract class Pessoa extends Endereco {
             cpfDigitado = cpfDigitado.replaceAll("[^0-9]", "");
 
             if (cpfDigitado.matches("\\d{11}")) {
-                this.cpf =
-                        cpfDigitado.substring(0, 3) + "." +
-                                cpfDigitado.substring(3, 6) + "." +
-                                cpfDigitado.substring(6, 9) + "-" +
-                                cpfDigitado.substring(9, 11);
+                p.setCpf(cpfDigitado.substring(0, 3) + "." +
+                        cpfDigitado.substring(3, 6) + "." +
+                        cpfDigitado.substring(6, 9) + "-" +
+                        cpfDigitado.substring(9, 11));
                 break;
             } else {
                 System.out.println("O CPF deve conter 11 números.");
@@ -33,9 +30,9 @@ public abstract class Pessoa extends Endereco {
 
         while (true) {
             System.out.print("E-mail: ");
-            this.email = scanner.nextLine().trim();
+            p.setEmail(scanner.nextLine().trim());
 
-            if (this.email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+            if (p.getEmail().matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
                 break;
             } else {
                 System.out.println("Formato de e-mail inválido.");
@@ -49,31 +46,30 @@ public abstract class Pessoa extends Endereco {
             telefoneDigitado = telefoneDigitado.replaceAll("[^0-9]", "");
 
             if (telefoneDigitado.matches("\\d{11}")) {
-                this.telefone =
-                        "(" + telefoneDigitado.substring(0, 2) + ") " +
-                                telefoneDigitado.substring(2, 7) + "-" +
-                                telefoneDigitado.substring(7);
+                p.setTelefone("(" + telefoneDigitado.substring(0, 2) + ") " +
+                        telefoneDigitado.substring(2, 7) + "-" +
+                        telefoneDigitado.substring(7));
                 break;
             } else {
                 System.out.println("Informe um telefone com 11 números (DDD + celular).");
             }
         }
-        cadastrarEndereco();
+        ControladorEndereco.getInstanciaControladorEndereco().cadastrarEndereco(p.getEndereco());
     }
 
-    public void mostrarDadosPessoa() {
-        System.out.println("Nome: "+this.getNome());
-        System.out.println("CPF: "+this.getCpf());
-        System.out.println("E-mail: "+this.getEmail());
-        System.out.println("Telefone celular: "+this.getTelefone());
-        mostrarEndereco();
+    public void mostrarDadosPessoa(Pessoa p) {
+        System.out.println("Nome: "+p.getNome());
+        System.out.println("CPF: "+p.getCpf());
+        System.out.println("E-mail: "+p.getEmail());
+        System.out.println("Telefone celular: "+p.getTelefone());
+        ControladorEndereco.getInstanciaControladorEndereco().mostrarEndereco(p.getEndereco());
     }
 
-    public void alteraDadosPessoa() {
+    public void alteraDadosPessoa(Pessoa p) {
         System.out.print("Nome (enter para não alterar): ");
         String nome = scanner.nextLine();
         if (!nome.isEmpty()) {
-            this.setNome(nome);
+            p.setNome(nome);
         }
 
         while (true) {
@@ -89,10 +85,10 @@ public abstract class Pessoa extends Endereco {
                                     cpfDigitado.substring(3, 6) + "." +
                                     cpfDigitado.substring(6, 9) + "-" +
                                     cpfDigitado.substring(9, 11);
-                    this.setCpf(cpfDigitado);
+                    p.setCpf(cpfDigitado);
                     break;
                 } else {
-                    System.out.println("O CPF deve conter 11 números.");
+                    System.out.print("O CPF deve conter 11 números. ");
                 }
             } else {
                 break;
@@ -105,7 +101,7 @@ public abstract class Pessoa extends Endereco {
 
             if (!emailDigitado.isEmpty()) {
                 if (emailDigitado.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
-                    this.setEmail(emailDigitado);
+                    p.setEmail(emailDigitado);
                     break;
                 } else {
                     System.out.println("Formato de e-mail inválido.");
@@ -127,7 +123,7 @@ public abstract class Pessoa extends Endereco {
                             "(" + telefoneDigitado.substring(0, 2) + ") " +
                                     telefoneDigitado.substring(2, 7) + "-" +
                                     telefoneDigitado.substring(7);
-                    this.setTelefone(telefoneDigitado);
+                    p.setTelefone(telefoneDigitado);
                     break;
                 } else {
                     System.out.println("Informe um telefone com 11 números (DDD + celular).");
@@ -138,7 +134,7 @@ public abstract class Pessoa extends Endereco {
 
 
         }
-        alterarEndereco();
+        ControladorEndereco.getInstanciaControladorEndereco().alterarEndereco(p.getEndereco());
     }
 
     public void consultarPessoaPorNome(List<? extends Pessoa> lista) {
@@ -149,7 +145,7 @@ public abstract class Pessoa extends Endereco {
         for (Pessoa p : lista) {
             if (p.getNome().toLowerCase().contains(nomeConsulta.toLowerCase())) {
                 System.out.println(p.getIdentificacao());
-                p.mostrarDadosPessoa();
+                mostrarDadosPessoa(p);
                 existeRegistro = true;
                 System.out.println("==================================================================");
             }
@@ -167,9 +163,9 @@ public abstract class Pessoa extends Endereco {
         boolean existeRegistro = false;
         System.out.println("RESULTADOS DA PESQUISA:");
         for (Pessoa p : lista) {
-            if (p.getCpf().replaceAll("[^0-9]", "").contains(cpfConsulta)) {
+            if (p.getCpf().replaceAll("[^0-9]", "").contains(cpfConsulta.replaceAll("[^0-9]", ""))) {
                 System.out.println(p.getIdentificacao());
-                p.mostrarDadosPessoa();
+                mostrarDadosPessoa(p);
                 existeRegistro = true;
                 System.out.println("==================================================================");
             }
@@ -189,7 +185,7 @@ public abstract class Pessoa extends Endereco {
         for (Pessoa p : lista) {
             if (p.getEmail().toLowerCase().contains(emailConsulta.toLowerCase())) {
                 System.out.println(p.getIdentificacao());
-                p.mostrarDadosPessoa();
+                mostrarDadosPessoa(p);
                 existeRegistro = true;
                 System.out.println("==================================================================");
             }
@@ -207,9 +203,9 @@ public abstract class Pessoa extends Endereco {
         boolean existeRegistro = false;
         System.out.println("RESULTADOS DA PESQUISA:");
         for (Pessoa p : lista) {
-            if (p.getTelefone().replaceAll("[^0-9]", "").contains(telefoneConsulta)) {
+            if (p.getTelefone().replaceAll("[^0-9]", "").contains(telefoneConsulta.replaceAll("[^0-9]", ""))) {
                 System.out.println(p.getIdentificacao());
-                p.mostrarDadosPessoa();
+                mostrarDadosPessoa(p);
                 existeRegistro = true;
                 System.out.println("==================================================================");
             }
@@ -219,41 +215,5 @@ public abstract class Pessoa extends Endereco {
             System.out.println("Não existe registro para os dados informados.");
             System.out.println("==================================================================");
         }
-    }
-
-    public String getIdentificacao() {
-        return "";
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public String getCpf() {
-        return cpf;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getTelefone() {
-        return telefone;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
     }
 }

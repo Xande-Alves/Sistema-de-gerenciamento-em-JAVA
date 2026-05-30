@@ -1,38 +1,39 @@
-import java.util.ArrayList;
-import java.util.List;
+package controladores;
 import java.util.Scanner;
 
-public class Cliente extends Pessoa {
-    private final List<Cliente> listaClientes = new ArrayList<>();
+import menus.MenuControleAcesso;
+import menus.MenuEntidade;
+import repositorio.Repositorio;
+import entidades.Cliente;
+
+
+public class ControladorCliente extends ControladorPessoa{
     private final Scanner scanner = new Scanner(System.in);
-    private Menu sistemaMenu;
+    private static ControladorCliente ControladorClienteInstancia;
+
+    private ControladorCliente() {
+
+    }
+
+    public static ControladorCliente getInstanciaControladorCliente() {
+        if (ControladorClienteInstancia == null) {
+            ControladorClienteInstancia = new ControladorCliente();
+        }
+        return ControladorClienteInstancia;
+    }
 
     // METODO APENAS PARA TESTES EM VENDAS
 //    public void inicializarClientes() {
-//        Cliente c1 = new Cliente(1);
+//        entidades.Cliente c1 = new entidades.Cliente(1);
 //        listaClientes.add(c1);
 //    }
 
-    private final int idCliente;
-    private static Cliente clienteInstancia;
-
-    private Cliente(int id) {
-        this.idCliente = id;
-    }
-
-    public static Cliente getInstanciaCliente() {
-        if (clienteInstancia == null) {
-            clienteInstancia = new Cliente(0);
-        }
-        return clienteInstancia;
-    }
-
     public void cadastrarCliente () {
         System.out.println("=======================CADASTRO DE CLIENTES=======================");
-        int idCliente = listaClientes.size() + 1;
+        int idCliente = Repositorio.getInstanciaRepositorio().getListaClientes().size() + 1;
 
         Cliente c = new Cliente(idCliente);
-        c.cadastrarPessoa();
+        cadastrarPessoa(c);
 
         int concluir;
         while (true) {
@@ -45,10 +46,10 @@ public class Cliente extends Pessoa {
             }
         }
         if (concluir != 1) {
-            sistemaMenu.escolhaMenuCliente();
+            MenuEntidade.getInstanciaMenuEntidade().escolhaMenuCliente();
         }
 
-        listaClientes.add(c);
+        repositorio.Repositorio.getInstanciaRepositorio().getListaClientes().add(c);
         System.out.println("Cliente cadastrado com sucesso com o ID "+c.getIdCliente()+".");
         System.out.println("==================================================================");
     }
@@ -67,14 +68,14 @@ public class Cliente extends Pessoa {
         }
         boolean existeCliente = false;
 
-        for (Cliente c : listaClientes) {
+        for (Cliente c : Repositorio.getInstanciaRepositorio().getListaClientes()) {
             if (c.getIdCliente() == idCliente) {
                 System.out.println("CLIENTE ENCONTRADO:");
                 System.out.println("ID: "+c.getIdCliente());
-                c.mostrarDadosPessoa();
+                mostrarDadosPessoa(c);
                 System.out.println("==================================================================");
 
-                c.alteraDadosPessoa();
+                alteraDadosPessoa(c);
                 existeCliente = true;
                 System.out.println("Cadastro atualizado com sucesso!");
             }
@@ -87,43 +88,27 @@ public class Cliente extends Pessoa {
 
     public void listarClientes () {
         System.out.println("=========================LISTA DE CLIENTES=========================");
-        for (Cliente c : listaClientes) {
-            System.out.println("ID Cliente: " + c.getIdCliente());
-            c.mostrarDadosPessoa();
+        for (Cliente c : Repositorio.getInstanciaRepositorio().getListaClientes()) {
+            System.out.println("ID entidades.Cliente: " + c.getIdCliente());
+            mostrarDadosPessoa(c);
             System.out.println("==================================================================");
         }
     }
 
     public void consultarClientesNome() {
-        consultarPessoaPorNome(listaClientes);
+        consultarPessoaPorNome(Repositorio.getInstanciaRepositorio().getListaClientes());
     }
 
     public void consultarClientesCpf() {
-        consultarPessoaPorCpf(listaClientes);
+        consultarPessoaPorCpf(Repositorio.getInstanciaRepositorio().getListaClientes());
     }
 
     public void consultarClientesEmail() {
-        consultarPessoaPorEmail(listaClientes);
+        consultarPessoaPorEmail(Repositorio.getInstanciaRepositorio().getListaClientes());
     }
 
     public void consultarClientesTelefone() {
-        consultarPessoaPorTelefone(listaClientes);
+        consultarPessoaPorTelefone(repositorio.Repositorio.getInstanciaRepositorio().getListaClientes());
     }
 
-    public List<Cliente> exportaListaCliente() {
-        return listaClientes;
-    }
-
-    @Override
-    public String getIdentificacao() {
-        return "ID Cliente: " + getIdCliente();
-    }
-
-    public int getIdCliente() {
-        return idCliente;
-    }
-
-    public void setSistemaMenu(Menu sistemaMenu) {
-        this.sistemaMenu = sistemaMenu;
-    }
 }
