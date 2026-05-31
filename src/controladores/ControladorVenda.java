@@ -1,7 +1,6 @@
 package controladores;
 
 import entidades.*;
-import menus.MenuControleAcesso;
 import menus.MenuEntidade;
 import repositorio.Repositorio;
 
@@ -16,6 +15,10 @@ public class ControladorVenda {
     private final DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     private static ControladorVenda controladorVendaInstancia;
+
+    private ControladorVenda() {
+
+    }
 
     public static ControladorVenda getInstanciaControladorVenda() {
         if (controladorVendaInstancia == null) {
@@ -47,6 +50,7 @@ public class ControladorVenda {
 
                 if (idVendedor == 0) {
                     MenuEntidade.getInstanciaMenuEntidade().escolhaMenuVendas();
+                    return;
                 }
             } else  {
                 idVendedor = ControladorLogin.getInstanciaControladorLogin().verificaVendedorParaVenda();
@@ -77,6 +81,7 @@ public class ControladorVenda {
             }
             if (idCliente == 0) {
                 MenuEntidade.getInstanciaMenuEntidade().escolhaMenuVendas();
+                return;
             }
             for (Cliente c : Repositorio.getInstanciaRepositorio().getListaClientes()) {
                 if (c.getIdCliente() == idCliente) {
@@ -106,6 +111,7 @@ public class ControladorVenda {
                 }
                 if (idProduto == 0) {
                     MenuEntidade.getInstanciaMenuEntidade().escolhaMenuVendas();
+                    return;
                 }
                 for (Produto p : Repositorio.getInstanciaRepositorio().getListaProduto()) {
                     if (p.getIdProduto() == idProduto) {
@@ -231,6 +237,7 @@ public class ControladorVenda {
         }
         if (concluir != 1) {
             MenuEntidade.getInstanciaMenuEntidade().escolhaMenuVendas();
+            return;
         }
 
         Repositorio.getInstanciaRepositorio().getListaVenda().add(v);
@@ -263,6 +270,7 @@ public class ControladorVenda {
         if (vendaEncontrada == null) {
             System.out.println("ID da venda inexistente.");
             MenuEntidade.getInstanciaMenuEntidade().escolhaMenuVendas();
+            return;
         }
 
         // Verificar permissão
@@ -280,6 +288,7 @@ public class ControladorVenda {
         if (!ehVendedorDaVenda && !ehGerente) {
             System.out.println("Usuário não efetuou a venda e não possui cargo de Gerente de Vendas.");
             MenuEntidade.getInstanciaMenuEntidade().escolhaMenuVendas();
+            return;
         }
 
         // Pode alterar
@@ -320,6 +329,7 @@ public class ControladorVenda {
                 if (!existeVendedor) {
                     System.out.println("ID de vendedor inexistente.");
                     MenuEntidade.getInstanciaMenuEntidade().escolhaMenuVendas();
+                    return;
                 }
             } else {
                 existeVendedor = true;
@@ -357,6 +367,7 @@ public class ControladorVenda {
                 if (!existeCliente) {
                     System.out.println("ID de cliente inexistente.");
                     MenuEntidade.getInstanciaMenuEntidade().escolhaMenuVendas();
+                    return;
                 }
             } else {
                 existeCliente = true;

@@ -1,7 +1,6 @@
 package menus;
 
 import controladores.ControladorLogin;
-import entidades.Cliente;
 import repositorio.Repositorio;
 
 import java.util.Scanner;

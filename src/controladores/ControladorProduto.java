@@ -2,7 +2,6 @@ package controladores;
 
 import entidades.Fornecedor;
 import entidades.Produto;
-import menus.MenuControleAcesso;
 import menus.MenuEntidade;
 import repositorio.Repositorio;
 
@@ -13,23 +12,16 @@ public class ControladorProduto {
 
     private static ControladorProduto controladorProdutoInstancia;
 
+    private ControladorProduto() {
+
+    }
+
     public static ControladorProduto getInstanciaControladorProduto() {
         if (controladorProdutoInstancia == null) {
             controladorProdutoInstancia = new ControladorProduto();
         }
         return controladorProdutoInstancia;
     }
-
-    // METODO APENAS PARA TESTES EM VENDAS
-//    public void inicializarProduto() {
-//        entidades.Produto p1 = new entidades.Produto(1,1,"cola","gruda",5.0,10.0,10.0);
-//        entidades.Produto p2 = new entidades.Produto(2,1,"prego","leva",5.0,20.0,20.0);
-//        entidades.Produto p3 = new entidades.Produto(3,1,"martelo","bate",5.0,30.0, 30.0);
-//        listaProdutos.add(p1);
-//        listaProdutos.add(p2);
-//        listaProdutos.add(p3);
-//
-//    }
 
     public void cadastrarProduto() {
         System.out.println("=======================CADASTRO DE PRODUTOS=======================");

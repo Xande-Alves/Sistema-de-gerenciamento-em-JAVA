@@ -1,7 +1,6 @@
 package controladores;
 import java.util.Scanner;
 
-import menus.MenuControleAcesso;
 import menus.MenuEntidade;
 import repositorio.Repositorio;
 import entidades.Cliente;
@@ -21,12 +20,6 @@ public class ControladorCliente extends ControladorPessoa{
         }
         return ControladorClienteInstancia;
     }
-
-    // METODO APENAS PARA TESTES EM VENDAS
-//    public void inicializarClientes() {
-//        entidades.Cliente c1 = new entidades.Cliente(1);
-//        listaClientes.add(c1);
-//    }
 
     public void cadastrarCliente () {
         System.out.println("=======================CADASTRO DE CLIENTES=======================");

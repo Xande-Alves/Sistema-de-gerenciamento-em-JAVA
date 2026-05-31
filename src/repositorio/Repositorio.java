@@ -12,7 +12,6 @@ public class Repositorio {
     private final List<Venda> listaVenda = new ArrayList<>();
     private static Repositorio instanciaRepositorio;
 
-
     private Repositorio() {
 
     }

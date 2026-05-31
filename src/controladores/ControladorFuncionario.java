@@ -1,9 +1,7 @@
 package controladores;
 
 import entidades.Funcionario;
-import entidades.Login;
 import entidades.Pessoa;
-import menus.MenuControleAcesso;
 import menus.MenuEntidade;
 import repositorio.Repositorio;
 
@@ -17,6 +15,9 @@ public class ControladorFuncionario extends ControladorPessoa {
     private final DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private static ControladorFuncionario controladorFuncionarioInstancia;
 
+    private ControladorFuncionario() {
+
+    }
 
     public static ControladorFuncionario getInstanciaControladorFuncionario() {
         if (controladorFuncionarioInstancia == null) {
@@ -24,16 +25,6 @@ public class ControladorFuncionario extends ControladorPessoa {
         }
         return controladorFuncionarioInstancia;
     }
-
-        // METODO APENAS PARA TESTES EM VENDAS
-    //    public void inicializarFuncionario() {
-    //        entidades.Funcionario f1 = new entidades.Funcionario(1,5.0,true,null,null,"vendedor","vendedor","123","4");
-    //        entidades.Funcionario f2 = new entidades.Funcionario(2,5.0,true,null,null,"gerente de vendas","gerente","123","1234");
-    //        f1.setDataAdmissao(LocalDate.now());
-    //        f2.setDataAdmissao(LocalDate.now());
-    //        listaFuncionarios.add(f1);
-    //        listaFuncionarios.add(f2);
-    //    }
 
     public void cadastrarFuncionario () {
         System.out.println("=====================CADASTRO DE FUNCIONÁRIOS======================");

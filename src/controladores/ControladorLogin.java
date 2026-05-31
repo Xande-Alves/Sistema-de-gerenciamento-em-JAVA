@@ -13,6 +13,10 @@ public class ControladorLogin {
     private final Scanner scanner = new Scanner(System.in);
     private static ControladorLogin controladorLoginInstancia;
 
+    private ControladorLogin() {
+
+    }
+
     public static ControladorLogin getInstanciaControladorLogin() {
         if (controladorLoginInstancia == null) {
             controladorLoginInstancia = new ControladorLogin();
@@ -40,18 +44,13 @@ public class ControladorLogin {
         System.out.print("Digite a senha do funcionário: ");
         String senha = scanner.nextLine();
         func.setSenha(senha);
-        String acesso;
-        if (Objects.equals(func.getCargo(),"vendedor")) {
-            acesso = "14";
-        } else if (Objects.equals(func.getCargo(),"gerente de vendas")) {
-            acesso = "1234";
-        } else if (Objects.equals(func.getCargo(),"estoquista")) {
-            acesso = "35";
-        } else if (Objects.equals(func.getCargo(),"gerente de estoque")) {
-            acesso = "235";
-        } else {
-            acesso = "";
-        }
+        String acesso = switch (func.getCargo()) {
+            case "vendedor" -> "14";
+            case "gerente de vendas" -> "1234";
+            case "estoquista" -> "35";
+            case "gerente de estoque" -> "235";
+            case null, default -> "";
+        };
         func.setNivelAcesso(acesso);
     }
 
@@ -74,18 +73,13 @@ public class ControladorLogin {
         System.out.print("Qual a nova senha do funcionário? ");
         String novaSenha = scanner.nextLine();
         func.setSenha(novaSenha);
-        String novoAcesso;
-        if (Objects.equals(func.getCargo(),"vendedor")) {
-            novoAcesso = "14";
-        } else if (Objects.equals(func.getCargo(),"gerente de vendas")) {
-            novoAcesso = "1234";
-        } else if (Objects.equals(func.getCargo(),"estoquista")) {
-            novoAcesso = "35";
-        } else if (Objects.equals(func.getCargo(),"gerente de estoque")) {
-            novoAcesso = "235";
-        } else {
-            novoAcesso = "";
-        }
+        String novoAcesso = switch (func.getCargo()) {
+            case "vendedor" -> "14";
+            case "gerente de vendas" -> "1234";
+            case "estoquista" -> "35";
+            case "gerente de estoque" -> "235";
+            case null, default -> "";
+        };
         func.setNivelAcesso(novoAcesso);
     }
 

@@ -1,8 +1,6 @@
 package menus;
 
 import controladores.*;
-import entidades.Cliente;
-import repositorio.Repositorio;
 
 import java.util.Scanner;
 
@@ -43,14 +41,12 @@ public class MenuEntidade {
             } else if (escolhaModuloCliente == 4) {
                 ControladorCliente.getInstanciaControladorCliente().listarClientes();
             } else if (escolhaModuloCliente == 5) {
-                //MenuControleAcesso.getInstanciaMenuControleAcesso().escolhaModulo();
                 break;
             } else {
                 System.out.println("Opção inválida!");
             }
         }
     }
-
 
     public void escolhaMenuFuncionario() {
         while (MenuControleAcesso.getInstanciaMenuControleAcesso().getEscolhaModulo() == 2) {
@@ -84,15 +80,12 @@ public class MenuEntidade {
             } else if (escolhaModuloFuncionario == 9) {
                 ControladorFuncionario.getInstanciaControladorFuncionario().atualizarAcesso();
             } else if (escolhaModuloFuncionario == 10) {
-                //MenuControleAcesso.getInstanciaMenuControleAcesso().escolhaModulo();
                 break;
             } else {
                 System.out.println("Opção inválida!");
             }
         }
-
     }
-
 
     public void escolhaMenuProduto() {
         while (MenuControleAcesso.getInstanciaMenuControleAcesso().getEscolhaModulo() == 3) {
@@ -124,14 +117,12 @@ public class MenuEntidade {
             } else if (escolhaModuloProduto == 8) {
                 ControladorFornecedor.getInstanciaControladorFornecedor().listarFornecedores();
             } else if (escolhaModuloProduto == 9) {
-                //MenuControleAcesso.getInstanciaMenuControleAcesso().escolhaModulo();
                 break;
             } else {
                 System.out.println("Opção inválida!");
             }
         }
     }
-
 
     public void escolhaMenuVendas() {
         while (MenuControleAcesso.getInstanciaMenuControleAcesso().getEscolhaModulo() == 4) {
@@ -157,7 +148,6 @@ public class MenuEntidade {
             } else if (escolhaModuloVenda == 5) {
                 ControladorVenda.getInstanciaControladorVenda().cancelarVenda();
             } else if (escolhaModuloVenda == 6) {
-                //MenuControleAcesso.getInstanciaMenuControleAcesso().escolhaModulo();
                 break;
             } else {
                 System.out.println("Opção inválida!");
@@ -165,7 +155,6 @@ public class MenuEntidade {
         }
 
     }
-
 
     public void escolhaMenuEstoque() {
         while (MenuControleAcesso.getInstanciaMenuControleAcesso().getEscolhaModulo() == 5) {
@@ -191,12 +180,10 @@ public class MenuEntidade {
             } else if (escolhaModuloEstoque == 5) {
                 ControladorProduto.getInstanciaControladorProduto().listarProdutos();
             } else if (escolhaModuloEstoque == 6) {
-                //MenuControleAcesso.getInstanciaMenuControleAcesso().escolhaModulo();
                 break;
             } else {
                 System.out.println("Opção inválida!");
             }
         }
-
     }
 }

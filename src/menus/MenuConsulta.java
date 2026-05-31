@@ -1,7 +1,5 @@
 package menus;
 
-import entidades.Cliente;
-import repositorio.Repositorio;
 import controladores.ControladorCliente;
 import controladores.ControladorFuncionario;
 import controladores.ControladorProduto;
@@ -24,7 +22,6 @@ public class MenuConsulta {
         }
         return menuConsultaInstancia;
     }
-
 
     public void escolhaAtributoConsultaCliente() {
         while (true) {
@@ -49,7 +46,6 @@ public class MenuConsulta {
             } else if (atributoConsultaCliente == 4) {
                 ControladorCliente.getInstanciaControladorCliente().consultarClientesTelefone();
             } else if (atributoConsultaCliente == 5) {
-                //MenuEntidade.getInstanciaMenuEntidade().escolhaMenuCliente();
                 break;
             } else {
                 System.out.println("Opção inválida!");
@@ -82,7 +78,6 @@ public class MenuConsulta {
             } else if (atributoConsultaFuncionario == 5) {
                 ControladorFuncionario.getInstanciaControladorFuncionario().consultarFuncionarioCargo();
             } else if (atributoConsultaFuncionario == 6) {
-                //MenuEntidade.getInstanciaMenuEntidade().escolhaMenuFuncionario();
                 break;
             } else {
                 System.out.println("Opção inválida!");
@@ -111,7 +106,6 @@ public class MenuConsulta {
             } else if (atributoConsultaProduto == 3) {
                 ControladorProduto.getInstanciaControladorProduto().consultarProdutoDescricao();
             } else if (atributoConsultaProduto == 4) {
-                //MenuEntidade.getInstanciaMenuEntidade().escolhaMenuProduto();
                 break;
             } else {
                 System.out.println("Opção inválida!");
@@ -146,7 +140,6 @@ public class MenuConsulta {
             } else if (atributoConsultaFornecedor == 6) {
                 ControladorFornecedor.getInstanciaControladorFornecedor().consultarFornecedorCnpjEmpresa();
             } else if (atributoConsultaFornecedor == 7) {
-                //MenuEntidade.getInstanciaMenuEntidade().escolhaMenuProduto();
                 break;
             } else {
                 System.out.println("Opção inválida!");
@@ -179,7 +172,6 @@ public class MenuConsulta {
             } else if (atributoConsultaVenda == 5) {
                 ControladorVenda.getInstanciaControladorVenda().consultarVendaInativaCliente();
             } else if (atributoConsultaVenda == 6) {
-                //MenuEntidade.getInstanciaMenuEntidade().escolhaMenuVendas();
                 break;
             } else {
                 System.out.println("Opção inválida!");

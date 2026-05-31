@@ -2,7 +2,6 @@ package controladores;
 
 import entidades.Fornecedor;
 import entidades.Pessoa;
-import menus.MenuControleAcesso;
 import menus.MenuEntidade;
 import repositorio.Repositorio;
 
@@ -23,12 +22,6 @@ public class ControladorFornecedor extends ControladorPessoa{
         }
         return controladorFornecedorInstancia;
     }
-
-    // METODO APENAS PARA TESTES EM VENDAS
-//    public void inicializarFornecedor() {
-//        entidades.Fornecedor f1 = new entidades.Fornecedor(1,"bela","111");
-//        listaFornecedores.add(f1);
-//    }
 
     public void cadastrarFornecedor() {
         System.out.println("======================CADASTRO DE FORNECEDORES====================");
