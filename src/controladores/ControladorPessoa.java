@@ -1,59 +1,25 @@
 package controladores;
 
 import entidades.Pessoa;
+import utilitarios.LeitorConsole;
+
 import java.util.List;
 import java.util.Scanner;
 
 public abstract class  ControladorPessoa {
     private final Scanner scanner = new Scanner(System.in);
+    private final LeitorConsole leitor = new LeitorConsole(scanner);
 
     public void cadastrarPessoa (Pessoa p) {
-        System.out.print("Nome: ");
-        p.setNome(scanner.nextLine());
+        p.setNome(leitor.lerTexto("Nome: "));
 
-        while (true) {
-            System.out.print("CPF: ");
-            String cpfDigitado = scanner.nextLine();
+        p.setCpf(leitor.lerCpf("CPF: "));
 
-            cpfDigitado = cpfDigitado.replaceAll("[^0-9]", "");
+        p.setEmail(leitor.lerEmail("E-mail: "));
 
-            if (cpfDigitado.matches("\\d{11}")) {
-                p.setCpf(cpfDigitado.substring(0, 3) + "." +
-                        cpfDigitado.substring(3, 6) + "." +
-                        cpfDigitado.substring(6, 9) + "-" +
-                        cpfDigitado.substring(9, 11));
-                break;
-            } else {
-                System.out.println("O CPF deve conter 11 números.");
-            }
-        }
-
-        while (true) {
-            System.out.print("E-mail: ");
-            p.setEmail(scanner.nextLine().trim());
-
-            if (p.getEmail().matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
-                break;
-            } else {
-                System.out.println("Formato de e-mail inválido.");
-            }
-        }
-
-        while (true) {
-            System.out.print("Telefone celular (com DDD): ");
-            String telefoneDigitado = scanner.nextLine();
-
-            telefoneDigitado = telefoneDigitado.replaceAll("[^0-9]", "");
-
-            if (telefoneDigitado.matches("\\d{11}")) {
-                p.setTelefone("(" + telefoneDigitado.substring(0, 2) + ") " +
-                        telefoneDigitado.substring(2, 7) + "-" +
-                        telefoneDigitado.substring(7));
-                break;
-            } else {
-                System.out.println("Informe um telefone com 11 números (DDD + celular).");
-            }
-        }
+        p.setTelefone(
+                leitor.lerTelefone("Telefone celular (com DDD): ")
+        );
         ControladorEndereco.getInstanciaControladorEndereco().cadastrarEndereco(p.getEndereco());
     }
 
@@ -66,80 +32,39 @@ public abstract class  ControladorPessoa {
     }
 
     public void alteraDadosPessoa(Pessoa p) {
-        System.out.print("Nome (enter para não alterar): ");
-        String nome = scanner.nextLine();
+        String nome = leitor.lerTextoOpcional("Nome (enter para não alterar): ");
         if (!nome.isEmpty()) {
             p.setNome(nome);
         }
 
-        while (true) {
-            System.out.print("CPF (enter para não alterar): ");
-            String cpfDigitado = scanner.nextLine();
+        String cpf = leitor.lerCpfOpcional(
+                "Informe o novo CPF (enter para não alterar): "
+        );
 
-            if (!cpfDigitado.isEmpty()) {
-                cpfDigitado = cpfDigitado.replaceAll("[^0-9]", "");
-
-                if (cpfDigitado.matches("\\d{11}")) {
-                    cpfDigitado =
-                            cpfDigitado.substring(0, 3) + "." +
-                                    cpfDigitado.substring(3, 6) + "." +
-                                    cpfDigitado.substring(6, 9) + "-" +
-                                    cpfDigitado.substring(9, 11);
-                    p.setCpf(cpfDigitado);
-                    break;
-                } else {
-                    System.out.print("O CPF deve conter 11 números. ");
-                }
-            } else {
-                break;
-            }
+        if (cpf != null) {
+            p.setCpf(cpf);
         }
 
-        while (true) {
-            System.out.print("E-mail (enter para não alterar): ");
-            String emailDigitado = scanner.nextLine().trim();
+        String email = leitor.lerEmailOpcional(
+                "Informe o novo e-mail (enter para não alterar): "
+        );
 
-            if (!emailDigitado.isEmpty()) {
-                if (emailDigitado.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
-                    p.setEmail(emailDigitado);
-                    break;
-                } else {
-                    System.out.println("Formato de e-mail inválido.");
-                }
-            } else {
-                break;
-            }
+        if (email != null) {
+            p.setEmail(email);
         }
 
-        while (true) {
-            System.out.print("Telefone celular (enter para não alterar): ");
-            String telefoneDigitado = scanner.nextLine();
+        String telefone = leitor.lerTelefoneOpcional(
+                "Novo telefone (enter para não alterar): "
+        );
 
-            if (!telefoneDigitado.isEmpty()) {
-                telefoneDigitado = telefoneDigitado.replaceAll("[^0-9]", "");
-
-                if (telefoneDigitado.matches("\\d{11}")) {
-                    telefoneDigitado =
-                            "(" + telefoneDigitado.substring(0, 2) + ") " +
-                                    telefoneDigitado.substring(2, 7) + "-" +
-                                    telefoneDigitado.substring(7);
-                    p.setTelefone(telefoneDigitado);
-                    break;
-                } else {
-                    System.out.println("Informe um telefone com 11 números (DDD + celular).");
-                }
-            } else {
-                break;
-            }
-
-
+        if (telefone != null) {
+            p.setTelefone(telefone);
         }
         ControladorEndereco.getInstanciaControladorEndereco().alterarEndereco(p.getEndereco());
     }
 
     public void consultarPessoaPorNome(List<? extends Pessoa> lista) {
-        System.out.print("Digite o nome que deseja consultar: ");
-        String nomeConsulta = scanner.next();
+        String nomeConsulta = leitor.lerTexto("Digite o nome que deseja consultar: ");
         boolean existeRegistro = false;
         System.out.println("RESULTADOS DA PESQUISA:");
         for (Pessoa p : lista) {
@@ -158,8 +83,7 @@ public abstract class  ControladorPessoa {
     }
 
     public void consultarPessoaPorCpf(List<? extends Pessoa> lista) {
-        System.out.print("Digite o CPF que deseja consultar (apenas números): ");
-        String cpfConsulta = scanner.next();
+        String cpfConsulta = leitor.lerTexto("Digite o CPF que deseja consultar (apenas números): ");
         boolean existeRegistro = false;
         System.out.println("RESULTADOS DA PESQUISA:");
         for (Pessoa p : lista) {
@@ -178,8 +102,7 @@ public abstract class  ControladorPessoa {
     }
 
     public void consultarPessoaPorEmail(List<? extends Pessoa> lista) {
-        System.out.print("Digite o E-mail que deseja consultar: ");
-        String emailConsulta = scanner.next();
+        String emailConsulta = leitor.lerTexto("Digite o E-mail que deseja consultar: ");
         boolean existeRegistro = false;
         System.out.println("RESULTADOS DA PESQUISA:");
         for (Pessoa p : lista) {
@@ -198,8 +121,7 @@ public abstract class  ControladorPessoa {
     }
 
     public void consultarPessoaPorTelefone(List<? extends Pessoa> lista) {
-        System.out.print("Digite o telefone celular que deseja consultar (apenas números): ");
-        String telefoneConsulta = scanner.next();
+        String telefoneConsulta = leitor.lerTexto("Digite o telefone celular que deseja consultar (apenas números): ");
         boolean existeRegistro = false;
         System.out.println("RESULTADOS DA PESQUISA:");
         for (Pessoa p : lista) {

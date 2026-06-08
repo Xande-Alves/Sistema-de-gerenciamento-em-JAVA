@@ -2,11 +2,13 @@ package menus;
 
 import controladores.ControladorLogin;
 import repositorio.Repositorio;
+import utilitarios.LeitorConsole;
 
 import java.util.Scanner;
 
 public class MenuControleAcesso {
     private final Scanner scanner = new Scanner(System.in);
+    private final LeitorConsole leitor = new LeitorConsole(scanner);
     private static MenuControleAcesso menuControleAcessoInstancia;
     private int escolhaModulo;
     private MenuControleAcesso() {
@@ -23,16 +25,9 @@ public class MenuControleAcesso {
     public void escolhaModulo() {
         while (true) {
             System.out.println("==============================SISGER==============================");
-            while (true) {
-                try {
-                    System.out.println("1 - Clientes\n2 - Funcionário\n3 - Produtos\n4 - Vendas\n5 - Estoque\n6 - Sair");
-                    System.out.print("Selecione o módulo que deseja acessar: ");
-                    escolhaModulo = Integer.parseInt(scanner.nextLine());
-                    break;
-                } catch (NumberFormatException e) {
-                    System.out.println("Digite apenas números inteiros.");
-                }
-            }
+            escolhaModulo = leitor.lerInteiro(
+                    "1 - Clientes\n2 - Funcionário\n3 - Produtos\n4 - Vendas\n5 - Estoque\n6 - Sair\nSelecione o módulo que deseja acessar: "
+            );
 
             if (escolhaModulo == 1) {
                 if (ControladorLogin.getInstanciaControladorLogin().permitirAcesso(escolhaModulo)) {

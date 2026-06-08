@@ -1,11 +1,13 @@
 package controladores;
 import entidades.Endereco;
+import utilitarios.LeitorConsole;
 
 
 import java.util.Scanner;
 
 public class ControladorEndereco {
     private final Scanner scanner = new Scanner(System.in);
+    private final LeitorConsole leitor = new LeitorConsole(scanner);
     private static ControladorEndereco instanciaControladorEndereco;
 
     private ControladorEndereco() {
@@ -20,33 +22,12 @@ public class ControladorEndereco {
     }
 
     public void cadastrarEndereco(Endereco e) {
-        System.out.print("Logradouro: ");
-        e.setLogradouro(scanner.nextLine());
-        System.out.print("Número: ");
-        e.setNumero(scanner.nextLine());
-        System.out.print("Bairro: ");
-        e.setBairro(scanner.nextLine());
-        System.out.print("Cidade: ");
-        e.setCidade(scanner.nextLine());
-        System.out.print("Estado: ");
-        e.setEstado(scanner.nextLine());
-        while (true) {
-            System.out.print("CEP: ");
-            String cepDigitado = scanner.nextLine();
-
-            // remove traços e espaços, caso o usuário digite
-            cepDigitado = cepDigitado.replaceAll("[^0-9]", "");
-
-            // valida se possui exatamente 8 números
-            if (cepDigitado.matches("\\d{8}")) {
-                // formata para 00000-000
-                e.setCep(cepDigitado.substring(0, 5) + "-" +
-                        cepDigitado.substring(5));
-                break;
-            } else {
-                System.out.print("O CEP deve conter 8 números. ");
-            }
-        }
+        e.setLogradouro(leitor.lerTexto("Logradouro: "));
+        e.setNumero(leitor.lerTexto("Número: "));
+        e.setBairro(leitor.lerTexto("Bairro: "));
+        e.setCidade(leitor.lerTexto("Cidade: "));
+        e.setEstado(leitor.lerTexto("Estado: "));
+        e.setCep(leitor.lerCep("CEP: "));
     }
 
     public void mostrarEndereco(Endereco e) {
@@ -59,51 +40,35 @@ public class ControladorEndereco {
     }
 
     public void alterarEndereco(Endereco e) {
-        System.out.print("Logradouro (enter para não alterar): ");
-        String logradouro = scanner.nextLine();
+        String logradouro = leitor.lerTextoOpcional("Logradouro (enter para não alterar): ");
         if (!logradouro.isEmpty()) {
             e.setLogradouro(logradouro);
         }
-        System.out.print("Número (enter para não alterar): ");
-        String numero = scanner.nextLine();
+
+        String numero = leitor.lerTextoOpcional("Número (enter para não alterar): ");
         if (!numero.isEmpty()) {
             e.setNumero(numero);
         }
-        System.out.print("Bairro (enter para não alterar): ");
-        String bairro = scanner.nextLine();
+
+        String bairro = leitor.lerTextoOpcional("Bairro (enter para não alterar): ");
         if (!bairro.isEmpty()) {
             e.setBairro(bairro);
         }
-        System.out.print("Cidade (enter para não alterar): ");
-        String cidade = scanner.nextLine();
+
+        String cidade = leitor.lerTextoOpcional("Cidade (enter para não alterar): ");
         if (!cidade.isEmpty()) {
             e.setCidade(cidade);
         }
-        System.out.print("Estado (enter para não alterar): ");
-        String estado = scanner.nextLine();
+
+        String estado = leitor.lerTextoOpcional("Estado (enter para não alterar): ");
         if (!estado.isEmpty()) {
             e.setEstado(estado);
         }
-        while (true) {
-            System.out.print("CEP (enter para não alterar): ");
-            String cepDigitado = scanner.nextLine();
 
-            if (!cepDigitado.isEmpty()) {
-                // remove traços e espaços, caso o usuário digite
-                cepDigitado = cepDigitado.replace("-", "").trim();
-
-                // valida se possui exatamente 8 números
-                if (cepDigitado.matches("\\d{8}")) {
-                    // formata para 00000-000
-                    e.setCep(cepDigitado.substring(0, 5) + "-" +
-                            cepDigitado.substring(5));
-                    break;
-                } else {
-                    System.out.print("O CEP deve conter 8 números. ");
-                }
-            } else {
-                break;
-            }
+        String cep = leitor.lerCepOpcional("CEP (enter para não alterar): ");
+        if (!cep.isEmpty()) {
+            e.setCep(cep);
         }
+
     }
 }

@@ -4,12 +4,13 @@ import entidades.Fornecedor;
 import entidades.Pessoa;
 import menus.MenuEntidade;
 import repositorio.Repositorio;
+import utilitarios.LeitorConsole;
 
 import java.util.Scanner;
 
 public class ControladorFornecedor extends ControladorPessoa{
     private final Scanner scanner = new Scanner(System.in);
-
+    private final LeitorConsole leitor = new LeitorConsole(scanner);
     private static ControladorFornecedor controladorFornecedorInstancia;
 
     private ControladorFornecedor(){
@@ -28,35 +29,20 @@ public class ControladorFornecedor extends ControladorPessoa{
         int idFornecedor = Repositorio.getInstanciaRepositorio().getListaFornecedores().size() + 1;
         Fornecedor fornec = new Fornecedor(idFornecedor,"", "");
         cadastrarPessoa(fornec);
-        System.out.print("Insira o nome da empresa que o fornecedor representa: ");
-        String nomeEmpresa = scanner.nextLine();
+        String nomeEmpresa = leitor.lerTexto("Insira o nome da empresa que o fornecedor representa: ");
         fornec.setRepresentaEmpresaNome(nomeEmpresa);
-        String cnpjEmpresa;
-        while (true) {
-            System.out.print("Insira o CNPJ da empresa que o fornecedor representa: ");
-            String cnpjDigitado = scanner.nextLine();
-            cnpjDigitado = cnpjDigitado.replaceAll("[^0-9]", "");
 
-            if (cnpjDigitado.matches("\\d{14}")) {
-                cnpjEmpresa = cnpjDigitado.substring(0,2) + "." + cnpjDigitado.substring(2,5) + "." + cnpjDigitado.substring(5,8) + "/" + cnpjDigitado.substring(8,12) + "-" + cnpjDigitado.substring(12);
-                break;
-            } else {
-                System.out.print("O CEP deve conter 14 números. ");
-            }
-        }
+        String cnpjEmpresa = leitor.lerCnpj(
+                "Insira o CNPJ da empresa que o fornecedor representa: "
+        );
         fornec.setRepresentaEmpresaCnpj(cnpjEmpresa);
-        int concluir;
-        while (true) {
-            try {
-                System.out.print("Concluir o procedimento? (1 para SIM): ");
-                concluir = Integer.parseInt(scanner.nextLine());
-                break;
-            } catch (NumberFormatException e) {
-                System.out.println("Digite apenas números inteiros.");
-            }
-        }
+
+        int concluir = leitor.lerInteiro(
+                "Concluir o procedimento? (1 para SIM): "
+        );
         if (concluir != 1) {
             MenuEntidade.getInstanciaMenuEntidade().escolhaMenuProduto();
+            return;
         }
 
         Repositorio.getInstanciaRepositorio().getListaFornecedores().add(fornec);
@@ -66,16 +52,9 @@ public class ControladorFornecedor extends ControladorPessoa{
 
     public void atualizarFornecedor() {
         System.out.println("==============ATUALIZAÇÃO DE CADASTRO DE FORNECEDORES=============");
-        int idFornecedor;
-        while (true) {
-            try {
-                System.out.print("Informe o ID do fornecedor: ");
-                idFornecedor = Integer.parseInt(scanner.nextLine());
-                break;
-            } catch (NumberFormatException e) {
-                System.out.print("Digite apenas números inteiros. ");
-            }
-        }
+        int idFornecedor = leitor.lerInteiro(
+                "Informe o ID do fornecedor: "
+        );
         boolean existeFornecedor = false;
 
         for (Fornecedor fornec : Repositorio.getInstanciaRepositorio().getListaFornecedores()) {
@@ -87,29 +66,18 @@ public class ControladorFornecedor extends ControladorPessoa{
                 System.out.println("==================================================================");
 
                 alteraDadosPessoa(fornec);
-                System.out.print("Informe o novo nome da empresa (enter para não alterar): ");
-                String novoNomeEmpresa = scanner.nextLine();
+                String novoNomeEmpresa = leitor.lerTexto("Informe o novo nome da empresa (enter para não alterar): ");
                 if (!novoNomeEmpresa.isEmpty()) {
                     fornec.setRepresentaEmpresaNome(novoNomeEmpresa);
                 }
 
-                while (true) {
-                    System.out.print("Informe o novo CNPJ da empresa (enter para não alterar): ");
-                    String cnpjDigitado = scanner.nextLine();
-                    if (!cnpjDigitado.isEmpty()) {
-                        cnpjDigitado = cnpjDigitado.replaceAll("[^0-9]", "");
-
-                        if (cnpjDigitado.matches("\\d{14}")) {
-                            String novoCnpjEmpresa = cnpjDigitado.substring(0,2) + "." + cnpjDigitado.substring(2,5) + "." + cnpjDigitado.substring(5,8) + "/" + cnpjDigitado.substring(8,12) + "-" + cnpjDigitado.substring(12);
-                            fornec.setRepresentaEmpresaCnpj(novoCnpjEmpresa);
-                            break;
-                        } else {
-                            System.out.print("O CEP deve conter 14 números. ");
-                        }
-                    } else {
-                        break;
-                    }
+                String cnpj = leitor.lerCnpjOpcional(
+                        "Informe o novo CNPJ (enter para não alterar): "
+                );
+                if (cnpj != null) {
+                    fornec.setRepresentaEmpresaCnpj(cnpj);
                 }
+
                 existeFornecedor = true;
                 System.out.println("Cadastro atualizado com sucesso!");
             }
@@ -155,8 +123,7 @@ public class ControladorFornecedor extends ControladorPessoa{
     }
 
     public void consultarFornecedorNomeEmpresa() {
-        System.out.print("Informe o nome da empresa do fornecedor: ");
-        String nomeEmpresa = scanner.nextLine();
+        String nomeEmpresa = leitor.lerTexto("Informe o nome da empresa do fornecedor: ");
         boolean existeFornecedor = false;
         for (Fornecedor fornec : Repositorio.getInstanciaRepositorio().getListaFornecedores()) {
             if (fornec.getRepresentaEmpresaNome().toLowerCase().contains(nomeEmpresa.toLowerCase())) {
@@ -174,8 +141,7 @@ public class ControladorFornecedor extends ControladorPessoa{
     }
 
     public void consultarFornecedorCnpjEmpresa() {
-        System.out.print("Informe o CNPJ da empresa do fornecedor (apenas números): ");
-        String cnpjEmpresa = scanner.nextLine();
+        String cnpjEmpresa = leitor.lerTexto("Informe o CNPJ da empresa do fornecedor (apenas números): ");
         boolean existeFornecedor = false;
         for (Fornecedor fornec : Repositorio.getInstanciaRepositorio().getListaFornecedores()) {
             if (fornec.getRepresentaEmpresaCnpj().replaceAll("[^0-9]", "").contains(cnpjEmpresa)) {

@@ -4,10 +4,12 @@ import java.util.Scanner;
 import menus.MenuEntidade;
 import repositorio.Repositorio;
 import entidades.Cliente;
+import utilitarios.LeitorConsole;
 
 
 public class ControladorCliente extends ControladorPessoa{
     private final Scanner scanner = new Scanner(System.in);
+    private final LeitorConsole leitor = new LeitorConsole(scanner);
     private static ControladorCliente ControladorClienteInstancia;
 
     private ControladorCliente() {
@@ -28,18 +30,12 @@ public class ControladorCliente extends ControladorPessoa{
         Cliente c = new Cliente(idCliente);
         cadastrarPessoa(c);
 
-        int concluir;
-        while (true) {
-            try {
-                System.out.print("Concluir o procedimento? (1 para SIM): ");
-                concluir = Integer.parseInt(scanner.nextLine());
-                break;
-            } catch (NumberFormatException e) {
-                System.out.println("Digite apenas números inteiros.");
-            }
-        }
+        int concluir = leitor.lerInteiro(
+                "Concluir o procedimento? (1 para SIM): "
+        );
         if (concluir != 1) {
             MenuEntidade.getInstanciaMenuEntidade().escolhaMenuCliente();
+            return;
         }
 
         repositorio.Repositorio.getInstanciaRepositorio().getListaClientes().add(c);
@@ -49,16 +45,9 @@ public class ControladorCliente extends ControladorPessoa{
 
     public void atualizarCliente() {
         System.out.println("==================ATUALIZAR CADASTRO DE CLIENTES==================");
-        int idCliente;
-        while (true) {
-            try {
-                System.out.print("Informe o ID do cliente: ");
-                idCliente = Integer.parseInt(scanner.nextLine());
-                break;
-            } catch (NumberFormatException e) {
-                System.out.println("Digite apenas números inteiros.");
-            }
-        }
+        int idCliente = leitor.lerInteiro(
+                "Informe o ID do cliente: "
+        );
         boolean existeCliente = false;
 
         for (Cliente c : Repositorio.getInstanciaRepositorio().getListaClientes()) {

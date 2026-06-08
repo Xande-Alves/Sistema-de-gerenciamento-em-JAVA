@@ -5,11 +5,13 @@ import controladores.ControladorFuncionario;
 import controladores.ControladorProduto;
 import controladores.ControladorVenda;
 import controladores.ControladorFornecedor;
+import utilitarios.LeitorConsole;
 
 import java.util.Scanner;
 
 public class MenuConsulta {
     private final Scanner scanner = new Scanner(System.in);
+    private final LeitorConsole leitor = new LeitorConsole(scanner);
     private static MenuConsulta menuConsultaInstancia;
 
     private MenuConsulta() {
@@ -26,17 +28,9 @@ public class MenuConsulta {
     public void escolhaAtributoConsultaCliente() {
         while (true) {
             System.out.println("=======================CONSULTA DE CLIENTES========================");
-            int atributoConsultaCliente;
-            while (true) {
-                try {
-                    System.out.println("1 - Nome\n2 - CPF\n3 - E-mail\n4 - Telefone\n5 - Sair");
-                    System.out.print("Deseja consultar por que dado? ");
-                    atributoConsultaCliente = Integer.parseInt(scanner.nextLine());
-                    break;
-                } catch (NumberFormatException e) {
-                    System.out.println("Digite apenas números inteiros.");
-                }
-            }
+            int atributoConsultaCliente = leitor.lerInteiro(
+                    "1 - Nome\n2 - CPF\n3 - E-mail\n4 - Telefone\n5 - Sair\nDeseja consultar por que dado? "
+            );
             if (atributoConsultaCliente == 1) {
                 ControladorCliente.getInstanciaControladorCliente().consultarClientesNome();
             } else if (atributoConsultaCliente == 2) {
@@ -56,17 +50,9 @@ public class MenuConsulta {
     public void escolhaAtributoConsultaFuncionario() {
         while (true) {
             System.out.println("=====================CONSULTA DE FUNCIONARIOS======================");
-            int atributoConsultaFuncionario;
-            while (true) {
-                try {
-                    System.out.println("1 - Nome\n2 - CPF\n3 - E-mail\n4 - Telefone\n5 - Cargo\n6 - Sair");
-                    System.out.print("Deseja consultar por que dado? ");
-                    atributoConsultaFuncionario = Integer.parseInt(scanner.nextLine());
-                    break;
-                } catch (NumberFormatException e) {
-                    System.out.println("Digite apenas números inteiros.");
-                }
-            }
+            int atributoConsultaFuncionario = leitor.lerInteiro(
+                    "1 - Nome\n2 - CPF\n3 - E-mail\n4 - Telefone\n5 - Cargo\n6 - Sair\nDeseja consultar por que dado? "
+            );
             if (atributoConsultaFuncionario == 1) {
                 ControladorFuncionario.getInstanciaControladorFuncionario().consultarFuncionarioNome();
             } else if (atributoConsultaFuncionario == 2) {
@@ -88,17 +74,9 @@ public class MenuConsulta {
     public void escolhaAtributoConsultaProduto() {
         while (true) {
             System.out.println("=======================CONSULTA DE PRODUTOS========================");
-            int atributoConsultaProduto;
-            while (true) {
-                try {
-                    System.out.println("1 - ID do fornecedor\n2 - Nome\n3 - Descrição\n4 - Sair");
-                    System.out.print("Deseja consultar por que dado? ");
-                    atributoConsultaProduto = Integer.parseInt(scanner.nextLine());
-                    break;
-                } catch (NumberFormatException e) {
-                    System.out.println("Digite apenas números inteiros.");
-                }
-            }
+            int atributoConsultaProduto = leitor.lerInteiro(
+                    "1 - ID do fornecedor\n2 - Nome\n3 - Descrição\n4 - Sair\nDeseja consultar por que dado? "
+            );
             if (atributoConsultaProduto == 1) {
                 ControladorProduto.getInstanciaControladorProduto().consultarProdutoIdFornecedor();
             } else if (atributoConsultaProduto == 2) {
@@ -116,17 +94,9 @@ public class MenuConsulta {
     public void escolhaAtributoConsultaFornecedor() {
         while (true) {
             System.out.println("=====================CONSULTA DE FORNECEDORES======================");
-            int atributoConsultaFornecedor;
-            while (true) {
-                try {
-                    System.out.println("1 - Nome\n2 - CPF\n3 - E-mail\n4 - Telefone\n5 - Nome da empresa\n6 - CNPJ da empresa\n7 - Sair");
-                    System.out.print("Deseja consultar por que dado? ");
-                    atributoConsultaFornecedor = Integer.parseInt(scanner.nextLine());
-                    break;
-                } catch (NumberFormatException e) {
-                    System.out.println("Digite apenas números inteiros.");
-                }
-            }
+            int atributoConsultaFornecedor = leitor.lerInteiro(
+                    "1 - Nome\n2 - CPF\n3 - E-mail\n4 - Telefone\n5 - Nome da empresa\n6 - CNPJ da empresa\n7 - Sair\nDeseja consultar por que dado? "
+            );
             if (atributoConsultaFornecedor == 1) {
                 ControladorFornecedor.getInstanciaControladorFornecedor().consultarFornecedorNome();
             } else if (atributoConsultaFornecedor == 2) {
@@ -150,17 +120,9 @@ public class MenuConsulta {
     public void escolhaAtributoConsultaVendas() {
         while (true) {
             System.out.println("========================CONSULTA DE VENDAS=========================");
-            int atributoConsultaVenda;
-            while (true) {
-                try {
-                    System.out.println("1 - ID de venda\n2 - Vendas ativas por vendedor\n3 - Vendas ativas por cliente\n4 - Vendas inativas por vendedor\n5 - Vendas inativas por cliente\n6 - Sair");
-                    System.out.print("Deseja consultar por que dado? ");
-                    atributoConsultaVenda = Integer.parseInt(scanner.nextLine());
-                    break;
-                } catch (NumberFormatException e) {
-                    System.out.println("Digite apenas números inteiros.");
-                }
-            }
+            int atributoConsultaVenda = leitor.lerInteiro(
+                    "1 - ID de venda\n2 - Vendas ativas por vendedor\n3 - Vendas ativas por cliente\n4 - Vendas inativas por vendedor\n5 - Vendas inativas por cliente\n6 - Sair\nDeseja consultar por que dado? "
+            );
             if (atributoConsultaVenda==1) {
                 ControladorVenda.getInstanciaControladorVenda().consultarVendaPorID();
             } else if (atributoConsultaVenda == 2) {

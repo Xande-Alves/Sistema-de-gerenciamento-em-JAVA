@@ -4,14 +4,15 @@ import entidades.Funcionario;
 import entidades.Pessoa;
 import menus.MenuEntidade;
 import repositorio.Repositorio;
+import utilitarios.LeitorConsole;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 public class ControladorFuncionario extends ControladorPessoa {
     private final Scanner scanner = new Scanner(System.in);
+    private final LeitorConsole leitor = new LeitorConsole(scanner);
     private final DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private static ControladorFuncionario controladorFuncionarioInstancia;
 
@@ -35,18 +36,12 @@ public class ControladorFuncionario extends ControladorPessoa {
 
         cadastrarPessoa(func);
 
-        int concluir;
-        while (true) {
-            try {
-                System.out.print("Concluir o procedimento? (1 para SIM): ");
-                concluir = Integer.parseInt(scanner.nextLine());
-                break;
-            } catch (NumberFormatException e) {
-                System.out.println("Digite apenas números inteiros.");
-            }
-        }
+        int concluir = leitor.lerInteiro(
+                "Concluir o procedimento? (1 para SIM): "
+        );
         if (concluir != 1) {
             MenuEntidade.getInstanciaMenuEntidade().escolhaMenuFuncionario();
+            return;
         }
 
         Repositorio.getInstanciaRepositorio().getListaFuncionarios().add(func);
@@ -56,16 +51,9 @@ public class ControladorFuncionario extends ControladorPessoa {
 
     public void atualizarFuncionario() {
         System.out.println("================ATUALIZAR CADASTRO DE FUNCIONÁRIOS=================");
-        int idFuncionario;
-        while (true) {
-            try {
-                System.out.print("Informe o ID do funcionário: ");
-                idFuncionario = Integer.parseInt(scanner.nextLine());
-                break;
-            } catch (NumberFormatException e) {
-                System.out.println("Digite apenas números inteiros.");
-            }
-        }
+        int idFuncionario = leitor.lerInteiro(
+                "Informe o ID do funcionário: "
+        );
         boolean existeFuncionario = false;
 
         for (Funcionario func : Repositorio.getInstanciaRepositorio().getListaFuncionarios()) {
@@ -109,8 +97,7 @@ public class ControladorFuncionario extends ControladorPessoa {
     }
 
     public void consultarFuncionarioCargo() {
-        System.out.print("Informe o cargo do funcionário: ");
-        String cargo = scanner.nextLine();
+        String cargo = leitor.lerTexto("Informe o cargo do funcionário: ");
         boolean existeRegistro = false;
         System.out.println("RESULTADOS DA PESQUISA:");
         for (Funcionario func : Repositorio.getInstanciaRepositorio().getListaFuncionarios()) {
@@ -132,16 +119,9 @@ public class ControladorFuncionario extends ControladorPessoa {
 
     public void contrataFuncionario() {
         System.out.println("====================CONTRATAÇÃO DE FUNCIONÁRIO====================");
-        int idFunc;
-        while (true) {
-            try {
-                System.out.print("Informe o ID de funcionário cadastrado para efetuar contratação: ");
-                idFunc = Integer.parseInt(scanner.nextLine());
-                break;
-            } catch (NumberFormatException e) {
-                System.out.println("Digite apenas números inteiros.");
-            }
-        }
+        int idFunc = leitor.lerInteiro(
+                "Informe o ID de funcionário cadastrado para efetuar contratação: "
+        );
 
         boolean existeFuncionario = false;
 
@@ -149,57 +129,38 @@ public class ControladorFuncionario extends ControladorPessoa {
             if (func.getIdFuncionario() == idFunc) {
                 if (!func.isAtivo()) {
                     existeFuncionario = true;
-                    LocalDate data;
-                    while (true) {
-                        try {
-                            System.out.print("Qual a data de contratação efetiva do funcionário? (dd/mm/aaaa): ");
-                            String dataAdm = scanner.nextLine().trim();
-                            data = LocalDate.parse(dataAdm, formatador);
-                            break;
-                        } catch (DateTimeParseException e) {
-                            System.out.print("Informe uma data válida no formato dd/mm/aaaa. ");
-                        }
-                    }
+                    LocalDate data = leitor.lerData(
+                            "Qual a data de contratação efetiva do funcionário? (dd/mm/aaaa): "
+                    );
                     func.setDataAdmissao(data);
                     func.setAtivo(true);
 
                     String cargo;
                     while (true) {
-                        try {
-                            System.out.print("1 - Vendedor\n2 - Gerente de Vendas\n3 - Estoquista\n4 - Gerente de Estoque\nQual o cargo para qual o funcionário foi contratado? ");
-                            int escolhaCargo = Integer.parseInt(scanner.nextLine());
-                            if (escolhaCargo == 1) {
-                                cargo = "vendedor";
-                                break;
-                            } else if (escolhaCargo == 2) {
-                                cargo = "gerente de vendas";
-                                break;
-                            } else if (escolhaCargo == 3) {
-                                cargo = "estoquista";
-                                break;
-                            } else if (escolhaCargo == 4) {
-                                cargo = "gerente de estoque";
-                                break;
-                            } else {
-                                System.out.print("Escolha inválida. ");
-                            }
-                        } catch (NumberFormatException e) {
-                            System.out.println("Digite apenas números inteiros.");
+                        int escolhaCargo = leitor.lerInteiro(
+                                "1 - Vendedor\n2 - Gerente de Vendas\n3 - Estoquista\n4 - Gerente de Estoque\nQual o cargo para qual o funcionário foi contratado? "
+                            );
+                        if (escolhaCargo == 1) {
+                            cargo = "vendedor";
+                            break;
+                        } else if (escolhaCargo == 2) {
+                            cargo = "gerente de vendas";
+                            break;
+                        } else if (escolhaCargo == 3) {
+                            cargo = "estoquista";
+                            break;
+                        } else if (escolhaCargo == 4) {
+                            cargo = "gerente de estoque";
+                            break;
+                        } else {
+                            System.out.print("Escolha inválida. ");
                         }
                     }
                     func.setCargo(cargo);
 
-                    double salario;
-                    while (true) {
-                        try {
-                            System.out.print("Qual será o salário do funcionário? ");
-                            String salarioStr = scanner.nextLine();
-                            salario = Double.parseDouble(salarioStr.replace(",", "."));
-                            break;
-                        } catch (Exception e) {
-                            System.out.print("O salário deve ser informado em números. ");
-                        }
-                    }
+                    double salario = leitor.lerDouble(
+                            "Qual será o salário do funcionário? "
+                    );
                     func.setSalario(salario);
 
                     ControladorLogin.getInstanciaControladorLogin().cadastrarAcesso(func, Repositorio.getInstanciaRepositorio().getListaFuncionarios());
@@ -216,17 +177,9 @@ public class ControladorFuncionario extends ControladorPessoa {
 
     public void alteraCargo() {
         System.out.println("======================MUDANÇA DE CARGO DE FUNCIONÁRIO=====================");
-        int idFunc;
-        while (true) {
-            try {
-                System.out.print("Informe o ID de funcionário para mudança de cargo: ");
-                idFunc = Integer.parseInt(scanner.nextLine());
-                break;
-            } catch (NumberFormatException e) {
-                System.out.println("Digite apenas números inteiros.");
-            }
-        }
-
+        int idFunc = leitor.lerInteiro(
+                "Informe o ID de funcionário para mudança de cargo: "
+        );
         boolean existeFuncionario = false;
         for (Funcionario func : Repositorio.getInstanciaRepositorio().getListaFuncionarios()) {
             if (func.getIdFuncionario() == idFunc) {
@@ -234,30 +187,27 @@ public class ControladorFuncionario extends ControladorPessoa {
                     String cargo;
                     String novoAcesso;
                     while (true) {
-                        try {
-                            System.out.print("1 - Vendedor\n2 - Gerente de Vendas\n3 - Estoquista\n4 - Gerente de Estoque\nQual o novo cargo do funcionário? ");
-                            int escolhaCargo = Integer.parseInt(scanner.nextLine());
-                            if (escolhaCargo == 1) {
-                                cargo = "vendedor";
-                                novoAcesso = "14";
-                                break;
-                            } else if (escolhaCargo == 2) {
-                                cargo = "gerente de vendas";
-                                novoAcesso = "1234";
-                                break;
-                            } else if (escolhaCargo == 3) {
-                                cargo = "estoquista";
-                                novoAcesso = "35";
-                                break;
-                            } else if (escolhaCargo == 4) {
-                                cargo = "gerente de estoque";
-                                novoAcesso = "235";
-                                break;
-                            } else {
-                                System.out.print("Escolha inválida. ");
-                            }
-                        } catch (NumberFormatException e) {
-                            System.out.println("Digite apenas números inteiros.");
+                        int escolhaCargo = leitor.lerInteiro(
+                                "1 - Vendedor\n2 - Gerente de Vendas\n3 - Estoquista\n4 - Gerente de Estoque\nQual o novo cargo do funcionário? "
+                        );
+                        if (escolhaCargo == 1) {
+                            cargo = "vendedor";
+                            novoAcesso = "14";
+                            break;
+                        } else if (escolhaCargo == 2) {
+                            cargo = "gerente de vendas";
+                            novoAcesso = "1234";
+                            break;
+                        } else if (escolhaCargo == 3) {
+                            cargo = "estoquista";
+                            novoAcesso = "35";
+                            break;
+                        } else if (escolhaCargo == 4) {
+                            cargo = "gerente de estoque";
+                            novoAcesso = "235";
+                            break;
+                        } else {
+                            System.out.print("Escolha inválida. ");
                         }
                     }
                     func.setCargo(cargo);
@@ -276,32 +226,16 @@ public class ControladorFuncionario extends ControladorPessoa {
 
     public void alteraSalario() {
         System.out.println("========================MUDANÇA DE SALÁRIO========================");
-        int idFunc;
-        while (true) {
-            try {
-                System.out.print("Informe o ID de funcionário para mudança de salário: ");
-                idFunc = Integer.parseInt(scanner.nextLine());
-                break;
-            } catch (NumberFormatException e) {
-                System.out.println("Digite apenas números inteiros.");
-            }
-        }
-
+        int idFunc = leitor.lerInteiro(
+                "Informe o ID de funcionário para mudança de salário: "
+        );
         boolean existeFuncionario = false;
         for (Funcionario func : Repositorio.getInstanciaRepositorio().getListaFuncionarios()) {
             if (func.getIdFuncionario() == idFunc) {
                 if (func.isAtivo()) {
-                    double salario;
-                    while (true) {
-                        try {
-                            System.out.print("Qual será o novo salário do funcionário? ");
-                            String salarioStr = scanner.nextLine();
-                            salario = Double.parseDouble(salarioStr.replace(",", "."));
-                            break;
-                        } catch (Exception e) {
-                            System.out.print("O salário deve ser informado em números. ");
-                        }
-                    }
+                    double salario = leitor.lerDouble(
+                            "Qual será o novo salário do funcionário? "
+                    );
                     func.setSalario(salario);
                     System.out.println("Mudança de salário efetuada com sucesso.");
                 } else {
@@ -317,32 +251,16 @@ public class ControladorFuncionario extends ControladorPessoa {
 
     public void desligaFuncionario() {
         System.out.println("====================DESLIGAMENTO DE FUNCIONÁRIO===================");
-        int idFunc;
-        while (true) {
-            try {
-                System.out.print("Informe o ID de funcionário para desligamento: ");
-                idFunc = Integer.parseInt(scanner.nextLine());
-                break;
-            } catch (NumberFormatException e) {
-                System.out.println("Digite apenas números inteiros.");
-            }
-        }
-
+        int idFunc = leitor.lerInteiro(
+                "Informe o ID de funcionário para desligamento: "
+        );
         boolean existeFuncionario = false;
         for (Funcionario func : Repositorio.getInstanciaRepositorio().getListaFuncionarios()) {
             if (func.getIdFuncionario() == idFunc) {
                 if (func.isAtivo()) {
-                    LocalDate data;
-                    while (true) {
-                        try {
-                            System.out.print("Informe a data de desligamento (dd/mm/aaaa): ");
-                            String dataAdm = scanner.nextLine().trim();
-                            data = LocalDate.parse(dataAdm, formatador);
-                            break;
-                        } catch (DateTimeParseException e) {
-                            System.out.print("Informe uma data válida no formato dd/mm/aaaa. ");
-                        }
-                    }
+                    LocalDate data = leitor.lerData(
+                            "Informe a data de desligamento (dd/mm/aaaa): "
+                    );
                     func.setDataDemissao(data);
                     func.setAtivo(false);
                     System.out.println("Funcionário desligado com sucesso.");
@@ -359,17 +277,9 @@ public class ControladorFuncionario extends ControladorPessoa {
 
     public void atualizarAcesso() {
         System.out.println("===============ATUALIZAÇÃO DE ACESSO DE FUNCIONÁRIO===============");
-        int idFuncionario;
-        while (true) {
-            try {
-                System.out.print("Informe o ID do funcionário: ");
-                idFuncionario = Integer.parseInt(scanner.nextLine());
-                break;
-            } catch (NumberFormatException e) {
-                System.out.println("Digite apenas números inteiros.");
-            }
-        }
-
+        int idFuncionario = leitor.lerInteiro(
+                "Informe o ID do funcionário: "
+        );
         boolean existeFuncionario = false;
         for (Funcionario func : Repositorio.getInstanciaRepositorio().getListaFuncionarios()) {
             if (func.getIdFuncionario() == idFuncionario) {
@@ -411,7 +321,7 @@ public class ControladorFuncionario extends ControladorPessoa {
             if (func.getDataDemissao() != null) {
                 System.out.println("Data de demissão: " + func.getDataDemissao().format(formatador));
             }
-            System.out.println("entidades.Login: " + func.getLogin());
+            System.out.println("Login: " + func.getLogin());
             System.out.println("Senha: " + func.getSenha());
             System.out.println("Acesso: " + func.getNivelAcesso());
         } else {

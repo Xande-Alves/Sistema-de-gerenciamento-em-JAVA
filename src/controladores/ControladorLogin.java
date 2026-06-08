@@ -4,6 +4,7 @@ import entidades.Funcionario;
 import entidades.Login;
 import menus.MenuControleAcesso;
 import repositorio.Repositorio;
+import utilitarios.LeitorConsole;
 
 import java.util.List;
 import java.util.Objects;
@@ -11,6 +12,7 @@ import java.util.Scanner;
 
 public class ControladorLogin {
     private final Scanner scanner = new Scanner(System.in);
+    private final LeitorConsole leitor = new LeitorConsole(scanner);
     private static ControladorLogin controladorLoginInstancia;
 
     private ControladorLogin() {
@@ -27,8 +29,7 @@ public class ControladorLogin {
     public void cadastrarAcesso(Funcionario func, List<Funcionario> listaFunc) {
         while (true) {
             boolean aceite = true;
-            System.out.print("Digite o login do funcionário: ");
-            String login = scanner.nextLine();
+            String login = leitor.lerTexto("Digite o login do funcionário: ");
             for (Funcionario f : listaFunc) {
                 if (Objects.equals(f.getLogin(),login) || Objects.equals(login,"adm")) {
                     System.out.println("Login já está em uso. Digite outro login.");
@@ -41,8 +42,7 @@ public class ControladorLogin {
                 break;
             }
         }
-        System.out.print("Digite a senha do funcionário: ");
-        String senha = scanner.nextLine();
+        String senha = leitor.lerTexto("Digite a senha do funcionário: ");
         func.setSenha(senha);
         String acesso = switch (func.getCargo()) {
             case "vendedor" -> "14";
@@ -57,8 +57,7 @@ public class ControladorLogin {
     public void alterarAcesso(Funcionario func, List<Funcionario> listaFunc) {
         while (true) {
             boolean aceite = true;
-            System.out.print("Digite o novo login do funcionário: ");
-            String novoLogin = scanner.nextLine();
+            String novoLogin = leitor.lerTexto("Digite o novo login do funcionário: ");
             for (Funcionario f : listaFunc) {
                 if (Objects.equals(f.getLogin(),novoLogin) || Objects.equals(novoLogin,"adm")) {
                     System.out.println("Login já está em uso. Digite outro login.");
@@ -70,8 +69,7 @@ public class ControladorLogin {
                 break;
             }
         }
-        System.out.print("Qual a nova senha do funcionário? ");
-        String novaSenha = scanner.nextLine();
+        String novaSenha = leitor.lerTexto("Qual a nova senha do funcionário? ");
         func.setSenha(novaSenha);
         String novoAcesso = switch (func.getCargo()) {
             case "vendedor" -> "14";
@@ -92,12 +90,10 @@ public class ControladorLogin {
     public void efetuarLogin(List<Funcionario> listaFunc) {
         System.out.println("==============================SisGer==============================");
         while (true) {
-            System.out.print("Login: ");
-            String entradaLogin = scanner.nextLine();
+            String entradaLogin = leitor.lerTexto("Login: ");
             boolean encontrado = false;
             if (Objects.equals("adm",entradaLogin)) {
-                System.out.print("Senha: ");
-                String entradaSenha = scanner.nextLine();
+                String entradaSenha = leitor.lerTexto("Senha: ");
                 if (Objects.equals("123",entradaSenha)) {
                     Login.getInstanciaLogin().setLoginAtual("adm");
                     Login.getInstanciaLogin().setNivelAcessoAtual("12345");
@@ -110,8 +106,7 @@ public class ControladorLogin {
                 for (Funcionario f : listaFunc) {
                     if (Objects.equals(f.getLogin(), entradaLogin)) {
                         encontrado = true;
-                        System.out.print("Senha: ");
-                        String entradaSenha = scanner.nextLine();
+                        String entradaSenha = leitor.lerTexto("Senha: ");
                         if (Objects.equals(f.getSenha(),entradaSenha)) {
                             Login.getInstanciaLogin().setLoginAtual(f.getLogin());
                             Login.getInstanciaLogin().setNivelAcessoAtual(f.getNivelAcesso());

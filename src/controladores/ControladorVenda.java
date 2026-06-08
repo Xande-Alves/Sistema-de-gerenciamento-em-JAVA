@@ -3,6 +3,7 @@ package controladores;
 import entidades.*;
 import menus.MenuEntidade;
 import repositorio.Repositorio;
+import utilitarios.LeitorConsole;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -12,6 +13,7 @@ import java.util.Scanner;
 
 public class ControladorVenda {
     private final Scanner scanner = new Scanner(System.in);
+    private final LeitorConsole leitor = new LeitorConsole(scanner);
     private final DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     private static ControladorVenda controladorVendaInstancia;
@@ -38,15 +40,9 @@ public class ControladorVenda {
         while (!existeVendedor) {
             int idVendedor;
             if (ControladorLogin.getInstanciaControladorLogin().verificaVendedorParaVenda() == -1) {
-                while (true) {
-                    try {
-                        System.out.print("Informe o ID do vendedor (digite 0 para voltar): ");
-                        idVendedor = Integer.parseInt(scanner.nextLine());
-                        break;
-                    } catch (NumberFormatException e) {
-                        System.out.println("Digite apenas números inteiros.");
-                    }
-                }
+                idVendedor = leitor.lerInteiro(
+                        "Informe o ID do vendedor (digite 0 para voltar): "
+                );
 
                 if (idVendedor == 0) {
                     MenuEntidade.getInstanciaMenuEntidade().escolhaMenuVendas();
@@ -69,16 +65,10 @@ public class ControladorVenda {
 
         boolean existeCliente = false;
         while (!existeCliente) {
-            int idCliente;
-            while (true) {
-                try {
-                    System.out.print("Informe o ID do cliente (digite 0 para voltar): ");
-                    idCliente = Integer.parseInt(scanner.nextLine());
-                    break;
-                } catch (NumberFormatException e) {
-                    System.out.println("Digite apenas números inteiros.");
-                }
-            }
+            int idCliente = leitor.lerInteiro(
+                    "Informe o ID do cliente (digite 0 para voltar): "
+            );
+
             if (idCliente == 0) {
                 MenuEntidade.getInstanciaMenuEntidade().escolhaMenuVendas();
                 return;
@@ -99,16 +89,9 @@ public class ControladorVenda {
         boolean existeProduto = false;
         while (!fimProduto) {
             if (primeiroProduto) {
-                int idProduto;
-                while (true) {
-                    try {
-                        System.out.print("Informe o ID do produto vendido (digite 0 para voltar): ");
-                        idProduto = Integer.parseInt(scanner.nextLine());
-                        break;
-                    } catch (NumberFormatException e) {
-                        System.out.println("Digite apenas números inteiros.");
-                    }
-                }
+                int idProduto = leitor.lerInteiro(
+                        "Informe o ID do produto vendido (digite 0 para voltar): "
+                );
                 if (idProduto == 0) {
                     MenuEntidade.getInstanciaMenuEntidade().escolhaMenuVendas();
                     return;
@@ -117,28 +100,13 @@ public class ControladorVenda {
                     if (p.getIdProduto() == idProduto) {
                         existeProduto = true;
                         mostrarProdutoVenda(p);
-                        int adicionaProduto;
-                        while (true) {
-                            try {
-                                System.out.print("Adicionar produto a venda? (Digite 1 para Sim) ");
-                                adicionaProduto = Integer.parseInt(scanner.nextLine());
-                                break;
-                            } catch (NumberFormatException e) {
-                                System.out.println("Digite apenas números inteiros.");
-                            }
-                        }
+                        int adicionaProduto = leitor.lerInteiro(
+                                "Adicionar produto a venda? (Digite 1 para Sim) "
+                        );
                         if (adicionaProduto == 1) {
-                            double quantidadeProduto;
-                            while (true) {
-                                try {
-                                    System.out.print("Qual a quantidade do produto? (unidade, metros ou quilos) ");
-                                    String quantidadeProdutoStr = scanner.nextLine();
-                                    quantidadeProduto = Double.parseDouble(quantidadeProdutoStr.replace(",", "."));
-                                    break;
-                                } catch (Exception e) {
-                                    System.out.print("A quantidade do produto deve ser informada em números. ");
-                                }
-                            }
+                            double quantidadeProduto = leitor.lerDouble(
+                                    "Qual a quantidade do produto? (unidade, metros ou quilos) "
+                            );
                             p.setQuantidade(quantidadeProduto);
                             System.out.println(ControladorEstoque.getInstanciaControladorEstoque().diminuiQuantidadeEstoqueVenda(p));
                             primeiroProduto = false;
@@ -151,54 +119,25 @@ public class ControladorVenda {
                     System.out.println("ID de produto inexistente.");
                 }
             } else {
-                int novoProduto;
-                while (true) {
-                    try {
-                        System.out.print("Adicionar novo produto a venda? (Digite 1 para Sim) ");
-                        novoProduto = Integer.parseInt(scanner.nextLine());
-                        break;
-                    } catch (NumberFormatException e) {
-                        System.out.println("Digite apenas números inteiros.");
-                    }
-                }
+                int novoProduto = leitor.lerInteiro(
+                        "Adicionar novo produto a venda? (Digite 1 para Sim) "
+                );
                 if (novoProduto == 1) {
                     existeProduto =false;
-                    int idProduto;
-                    while (true) {
-                        try {
-                            System.out.print("Informe o ID do produto vendido: (digite 0 para voltar) ");
-                            idProduto = Integer.parseInt(scanner.nextLine());
-                            break;
-                        } catch (NumberFormatException e) {
-                            System.out.println("Digite apenas números inteiros.");
-                        }
-                    }
+                    int idProduto = leitor.lerInteiro(
+                            "Informe o ID do produto vendido: (digite 0 para voltar) "
+                    );
                     for (Produto p : Repositorio.getInstanciaRepositorio().getListaProduto()) {
                         if (p.getIdProduto() == idProduto) {
                             existeProduto = true;
                             mostrarProdutoVenda(p);
-                            int adicionaProduto;
-                            while (true) {
-                                try {
-                                    System.out.print("Adicionar produto a venda? (Digite 1 para Sim) ");
-                                    adicionaProduto = Integer.parseInt(scanner.nextLine());
-                                    break;
-                                } catch (NumberFormatException e) {
-                                    System.out.println("Digite apenas números inteiros.");
-                                }
-                            }
+                            int adicionaProduto = leitor.lerInteiro(
+                                    "Adicionar produto a venda? (Digite 1 para Sim) "
+                            );
                             if (adicionaProduto == 1) {
-                                double quantidadeProduto;
-                                while (true) {
-                                    try {
-                                        System.out.print("Qual a quantidade do produto? (unidade, metros ou quilos) ");
-                                        String quantidadeProdutoStr = scanner.nextLine();
-                                        quantidadeProduto = Double.parseDouble(quantidadeProdutoStr.replace(",", "."));
-                                        break;
-                                    } catch (Exception e) {
-                                        System.out.print("A quantidade do produto deve ser informada em números. ");
-                                    }
-                                }
+                                double quantidadeProduto = leitor.lerDouble(
+                                        "Qual a quantidade do produto? (unidade, metros ou quilos) "
+                                );
                                 p.setQuantidade(quantidadeProduto);
                                 System.out.println(ControladorEstoque.getInstanciaControladorEstoque().diminuiQuantidadeEstoqueVenda(p));
                                 v.getListaProdutosVenda().add(p);
@@ -225,16 +164,9 @@ public class ControladorVenda {
             v.setVendaAtiva(true);
         }
 
-        int concluir;
-        while (true) {
-            try {
-                System.out.print("Concluir o procedimento? (1 para SIM): ");
-                concluir = Integer.parseInt(scanner.nextLine());
-                break;
-            } catch (NumberFormatException e) {
-                System.out.println("Digite apenas números inteiros.");
-            }
-        }
+        int concluir = leitor.lerInteiro(
+                "Concluir o procedimento? (1 para SIM): "
+        );
         if (concluir != 1) {
             MenuEntidade.getInstanciaMenuEntidade().escolhaMenuVendas();
             return;
@@ -248,16 +180,9 @@ public class ControladorVenda {
 
     public void atualizarVenda() {
         System.out.println("====================ATUALIZAR CADASTRO DA VENDA===================");
-        int idVenda;
-        while (true) {
-            try {
-                System.out.print("Informe o ID da venda: ");
-                idVenda = Integer.parseInt(scanner.nextLine());
-                break;
-            } catch (NumberFormatException e) {
-                System.out.println("Digite apenas números inteiros.");
-            }
-        }
+        int idVenda = leitor.lerInteiro(
+                "Informe o ID da venda: "
+        );
 
         Venda vendaEncontrada = null;
 
@@ -297,96 +222,63 @@ public class ControladorVenda {
 
         // Atualizar vendedor
         boolean existeVendedor = false;
+
         while (!existeVendedor) {
-            int idVendedorNovoInt;
-            String idVendedorNovoStr;
-            while (true) {
-                try {
-                    System.out.print("Informe o novo ID do vendedor (enter para não alterar): ");
-                    idVendedorNovoStr = scanner.nextLine();
-                    if (!idVendedorNovoStr.isEmpty()) {
-                        idVendedorNovoInt = Integer.parseInt(idVendedorNovoStr);
-                    } else {
-                        idVendedorNovoInt = vendaEncontrada.getIdVendedorVenda();
-                    }
+
+            Integer idVendedorNovo = leitor.lerInteiroOpcional(
+                    "Informe o novo ID do vendedor (enter para não alterar): "
+            );
+
+            if (idVendedorNovo == null) {
+                existeVendedor = true;
+                continue;
+            }
+
+            for (Funcionario f : Repositorio.getInstanciaRepositorio().getListaFuncionarios()) {
+                if (f.getIdFuncionario() == idVendedorNovo
+                        && Objects.equals(f.getCargo().toLowerCase(), "vendedor")) {
+
+                    existeVendedor = true;
+                    vendaEncontrada.setIdVendedorVenda(idVendedorNovo);
                     break;
-                } catch (NumberFormatException e) {
-                    System.out.print("Digite apenas números inteiros.");
                 }
             }
 
-            if (!idVendedorNovoStr.isEmpty()) {
-                for (Funcionario f : Repositorio.getInstanciaRepositorio().getListaFuncionarios()) {
-                    if (f.getIdFuncionario() == idVendedorNovoInt &&
-                            Objects.equals(f.getCargo().toLowerCase(), "vendedor")) {
-
-                        existeVendedor = true;
-                        vendaEncontrada.setIdVendedorVenda(idVendedorNovoInt);
-                        break;
-                    }
-                }
-
-                if (!existeVendedor) {
-                    System.out.println("ID de vendedor inexistente.");
-                    MenuEntidade.getInstanciaMenuEntidade().escolhaMenuVendas();
-                    return;
-                }
-            } else {
-                existeVendedor = true;
+            if (!existeVendedor) {
+                System.out.println("ID de vendedor inexistente.");
+                MenuEntidade.getInstanciaMenuEntidade().escolhaMenuVendas();
+                return;
             }
         }
 
         // Atualizar cliente
-        boolean existeCliente = false;
-        while (!existeCliente) {
-            String  idClienteNovo;
-            int idCliNovoFormat;
-            while (true) {
-                try {
-                    System.out.print("Informe o novo ID do cliente (enter para não alterar): ");
-                    idClienteNovo = scanner.nextLine();
-                    if (!idClienteNovo.isEmpty()) {
-                        idCliNovoFormat = Integer.parseInt(idClienteNovo);
-                    } else {
-                        idCliNovoFormat = vendaEncontrada.getIdClienteVenda();
-                    }
+        Integer idClienteNovo = leitor.lerInteiroOpcional(
+                "Informe o novo ID do cliente (enter para não alterar): "
+        );
+
+        if (idClienteNovo != null) {
+            boolean existeCliente = false;
+            for (Cliente c : Repositorio.getInstanciaRepositorio().getListaClientes()) {
+                if (c.getIdCliente() == idClienteNovo) {
+                    existeCliente = true;
+                    vendaEncontrada.setIdClienteVenda(idClienteNovo);
                     break;
-                } catch (NumberFormatException e) {
-                    System.out.println("Digite apenas números inteiros.");
                 }
             }
-            if (!idClienteNovo.isEmpty()) {
-                for (Cliente c : Repositorio.getInstanciaRepositorio().getListaClientes()) {
-                    if (c.getIdCliente() == idCliNovoFormat) {
-                        existeCliente = true;
-                        vendaEncontrada.setIdClienteVenda(idCliNovoFormat);
-                        break;
-                    }
-                }
 
-                if (!existeCliente) {
-                    System.out.println("ID de cliente inexistente.");
-                    MenuEntidade.getInstanciaMenuEntidade().escolhaMenuVendas();
-                    return;
-                }
-            } else {
-                existeCliente = true;
+            if (!existeCliente) {
+                System.out.println("ID de cliente inexistente.");
+                MenuEntidade.getInstanciaMenuEntidade().escolhaMenuVendas();
+                return;
             }
         }
 
         // Alterar itens da venda
 
         while (true) {
-            int alterarItensVenda;
-            while (true) {
-                try {
-                    System.out.print("O que deseja fazer?\n1 - Alterar itens de venda\n2 - Adicionar itens na venda\nQualquer outro número para concluir ");
-                    alterarItensVenda = Integer.parseInt(scanner.nextLine());
-                    break;
-                } catch (NumberFormatException e) {
-                    System.out.println("Digite apenas números inteiros.");
-                }
-            }
+            int alterarItensVenda = leitor.lerInteiro(
+                    "O que deseja fazer?\n1 - Alterar itens de venda\n2 - Adicionar itens na venda\nQualquer outro número para concluir "
+            );
 
             if (alterarItensVenda == 1) {
                 Iterator<Produto> it = vendaEncontrada.getListaProdutosVenda().iterator();
@@ -397,29 +289,14 @@ public class ControladorVenda {
                     mostrarProdutoVenda(p);
                     System.out.println("Quantidade vendida: "+p.getQuantidade());
                     System.out.println("Valor total do item: "+p.getQuantidade()*p.getPrecoVenda());
-                    int escolhaItemVenda;
-                    while (true) {
-                        try {
-                            System.out.print("1 - Próximo item, 2 - Alterar quantidade, 3 - Excluir item: ");
-                            escolhaItemVenda = Integer.parseInt(scanner.nextLine());
-                            break;
-                        } catch (NumberFormatException e) {
-                            System.out.println("Digite apenas números inteiros.");
-                        }
-                    }
+                    int escolhaItemVenda = leitor.lerInteiro(
+                            "1 - Próximo item, 2 - Alterar quantidade, 3 - Excluir item: "
+                    );
 
                     if (escolhaItemVenda == 2) {
-                        double novaQuant;
-                        while (true) {
-                            try {
-                                System.out.print("Informe a nova quantidade do produto: (unidade, metros ou quilos) ");
-                                String novaQuantStr = scanner.nextLine();
-                                novaQuant = Double.parseDouble(novaQuantStr.replace(",", "."));
-                                break;
-                            } catch (Exception e) {
-                                System.out.print("A quantidade do produto deve ser informada em números. ");
-                            }
-                        }
+                        double novaQuant = leitor.lerDouble(
+                                "Informe a nova quantidade do produto: (unidade, metros ou quilos) "
+                        );
                         Double alteraEstoque = p.getQuantidade() - novaQuant;
 
                         if (p.getQuantidade() < novaQuant) {
@@ -452,56 +329,27 @@ public class ControladorVenda {
                 boolean maisProduto = true;
                 while (maisProduto) {
                     boolean existeProduto = false;
-                    int idProduto;
-                    while (true) {
-                        try {
-                            System.out.print("Informe o ID do produto vendido: ");
-                            idProduto = Integer.parseInt(scanner.nextLine());
-                            break;
-                        } catch (NumberFormatException e) {
-                            System.out.println("Digite apenas números inteiros.");
-                        }
-                    }
+                    int idProduto = leitor.lerInteiro(
+                            "Informe o ID do produto vendido: "
+                    );
                     for (Produto p : Repositorio.getInstanciaRepositorio().getListaProduto()) {
                         if (p.getIdProduto() == idProduto) {
                             existeProduto = true;
                             mostrarProdutoVenda(p);
-                            int adicionaProduto;
-                            while (true) {
-                                try {
-                                    System.out.print("Adicionar produto a venda? (Digite 1 para Sim) ");
-                                    adicionaProduto = Integer.parseInt(scanner.nextLine());
-                                    break;
-                                } catch (NumberFormatException e) {
-                                    System.out.print("Digite apenas números inteiros. ");
-                                }
-                            }
+                            int adicionaProduto = leitor.lerInteiro(
+                                    "Adicionar produto a venda? (Digite 1 para Sim) "
+                            );
                             if (adicionaProduto == 1) {
-                                double quantidadeProduto;
-                                while (true) {
-                                    try {
-                                        System.out.print("Qual a quantidade do produto? (unidade, metros ou quilos) ");
-                                        String quantidadeProdutoStr = scanner.nextLine();
-                                        quantidadeProduto = Double.parseDouble(quantidadeProdutoStr.replace(",", "."));
-                                        break;
-                                    } catch (Exception e) {
-                                        System.out.print("A quantidade do produto deve ser informada em números. ");
-                                    }
-                                }
+                                double quantidadeProduto = leitor.lerDouble(
+                                        "Qual a quantidade do produto? (unidade, metros ou quilos) "
+                                );
                                 p.setQuantidade(quantidadeProduto);
                                 System.out.println(ControladorEstoque.getInstanciaControladorEstoque().diminuiQuantidadeEstoqueVenda(p));
                                 vendaEncontrada.getListaProdutosVenda().add(p);
 
-                                int escolheMaisItensVenda;
-                                while (true) {
-                                    try {
-                                        System.out.print("Deseja adicionar mais itens a venda? (Digite 1 para Sim) ");
-                                        escolheMaisItensVenda = Integer.parseInt(scanner.nextLine());
-                                        break;
-                                    } catch (Exception e) {
-                                        System.out.print("Digite apenas números inteiros. ");
-                                    }
-                                }
+                                int escolheMaisItensVenda = leitor.lerInteiro(
+                                        "Deseja adicionar mais itens a venda? (Digite 1 para Sim) "
+                                );
                                 if (escolheMaisItensVenda != 1) {
                                     maisProduto = false;
                                 }
@@ -524,16 +372,9 @@ public class ControladorVenda {
     }
 
     public void consultarVendaPorID() {
-        int idVenda;
-        while (true) {
-            try {
-                System.out.print("Informe o ID da venda: ");
-                idVenda = Integer.parseInt(scanner.nextLine());
-                break;
-            } catch (NumberFormatException e) {
-                System.out.println("Digite apenas números inteiros.");
-            }
-        }
+        int idVenda = leitor.lerInteiro(
+                "Informe o ID da venda: "
+        );
         boolean existeVenda = false;
         for (Venda v : Repositorio.getInstanciaRepositorio().getListaVenda()) {
             if (v.getIdVenda() == idVenda) {
@@ -548,16 +389,9 @@ public class ControladorVenda {
     }
 
     public void consultarVendaAtivaVendedor() {
-        int idVendedor;
-        while (true) {
-            try {
-                System.out.print("Informe o ID do vendedor: ");
-                idVendedor = Integer.parseInt(scanner.nextLine());
-                break;
-            } catch (NumberFormatException e) {
-                System.out.println("Digite apenas números inteiros.");
-            }
-        }
+        int idVendedor = leitor.lerInteiro(
+                "Informe o ID do vendedor: "
+        );
         boolean existeVenda = false;
         for (Venda v : Repositorio.getInstanciaRepositorio().getListaVenda()) {
             if (v.getIdVendedorVenda() == idVendedor && v.getVendaAtiva()) {
@@ -572,16 +406,9 @@ public class ControladorVenda {
     }
 
     public void consultarVendaInativaVendedor() {
-        int idVendedor;
-        while (true) {
-            try {
-                System.out.print("Informe o ID do vendedor: ");
-                idVendedor = Integer.parseInt(scanner.nextLine());
-                break;
-            } catch (NumberFormatException e) {
-                System.out.println("Digite apenas números inteiros.");
-            }
-        }
+        int idVendedor = leitor.lerInteiro(
+                "Informe o ID do vendedor: "
+        );
         boolean existeVenda = false;
         for (Venda v : Repositorio.getInstanciaRepositorio().getListaVenda()) {
             if (v.getIdVendedorVenda() == idVendedor && !v.getVendaAtiva()) {
@@ -596,16 +423,9 @@ public class ControladorVenda {
     }
 
     public void consultarVendaAtivaCliente() {
-        int idCliente;
-        while (true) {
-            try {
-                System.out.print("Informe o ID do cliente: ");
-                idCliente = Integer.parseInt(scanner.nextLine());
-                break;
-            } catch (NumberFormatException e) {
-                System.out.println("Digite apenas números inteiros.");
-            }
-        }
+        int idCliente = leitor.lerInteiro(
+                "Informe o ID do cliente: "
+        );
         boolean existeVenda = false;
         for (Venda v : Repositorio.getInstanciaRepositorio().getListaVenda()) {
             if (v.getIdClienteVenda() == idCliente && v.getVendaAtiva()) {
@@ -620,16 +440,9 @@ public class ControladorVenda {
     }
 
     public void consultarVendaInativaCliente() {
-        int idCliente;
-        while (true) {
-            try {
-                System.out.print("Informe o ID do cliente: ");
-                idCliente = Integer.parseInt(scanner.nextLine());
-                break;
-            } catch (NumberFormatException e) {
-                System.out.println("Digite apenas números inteiros.");
-            }
-        }
+        int idCliente = leitor.lerInteiro(
+                "Informe o ID do cliente: "
+        );
         boolean existeVenda = false;
         for (Venda v : Repositorio.getInstanciaRepositorio().getListaVenda()) {
             if (v.getIdClienteVenda() == idCliente && !v.getVendaAtiva()) {
@@ -645,31 +458,17 @@ public class ControladorVenda {
 
     public void cancelarVenda() {
         System.out.println("==========================CANCELAR VENDA==========================");
-        int idVenda;
-        while (true) {
-            try {
-                System.out.print("Informe o ID da venda: ");
-                idVenda = Integer.parseInt(scanner.nextLine());
-                break;
-            } catch (NumberFormatException e) {
-                System.out.println("Digite apenas números inteiros.");
-            }
-        }
+        int idVenda = leitor.lerInteiro(
+                "Informe o ID da venda: "
+        );
         boolean existeVenda = false;
         for (Venda v : Repositorio.getInstanciaRepositorio().getListaVenda()) {
             if (v.getIdVenda() == idVenda && v.getVendaAtiva()) {
                 mostrarVenda(v);
                 existeVenda = true;
-                int escolhaCancela;
-                while (true) {
-                    try {
-                        System.out.print("Deseja cancelar a venda? (Digite 1 para Sim) ");
-                        escolhaCancela = Integer.parseInt(scanner.nextLine());
-                        break;
-                    } catch (NumberFormatException e) {
-                        System.out.println("Digite apenas números inteiros.");
-                    }
-                }
+                int escolhaCancela = leitor.lerInteiro(
+                        "Deseja cancelar a venda? (Digite 1 para Sim) "
+                );
                 if (escolhaCancela == 1) {
                     for (Produto p : v.getListaProdutosVenda()) {
                         ControladorEstoque.getInstanciaControladorEstoque().alteraAumentaQuantidadeEstoqueVenda(p,p.getQuantidade());

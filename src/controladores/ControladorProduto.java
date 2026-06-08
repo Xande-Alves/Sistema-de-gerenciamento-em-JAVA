@@ -4,12 +4,13 @@ import entidades.Fornecedor;
 import entidades.Produto;
 import menus.MenuEntidade;
 import repositorio.Repositorio;
+import utilitarios.LeitorConsole;
 
 import java.util.Scanner;
 
 public class ControladorProduto {
     private final Scanner scanner = new Scanner(System.in);
-
+    private final LeitorConsole leitor = new LeitorConsole(scanner);
     private static ControladorProduto controladorProdutoInstancia;
 
     private ControladorProduto() {
@@ -28,16 +29,9 @@ public class ControladorProduto {
         int idProduto = Repositorio.getInstanciaRepositorio().getListaProduto().size() + 1;
         boolean existeFornecedor = false;
 
-        int idFornecedor;
-        while (true) {
-            try {
-                System.out.print("Informe o ID do fornecedor: ");
-                idFornecedor = Integer.parseInt(scanner.nextLine());
-                break;
-            } catch (NumberFormatException e) {
-                System.out.println("Digite apenas números inteiros.");
-            }
-        }
+        int idFornecedor = leitor.lerInteiro(
+                "Informe o ID do fornecedor: "
+        );
         for (Fornecedor fornec : Repositorio.getInstanciaRepositorio().getListaFornecedores()) {
             if (fornec.getIdFornecedor() == idFornecedor) {
                 existeFornecedor = true;
@@ -48,49 +42,25 @@ public class ControladorProduto {
             System.out.println("ID de fornecedor inexistente.");
             MenuEntidade.getInstanciaMenuEntidade().escolhaMenuProduto();
         }
-        System.out.print("Informe o nome do produto: ");
-        String nome = scanner.nextLine();
-        System.out.print("Informe a descrição do produto: ");
-        String descricao = scanner.nextLine();
-        double precoCompra;
-        while (true) {
-            try {
-                System.out.print("Informe o preço de compra do produto: ");
-                String precoCompraStr = scanner.nextLine();
-                precoCompra = Double.parseDouble(precoCompraStr.replace(",", "."));
-                break;
-            } catch (Exception e) {
-                System.out.print("O preço de compra do produto deve ser informado em números. ");
-            }
-        }
-        double quantidadeEstoque;
-        while (true) {
-            try {
-                System.out.print("Informe a quantidade de estoque: ");
-                String quantidadeEstoqueStr = scanner.nextLine();
-                quantidadeEstoque = Double.parseDouble(quantidadeEstoqueStr.replace(",", "."));
-                break;
-            } catch (Exception e) {
-                System.out.print("A quantidade de estoque deve ser informada em números. ");
-            }
-        }
+        String nome = leitor.lerTexto("Informe o nome do produto: ");
+        String descricao = leitor.lerTexto("Informe a descrição do produto: ");
+        double precoCompra = leitor.lerDouble(
+                "Informe o preço de compra do produto: "
+        );
 
+        double quantidadeEstoque = leitor.lerDouble(
+                "Informe a quantidade de estoque: "
+        );
         Double precoVenda = calculaPrecoVenda(precoCompra);
 
         Produto produto = new Produto(idProduto,idFornecedor,nome,descricao,precoCompra,precoVenda,quantidadeEstoque);
 
-        int concluir;
-        while (true) {
-            try {
-                System.out.print("Concluir o procedimento? (1 para SIM): ");
-                concluir = Integer.parseInt(scanner.nextLine());
-                break;
-            } catch (NumberFormatException e) {
-                System.out.println("Digite apenas números inteiros.");
-            }
-        }
+        int concluir = leitor.lerInteiro(
+                "Concluir o procedimento? (1 para SIM): "
+        );
         if (concluir != 1) {
             MenuEntidade.getInstanciaMenuEntidade().escolhaMenuProduto();
+            return;
         }
 
         Repositorio.getInstanciaRepositorio().getListaProduto().add(produto);
@@ -100,42 +70,29 @@ public class ControladorProduto {
 
     public void atualizarProduto() {
         System.out.println("===================ATUALIZAR CADASTRO DE PRODUTO==================");
-        int idProduto;
-        while (true) {
-            try {
-                System.out.print("Informe o ID do produto: ");
-                idProduto = Integer.parseInt(scanner.nextLine());
-                break;
-            } catch (NumberFormatException e) {
-                System.out.println("Digite apenas números inteiros.");
-            }
-        }
-
+        int idProduto = leitor.lerInteiro(
+                "Informe o ID do produto: "
+        );
         boolean existeProduto = false;
         for (Produto p : Repositorio.getInstanciaRepositorio().getListaProduto()) {
             if (p.getIdProduto() == idProduto) {
                 mostrarProduto(p);
                 System.out.println("==================================================================");
 
-                String idFornecedorStr;
                 int idFornecedorInt;
-                while (true) {
-                    try {
-                        System.out.print("Informe o novo ID do fornecedor (enter para não alterar): ");
-                        idFornecedorStr = scanner.nextLine();
-                        if (!idFornecedorStr.isEmpty()) {
-                            idFornecedorInt = Integer.parseInt(idFornecedorStr);
-                        } else {
-                            idFornecedorInt = p.getIdFornecedor();
-                        }
-                        break;
-                    } catch (NumberFormatException e) {
-                        System.out.println("Digite apenas números inteiros.");
-                    }
+                Integer idFornecedor = leitor.lerInteiroOpcional(
+                        "Informe o novo ID do fornecedor (enter para não alterar): "
+                );
+
+                if (idFornecedor != null) {
+                    idFornecedorInt = idFornecedor;
+                } else {
+                    idFornecedorInt = p.getIdFornecedor();
                 }
+
                 boolean existeFornecedor = false;
                 for (Fornecedor fornec : Repositorio.getInstanciaRepositorio().getListaFornecedores()) {
-                    if (idFornecedorStr.isEmpty() || (fornec.getIdFornecedor() == idFornecedorInt)) {
+                    if (idFornecedor == null || (fornec.getIdFornecedor() == idFornecedorInt)) {
                         existeFornecedor = true;
                         break;
                     }
@@ -143,39 +100,26 @@ public class ControladorProduto {
                 if (!existeFornecedor) {
                     System.out.println("ID de fornecedor inexistente.");
                     MenuEntidade.getInstanciaMenuEntidade().escolhaMenuProduto();
+                    return;
                 }
-                if (!idFornecedorStr.isEmpty()) {
+                if (idFornecedor != null) {
                     p.setIdFornecedor(idFornecedorInt);
                 }
-                System.out.print("Informe o novo nome do produto (enter para não alterar): ");
-                String nome = scanner.nextLine();
+                String nome = leitor.lerTextoOpcional("Informe o novo nome do produto (enter para não alterar): ");
                 if (!nome.isEmpty()) {
                     p.setNome(nome);
                 }
-                System.out.print("Informe a nova descrição do produto (enter para não alterar): ");
-                String descricao = scanner.nextLine();
+                String descricao = leitor.lerTextoOpcional("Informe a nova descrição do produto (enter para não alterar): ");
                 if (!descricao.isEmpty()) {
                     p.setDescricao(descricao);
                 }
-                String precoCompraStr;
-                double precoCompra;
-                while (true) {
-                    try {
-                        System.out.print("Informe o novo preço de compra do produto (enter para não alterar): ");
-                        precoCompraStr = scanner.nextLine();
-                        if (!precoCompraStr.isEmpty()) {
-                            precoCompra = Double.parseDouble(precoCompraStr.replace(",", "."));
-                        } else {
-                            precoCompra = p.getPrecoCompra();
-                        }
-                        break;
-                    } catch (Exception e) {
-                        System.out.print("O preço de compra do produto deve ser informado em números. ");
-                    }
-                }
-                if (!precoCompraStr.isEmpty()) {
+
+                Double precoCompra = leitor.lerDoubleOpcional(
+                        "Informe o novo preço de compra do produto (enter para não alterar): "
+                );
+                if (precoCompra != null) {
                     p.setPrecoCompra(precoCompra);
-                    Double precoVenda = calculaPrecoVenda(precoCompra);
+                    double precoVenda = calculaPrecoVenda(precoCompra);
                     p.setPrecoVenda(precoVenda);
                 }
 
@@ -198,16 +142,9 @@ public class ControladorProduto {
     }
 
     public void consultarProdutoIdFornecedor() {
-        int idFornec;
-        while (true) {
-            try {
-                System.out.print("Informe o ID do fornecedor: ");
-                idFornec = Integer.parseInt(scanner.nextLine());
-                break;
-            } catch (NumberFormatException e) {
-                System.out.println("Digite apenas números inteiros.");
-            }
-        }
+        int idFornec = leitor.lerInteiro(
+                "Informe o ID do fornecedor: "
+        );
         boolean existeProduto = false;
         for (Produto p : Repositorio.getInstanciaRepositorio().getListaProduto()) {
             if (p.getIdFornecedor() == idFornec) {
@@ -224,8 +161,7 @@ public class ControladorProduto {
     }
 
     public void consultarProdutoNome() {
-        System.out.print("Informe o nome do produto: ");
-        String nomeProduto = scanner.nextLine();
+        String nomeProduto = leitor.lerTexto("Informe o nome do produto: ");
         boolean existeProduto = false;
         for (Produto p : Repositorio.getInstanciaRepositorio().getListaProduto()) {
             if (p.getNome().toLowerCase().contains(nomeProduto.toLowerCase())) {
@@ -242,8 +178,7 @@ public class ControladorProduto {
     }
 
     public void consultarProdutoDescricao() {
-        System.out.print("Informe parte da descrição do produto: ");
-        String descricaoProduto = scanner.nextLine();
+        String descricaoProduto = leitor.lerTexto("Informe parte da descrição do produto: ");
         boolean existeProduto = false;
         for (Produto p : Repositorio.getInstanciaRepositorio().getListaProduto()) {
             if (p.getDescricao().toLowerCase().contains(descricaoProduto.toLowerCase())) {
